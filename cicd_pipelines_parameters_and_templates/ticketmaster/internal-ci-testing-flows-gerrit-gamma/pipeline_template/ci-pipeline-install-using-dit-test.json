@@ -1,0 +1,428 @@
+{
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "name": "SPINNAKER_PIPELINE_NAME",
+  "appConfig": {},
+  "description": "TicketMaster CI Flow to Deploy Either EO or EIAP",
+  "disabled": false,
+  "keepWaitingPipelines": false,
+  "limitConcurrent": false,
+  "notifications": [],
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "This pipeline is maintained by Spinnaker as a code, any changes made through the UI will be overwritten. Please see https://gerrit-gamma.gic.ericsson.se/plugins/gitiles/OSS/com.ericsson.oss.aeonic/oss-integration-ci/+/refs/heads/master/docs/flows/Internal_CI_Test_Flow.md for details",
+    "ui": true
+  },
+  "parameterConfig": [
+    {
+      "default": "eric-eiae-helmfile",
+      "description": "Name of the helmfile to use for the test install",
+      "hasOptions": false,
+      "label": "",
+      "name": "HELMFILE_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "0.0.0",
+      "description": "Version of the helmfile to deploy",
+      "hasOptions": false,
+      "label": "",
+      "name": "HELMFILE_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": " https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm-local",
+      "description": "Repo that stores the helmfile",
+      "hasOptions": false,
+      "label": "",
+      "name": "HELMFILE_REPO",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "pf uds",
+      "description": "Applications that should be switch on during deployment",
+      "hasOptions": false,
+      "label": "TAGS",
+      "name": "TAGS",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "site-values/idun/ci/template/site-values-latest.yaml",
+      "description": "The Path where all the necessary site values are located for the install/upgrade",
+      "hasOptions": false,
+      "label": "",
+      "name": "PATH_TO_SITE_VALUES_FILE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "ticketmaster",
+      "description": "This is the label to search for that is attached to the environments in the Lockable Resource Plugin on Jenkins",
+      "hasOptions": false,
+      "label": "",
+      "name": "ENV_LABEL",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "TicketMaster",
+      "description": "Flow URL Tag is used when locking the environment to add a tag to describe what has locked the environment for easier tracking",
+      "hasOptions": false,
+      "label": "",
+      "name": "FLOW_URL_TAG",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "120",
+      "description": "This is the time to wait for an Environment to become available. After the time expires the job will fail out",
+      "hasOptions": false,
+      "label": "",
+      "name": "WAIT_TIME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "evo_docker_engine_gic_IDUN",
+      "description": "Label to choose which Jenkins slave to execute Jenkinsfiles against",
+      "hasOptions": false,
+      "label": "",
+      "name": "SLAVE_LABEL",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "cloudman-user-creds",
+      "description": "Functional user for logging into armdocker",
+      "hasOptions": false,
+      "label": "",
+      "name": "FUNCTIONAL_USER_SECRET",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "3600",
+      "description": "Timeout for helmfile deploy",
+      "hasOptions": false,
+      "label": "",
+      "name": "HELM_TIMEOUT",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "refs/heads/master",
+      "description": "This is the refspec for the jenkins files under tests",
+      "hasOptions": false,
+      "label": "Refspec of the jenkins files under review",
+      "name": "CI_GERRIT_REFSPEC",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "armdocker.rnd.ericsson.se/proj-eric-oss-dev/eric-oss-ci-scripts:1.0.32-1-14223899",
+      "description": "The CI docker image to use",
+      "hasOptions": false,
+      "label": "CI Docker Image",
+      "name": "CI_DOCKER_IMAGE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Jenkins secret to log into the ARM Docker",
+      "hasOptions": false,
+      "label": "",
+      "name": "ARMDOCKER_USER_SECRET",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    }
+  ],
+  "schema": "1",
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "name": "Flow Completed",
+      "preconditions": [
+        {
+          "context": {
+            "expression": "\"${#stage('Install using Helmfile using DIT')['status']}\" == \"SUCCEEDED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        }
+      ],
+      "refId": "Flow Completed",
+      "requisiteStageRefIds": [
+        "Unreserve Namespace"
+      ],
+      "type": "checkPreconditions"
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Pre Deployment",
+      "pipeline": "PRE_DEPLOYMENT_TEST_PIPELINE_ID",
+      "pipelineParameters": {
+        "ARMDOCKER_USER_SECRET": "${parameters['ARMDOCKER_USER_SECRET']}",
+        "CI_DOCKER_IMAGE": "${parameters['CI_DOCKER_IMAGE']}",
+        "CRD_NAMESPACE": "${#stage(\"Get Env Details using DIT\")[\"context\"][\"CRD_NAMESPACE\"]}",
+        "ENV_FILES_BUCKET_NAME": "${#stage(\"Get Env Details using DIT\")[\"context\"][\"ENV_FILES_BUCKET_NAME\"]}",
+        "EXECUTE_AM_PREDEPLOYMENT_STEP": "yes",
+        "FUNCTIONAL_USER_SECRET": "${parameters['FUNCTIONAL_USER_SECRET']}",
+        "GERRIT_REFSPEC": "${parameters['CI_GERRIT_REFSPEC']}",
+        "KUBECONFIG_FILE": "${#stage(\"Get Env Details using DIT\")[\"context\"][\"KUBE_CONFIG\"]}",
+        "NAMESPACE": "${#stage(\"Get Env Details using DIT\")[\"context\"][\"NAMESPACE\"]}"
+      },
+      "refId": "Pre Deployment",
+      "requisiteStageRefIds": [
+        "Purge Namespace using OST"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Purge Namespace using OST')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "CI-Test-purge-Gerrit-Gamma",
+      "master": "CONTROLLER1",
+      "name": "Purge Namespace using OST",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "${parameters['ARMDOCKER_USER_SECRET']}",
+        "CI_DOCKER_IMAGE": "${parameters['CI_DOCKER_IMAGE']}",
+        "ENV_FILES_BUCKET_NAME": "${#stage(\"Get Env Details using DIT\")[\"context\"][\"ENV_FILES_BUCKET_NAME\"]}",
+        "FUNCTIONAL_USER_SECRET": "${parameters['FUNCTIONAL_USER_SECRET']}",
+        "GERRIT_REFSPEC": "${parameters['CI_GERRIT_REFSPEC']}",
+        "KUBECONFIG_FILE": "${#stage(\"Get Env Details using DIT\")[\"context\"][\"KUBE_CONFIG\"]}",
+        "NAMESPACE": "${#stage(\"Get Env Details using DIT\")[\"context\"][\"NAMESPACE\"]}",
+        "SLAVE_LABEL": "evo_docker_engine_athlone"
+      },
+      "refId": "Purge Namespace using OST",
+      "requisiteStageRefIds": [
+        "Get Latest Helmfile"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Get Env Details using DIT')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "CI-Test-Reserve-Namespace-Gerrit-Gamma",
+      "master": "CONTROLLER1",
+      "name": "Reserve Namespace",
+      "parameters": {
+        "ENV_LABEL": "${parameters['ENV_LABEL']}",
+        "FLOW_URL": "https://spinnaker.rnd.gic.ericsson.se/#/applications/${execution['application']}/executions/details/${execution.id}",
+        "FLOW_URL_TAG": "${parameters['FLOW_URL_TAG']}",
+        "GERRIT_REFSPEC": "${parameters['CI_GERRIT_REFSPEC']}",
+        "SLAVE_LABEL": "${parameters['SLAVE_LABEL']}",
+        "WAIT_TIME": "${parameters['WAIT_TIME']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Reserve Namespace",
+      "requisiteStageRefIds": [],
+      "stageEnabled": {
+        "type": "expression"
+      },
+      "stageTimeoutMs": 28800000,
+      "type": "jenkins",
+      "waitForCompletion": true
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "CI-Test-Gather-Env-Details-Gerrit-Gamma",
+      "master": "CONTROLLER1",
+      "name": "Get Env Details using DIT",
+      "parameters": {
+        "ENV_NAME": "${#stage(\"Reserve Namespace\")[\"context\"][\"RESOURCE_NAME\"]}",
+        "FUNCTIONAL_USER_SECRET": "${parameters['FUNCTIONAL_USER_SECRET']}",
+        "GERRIT_REFSPEC": "${parameters['CI_GERRIT_REFSPEC']}",
+        "SLAVE_LABEL": "${parameters['SLAVE_LABEL']}",
+        "USE_DIT": "true"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Get Env Details using DIT",
+      "requisiteStageRefIds": [
+        "Reserve Namespace"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Reserve Namespace')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failOnFailedExpressions": false,
+      "failPipeline": false,
+      "job": "CI-Test-Helmfile-Deploy-Using-dit-Gerrit-Gamma",
+      "master": "CONTROLLER1",
+      "name": "Install using Helmfile using DIT",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "cloudman-docker-auth-config",
+        "CI_DOCKER_IMAGE": "${parameters['CI_DOCKER_IMAGE']}",
+        "CI_GERRIT_REFSPEC": "${parameters['CI_GERRIT_REFSPEC']}",
+        "DEPLOYMENT_NAME": "${#stage(\"Reserve Namespace\")[\"context\"][\"RESOURCE_NAME\"]}",
+        "DEPLOYMENT_TYPE": "install",
+        "DOCKER_REGISTRY": "armdocker.rnd.ericsson.se",
+        "FUNCTIONAL_USER_SECRET": "${parameters['FUNCTIONAL_USER_SECRET']}",
+        "HELM_TIMEOUT": "${parameters['HELM_TIMEOUT']}",
+        "INT_CHART_NAME": "${parameters['HELMFILE_NAME']}",
+        "INT_CHART_REPO": "${parameters['HELMFILE_REPO']}",
+        "INT_CHART_VERSION": "${#stage(\"Get Latest Helmfile\")[\"context\"][\"INT_CHART_VERSION\"]}",
+        "SITE_VALUES_OVERRIDE_FILE_NAME": "override-site-values-ci-test.yaml",
+        "SLAVE_LABEL": "evo_docker_engine_athlone",
+        "TAGS": "${parameters['TAGS']}",
+        "USE_CERTM": "true",
+        "USE_DM_PREPARE": "true"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Install using Helmfile using DIT",
+      "requisiteStageRefIds": [
+        "Pre Deployment"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Pre Deployment')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "CI-Test-Unreserve-Environment-Gerrit-Gamma",
+      "master": "CONTROLLER1",
+      "name": "Unreserve Namespace",
+      "parameters": {
+        "ENV_NAME": "${#stage(\"Reserve Namespace\")[\"context\"][\"RESOURCE_NAME\"]}",
+        "GERRIT_REFSPEC": "${parameters['CI_GERRIT_REFSPEC']}",
+        "SLAVE_LABEL": "${parameters['SLAVE_LABEL']}"
+      },
+      "refId": "Unreserve Namespace",
+      "requisiteStageRefIds": [
+        "Install using Helmfile using DIT"
+      ],
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "CI-Test-Get-Latest-ChartOrHelmfile-Gerrit-Gamma",
+      "master": "CONTROLLER1",
+      "name": "Get Latest Helmfile",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "${parameters['ARMDOCKER_USER_SECRET']}",
+        "CI_DOCKER_IMAGE": "${parameters['CI_DOCKER_IMAGE']}",
+        "FUNCTIONAL_USER_SECRET": "${parameters['FUNCTIONAL_USER_SECRET']}",
+        "GERRIT_REFSPEC": "${parameters['CI_GERRIT_REFSPEC']}",
+        "INT_CHART_NAME": "${parameters['HELMFILE_NAME']}",
+        "INT_CHART_REPO": "${parameters['HELMFILE_REPO']}",
+        "INT_CHART_VERSION": "${parameters['HELMFILE_VERSION']}",
+        "SLAVE_LABEL": "${parameters['SLAVE_LABEL']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Get Latest Helmfile",
+      "requisiteStageRefIds": [
+        "Get Env Details using DIT"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Get Env Details using DIT')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    }
+  ],
+  "tags": [
+    {
+      "name": "GERRIT_GAMMA",
+      "value": "SPINNAKER_PIPELINE_NAME"
+    }
+  ],
+  "triggers": []
+}

@@ -1,0 +1,3 @@
+SPINNAKER_APPLICATION_NAME,APP_SHORT_NAME_UPPERCASE,SPINNAKER_PIPELINE_NAME,DROP_TRIGGER_JOB_NAME,RELEASE_TRIGGER_JOB_NAME,SUBMIT_TO_IDUN_STAGING_PARAMETER,SUBMIT_TO_EO_STAGING_PARAMETER,TRIGGER_FEM_CONTROLLER,APPLICATION_STAGING_PIPELINE_ID,AAS_E2E_FLOW_PIPELINE_ID
+base-platform-common-base-e2e-cicd,COMMON_BASE,eric-oss-help-aggregator-E2E-Flow,adp-help-center-drop,adp-help-center-release,true,true,eea-aispinn-seliius27190,3fc58679-e9c4-43fb-8724-92d2d758ddef,362462a2-46d1-475e-85f3-5a75aeb7ac3a
+base-platform-common-base-e2e-cicd,COMMON_BASE,eric-oss-ui-settings-E2E-Flow,eric-ui-settings-drop,eric-ui-settings-release,true,true,eea-aispinn-seliius27190,3fc58679-e9c4-43fb-8724-92d2d758ddef,309c18d2-e97a-41cd-abbd-716e11dd61c2

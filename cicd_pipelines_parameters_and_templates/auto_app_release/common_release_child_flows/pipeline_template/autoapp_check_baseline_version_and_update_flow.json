@@ -1,0 +1,87 @@
+{
+    "appConfig": {},
+    "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten. Template name: autoapp_check_baseline_version_and_update_flow_new.json in repo https://gerrit.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources",
+    "keepWaitingPipelines": false,
+    "limitConcurrent": true,
+    "application": "SPINNAKER_APPLICATION_NAME",
+    "name": "SPINNAKER_PIPELINE_NAME",
+    "locked": {
+        "allowUnlockUi": true,
+        "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+        "ui": true
+    },
+    "parameterConfig": [
+      {
+        "default": "",
+        "description": "Version to compare against version in repo",
+        "hasOptions": false,
+        "name": "VERSION_FOR_COMPARISON",
+        "pinned": false,
+        "required": true
+      }
+    ],
+    "spelEvaluator": "v4",
+    "stages": [
+      {
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": true,
+        "failPipeline": false,
+        "job": "BASE-VERS_Retrieve_Baseline_Version",
+        "master": "oss-fem5s11-eiffel216",
+        "name": "Retrieve Version from Repo",
+        "parameters": {
+          "KEY_TO_RETRIEVE_BASELINE_VERSION_OF": "AUTO_APP_CHART_NAME_LATEST_VERSION",
+          "VERSIONS_FILENAME": "autoapp_versions"
+        },
+        "propertyFile": "artifact.properties",
+        "refId": "Retrieve Version from Repo",
+        "requisiteStageRefIds": [],
+        "type": "jenkins"
+      },
+      {
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": true,
+        "failPipeline": false,
+        "job": "BASE-VERS_Compare_Version_With_Baseline_Version",
+        "master": "oss-fem5s11-eiffel216",
+        "name": "Compare Versions",
+        "parameters": {
+          "BASELINE_VERSION_IN_REPO": "${#stage(\"Retrieve Version from Repo\")[\"context\"][\"AUTO_APP_CHART_NAME_LATEST_VERSION\"]}",
+          "VERSION_FOR_COMPARISON": "${trigger['parameters']['VERSION_FOR_COMPARISON']}"
+        },
+        "propertyFile": "artifact.properties",
+        "refId": "Compare Versions",
+        "requisiteStageRefIds": [
+          "Retrieve Version from Repo"
+        ],
+        "stageEnabled": {
+          "expression": "\"${#stage('Retrieve Version from Repo')['status']}\" == \"SUCCEEDED\"",
+          "type": "expression"
+        },
+        "type": "jenkins"
+      },
+      {
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": true,
+        "failPipeline": false,
+        "job": "BASE-VERS_Update_Baseline_Version_In_Repository",
+        "master": "oss-fem5s11-eiffel216",
+        "name": "Update Version In Repo",
+        "parameters": {
+          "KEY_TO_UPDATE_BASELINE_VERSION_OF": "AUTO_APP_CHART_NAME_LATEST_VERSION",
+          "NEW_BASELINE_VERSION": "${trigger['parameters']['VERSION_FOR_COMPARISON']}",
+          "VERSIONS_FILENAME": "autoapp_versions"
+        },
+        "refId": "Update Version in Repo",
+        "requisiteStageRefIds": [
+          "Compare Versions"
+        ],
+        "stageEnabled": {
+          "expression": "${#stage('Compare Versions')['context']['RESULT_OF_COMPARISON'].contains('higher')}",
+          "type": "expression"
+        },
+        "type": "jenkins"
+      }
+    ],
+    "triggers": []
+  }

@@ -1,0 +1,3 @@
+This folder holds the parameter files and pipeline template for the CBOS age tool.
+This Tool consumes the Integration helm chart and produces the listing of images in the services and their CBOS age in a report.
+The tool headlines the OLDEST CBO age in the Integration helm chart and spread of the age.

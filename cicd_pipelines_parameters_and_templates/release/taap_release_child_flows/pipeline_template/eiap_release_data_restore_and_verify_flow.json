@@ -1,0 +1,565 @@
+{
+  "appConfig": {},
+  "keepWaitingPipelines": false,
+  "limitConcurrent": false,
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "name": "SPINNAKER_PIPELINE_NAME",
+  "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten. Template name: eiap_release_data_restore_and_verify_flow.json in repo https://gerrit-gamma.gic.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources,branches",
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+    "ui": true
+  },
+  "notifications": [
+    {
+      "address": "NOTIFICATION_ADDRESS",
+      "level": "pipeline",
+      "message": {
+        "pipeline.failed": {
+          "text": "The pipeline has failed."
+        }
+      },
+      "type": "email",
+      "when": [
+        "pipeline.failed"
+      ]
+    }
+  ],
+  "parameterConfig": [
+    {
+      "default": "",
+      "description": "The version of Deployment Manager to use",
+      "hasOptions": false,
+      "label": "",
+      "name": "DEPLOYMENT_MANAGER_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Namespace of environment",
+      "hasOptions": false,
+      "label": "",
+      "name": "NAMESPACE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Kubernetes configuration file to specify which environment to install on",
+      "hasOptions": false,
+      "label": "",
+      "name": "KUBECONFIG_FILE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Hostname for VNFM",
+      "hasOptions": false,
+      "label": "",
+      "name": "VNFM_HOSTNAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Credentials for SFTP",
+      "hasOptions": false,
+      "label": "",
+      "name": "SFTP_CREDENTIALS_ID",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Server path of SFTP",
+      "hasOptions": false,
+      "label": "",
+      "name": "SFTP_SERVER_PATH",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "The version of EIAP chart version needed to be displayed in the EIAP release dashboard",
+      "hasOptions": false,
+      "label": "",
+      "name": "INT_CHART_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "yes",
+      "description": "",
+      "hasOptions": false,
+      "label": "",
+      "name": "CLEANUP_SFTP",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Name of the deployment",
+      "hasOptions": false,
+      "label": "",
+      "name": "DEPLOYMENT_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Hostname for Kafka Bootstrap",
+      "hasOptions": false,
+      "name": "KF_BO_HOSTNAME",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Hostname for GAS",
+      "hasOptions": false,
+      "label": "",
+      "name": "GAS_HOSTNAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Hostname for ADC",
+      "hasOptions": false,
+      "label": "",
+      "name": "ADC_HOSTNAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Hostname for APPMGR",
+      "hasOptions": false,
+      "label": "",
+      "name": "APPMGR_HOSTNAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Hostname for Bulk Data Repository (BDR)",
+      "hasOptions": false,
+      "name": "BDR_HOSTNAME",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Hostname for TH",
+      "hasOptions": false,
+      "label": "",
+      "name": "TH_HOSTNAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "",
+      "description": "Hostname for ECM",
+      "hasOptions": false,
+      "label": "",
+      "name": "ECM_HOSTNAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "",
+      "description": "Hostname for ENM",
+      "hasOptions": false,
+      "label": "",
+      "name": "ENM_HOSTNAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Skips given test scenarios e.g. CANARY_UPGRADE_01, CANARY_UPGRADE_03",
+      "hasOptions": false,
+      "label": "",
+      "name": "SKIP_TESTS",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "",
+      "description": "Run given tests scenarios and nothing else e.g. CANARY_UPGRADE_01, CANARY_UPGRADE_03",
+      "hasOptions": false,
+      "label": "",
+      "name": "RUN_TESTS",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "",
+      "description": "By default these tests will run e.g., ['main_multiple_iterations.json', 'main_single_iteration.json', 'main_CU2.json'] Override it if needed",
+      "hasOptions": false,
+      "label": "",
+      "name": "CONFIG_FILES",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "refs/tags/live-release",
+      "description": "The version of the K6 testware to be used",
+      "hasOptions": false,
+      "label": "",
+      "name": "K6_TESTWARE_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "true",
+      "description": "When set to true, ENM integration tests will be run",
+      "hasOptions": true,
+      "label": "",
+      "name": "RUN_ENM_INTEGRATION_TEST",
+      "options": [
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Hostname for IAM",
+      "hasOptions": false,
+      "label": "",
+      "name": "IAM_HOSTNAME",
+      "options": [
+          {
+              "value": ""
+          }
+      ],
+      "pinned": true,
+      "required": true
+    }
+  ],
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "OSS-Integration-HealthCheck-Using-DM",
+      "master": "oss-aispinn-fem5s11-eiffel052",
+      "name": "Pre Restore Health Check",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "reluser-creds-docker",
+        "FUNCTIONAL_USER_SECRET": "reluser-user-creds",
+        "KUBECONFIG_FILE": "${parameters['KUBECONFIG_FILE']}",
+        "NAMESPACE": "${parameters['NAMESPACE']}"
+      },
+      "refId": "Pre Restore Health Check",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "Compare_Deployment_Manager_Version_for_BUR",
+      "master": "oss-aispinn-fem5s11-eiffel052",
+      "name": "Set Restore Scope for BUR",
+      "parameters": {
+        "DEPLOYMENT_MANAGER_VERSION": "${parameters['DEPLOYMENT_MANAGER_VERSION']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Set Restore Scope for BUR",
+      "requisiteStageRefIds": [
+        "Pre Restore Health Check"
+      ],
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "EO_BUR_Run_Backup",
+      "master": "oss-aispinn-fem5s11-eiffel052",
+      "name": "Restore",
+      "parameters": {
+        "ACTION": "restore",
+        "BACKUP_DIRECTORY": "EIAP-${parameters['NAMESPACE']}-${parameters['INT_CHART_VERSION']}",
+        "BACKUP_SCOPE": "${(#stage('Set Restore Scope for BUR').context.BACKUP_SCOPE == 'PLATFORM') ? 'PLATFORM': ''}",
+        "CHART_VERSION": "${parameters['INT_CHART_VERSION']}",
+        "CLEANUP_SFTP": "${parameters['CLEANUP_SFTP']}",
+        "CLUSTER_KUBECONFIG": "${parameters['KUBECONFIG_FILE']}",
+        "DELETE_BUR_NAMESPACE": "no",
+        "EO_CHART_VERSION": "${parameters['DEPLOYMENT_MANAGER_VERSION']}",
+        "EO_VNFM_HOSTNAME": "${parameters['VNFM_HOSTNAME']}",
+        "HOST_URL": "https://${parameters['GAS_HOSTNAME']}",
+        "NAMESPACE": "${parameters['NAMESPACE']}",
+        "SFTP_CREDENTIALS_ID": "${parameters['SFTP_CREDENTIALS_ID']}",
+        "SFTP_SERVER_PATH": "${parameters['SFTP_SERVER_PATH']}"
+      },
+      "refId": "Restore",
+      "requisiteStageRefIds": [
+        "Set Restore Scope for BUR"
+      ],
+      "stageEnabled": {
+        "expression": "'${#stage('Set Restore Scope for BUR')['status']}' == 'SUCCEEDED'",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "OSS-Integration-HealthCheck-Using-DM",
+      "master": "oss-aispinn-fem5s11-eiffel052",
+      "name": "Post Restore Health Check",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "reluser-creds-docker",
+        "FUNCTIONAL_USER_SECRET": "reluser-user-creds",
+        "KUBECONFIG_FILE": "${parameters['KUBECONFIG_FILE']}",
+        "NAMESPACE": "${parameters['NAMESPACE']}"
+      },
+      "refId": "Post Restore Health Check",
+      "requisiteStageRefIds": [
+        "Restore"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Restore')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "EIAP_Prod_Eng_integration_suite",
+      "master": "oss-aispinn-fem5s11-eiffel052",
+      "name": "Delete Subsystem",
+      "parameters": {
+        "DELETE_ENM": "true",
+        "DEPLOYMENT_NAME": "${parameters['DEPLOYMENT_NAME']}",
+        "EIC_NAMESPACE": "${parameters['NAMESPACE']}",
+        "ENM_HOSTNAME": "${parameters['ENM_HOSTNAME']}",
+        "ENM_SUBSYSTEM_NAME": "ProdEngENM",
+        "GAS_HOSTNAME": "${parameters['GAS_HOSTNAME']}",
+        "GERRIT_REFSPEC": "${parameters['K6_TESTWARE_VERSION']}",
+        "KUBECONFIG_FILE": "${parameters['KUBECONFIG_FILE']}",
+        "RUN_ENM_INTEGRATION_TEST": "false",
+        "RUN_INTEGRATION_ONLY": "true"
+      },
+      "refId": "Delete Subsystem",
+      "requisiteStageRefIds": [
+        "Post Restore Health Check"
+      ],
+      "type": "jenkins"
+    },
+    {
+      "application": "banba",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Run k6 Tests & Assert",
+      "pipeline": "e908f29c-e1ac-4df5-a8e3-0cae7a426efe",
+      "pipelineParameters": {
+        "ADC_HOSTNAME": "${parameters['ADC_HOSTNAME']}",
+        "APP_MGR_HOSTNAME": "${parameters['APPMGR_HOSTNAME']}",
+        "BDR_HOSTNAME": "${parameters['BDR_HOSTNAME']}",
+        "CONFIG_FILES": "${parameters['CONFIG_FILES']}",
+        "DEPLOYMENT_NAME": "${parameters['DEPLOYMENT_NAME']}",
+        "ECM_HOSTNAME": "${parameters['ECM_HOSTNAME']}",
+        "EIC_VERSION": "${parameters['INT_CHART_VERSION']}",
+        "ENM_HOSTNAME": "${parameters['ENM_HOSTNAME']}",
+        "GAS_HOSTNAME": "${parameters['GAS_HOSTNAME']}",
+        "GERRIT_REFSPEC": "${parameters['K6_TESTWARE_VERSION']}",
+        "IAM_HOSTNAME": "${parameters['IAM_HOSTNAME']}",
+        "JENKINS_AGENT_LABEL": "fem5dockerslave5",
+        "KAFKA_HOSTNAME": "${parameters['KF_BO_HOSTNAME']}",
+        "KUBE_CONFIG": "${parameters['KUBECONFIG_FILE']}",
+        "NAMESPACE": "${parameters['NAMESPACE']}",
+        "RUN_ENM_INTEGRATION_TEST": "${parameters['RUN_ENM_INTEGRATION_TEST']}",
+        "RUN_TESTS": "${parameters['RUN_TESTS']}",
+        "SKIP_TESTS": "${parameters['SKIP_TESTS']}",
+        "TH_HOSTNAME": "${parameters['TH_HOSTNAME']}"
+      },
+      "refId": "Run k6 Tests & Assert",
+      "requisiteStageRefIds": [
+        "Delete Subsystem"
+      ],
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Post Flow Checks",
+      "preconditions": [
+        {
+          "context": {
+            "expression": "\"${#stage('Restore')['status']}\" == \"SUCCEEDED\" or \"${#stage('Restore')['status']}\" == \"SKIPPED\"",
+            "failureMessage": "Restore failed"
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Run k6 Tests & Assert')['status']}\" == \"SUCCEEDED\" or \"${#stage('Run k6 Tests & Assert')['status']}\" == \"SKIPPED\" or \"${#stage('Run k6 Tests & Assert')['status']}\" == \"FAILED_CONTINUE\"",
+            "failureMessage": "Run k6 Tests & Assert failed"
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Delete Subsystem')['status']}\" == \"SUCCEEDED\" or \"${#stage('Delete Subsystem')['status']}\" == \"SKIPPED\" or \"${#stage('Delete Subsystem')['status']}\" == \"FAILED_CONTINUE\"",
+            "failureMessage": "Delete Subsystem failed"
+          },
+          "failPipeline": true,
+          "type": "expression"
+        }
+      ],
+      "refId": "Post Flow Checks",
+      "requisiteStageRefIds": [
+        "Run k6 Tests & Assert"
+      ],
+      "type": "checkPreconditions"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "RPT-RC_Quarantine-Environment",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Quarantine Environment",
+      "parameters": {
+        "ENV_NAME": "${parameters['DEPLOYMENT_NAME']}"
+      },
+      "refId": "Quarantine Environment",
+      "requisiteStageRefIds": [
+        "Post Flow Checks"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Post Flow Checks')['status']}\" != \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "name": "End Flow",
+      "preconditions": [
+        {
+          "context": {
+            "stageName": "Post Flow Checks",
+            "stageStatus": "SUCCEEDED"
+          },
+          "failPipeline": true,
+          "type": "stageStatus"
+        }
+      ],
+      "refId": "End Flow",
+      "requisiteStageRefIds": [
+        "Quarantine Environment"
+      ],
+      "type": "checkPreconditions"
+    }
+  ],
+  "triggers": []
+}

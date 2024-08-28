@@ -1,0 +1,6 @@
+This template generates an e2e microservice flow for ADP CNCS microservices that are part of the Base Platform.
+These flows do not have an automatic trigger but are called by the ADP e2e cicd flows once ADP staging is complete
+
+These microservices can be taken into the following products:
+  IDUN
+  EO

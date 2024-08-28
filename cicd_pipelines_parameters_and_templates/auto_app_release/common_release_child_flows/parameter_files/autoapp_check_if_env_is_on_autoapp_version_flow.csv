@@ -1,0 +1,3 @@
+SPINNAKER_APPLICATION_NAME,SPINNAKER_PIPELINE_NAME
+autoapp-eacc-e2e-cicd,autoapp-eacc-check-if-env-is-on-autoapp-version-Flow
+autoapp-pme-e2e-cicd,autoapp-pme-check-if-env-is-on-autoapp-version-Flow

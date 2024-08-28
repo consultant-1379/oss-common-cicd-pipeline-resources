@@ -1,0 +1,352 @@
+{
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "name": "SPINNAKER_PIPELINE_NAME",
+  "appConfig": {},
+  "description": "The is a CI Release pipeline to be used by Team TicketMaster",
+  "keepWaitingPipelines": false,
+  "limitConcurrent": true,
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "This pipeline is maintained by Spinnaker as a code, any changes made through the UI will be overwritten. Please see https://gerrit-gamma.gic.ericsson.se/plugins/gitiles/OSS/com.ericsson.oss.aeonic/oss-integration-ci/+/refs/heads/master/docs/flows/Internal_CI_Test_Flow.md for details",
+    "ui": true
+  },
+  "parameterConfig": [
+    {
+      "default": "",
+      "description": "Gerrit ref Spec of the CI Review under test",
+      "hasOptions": false,
+      "label": "",
+      "name": "CI_REFSPEC",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "",
+      "description": "Gerrit patch set revision id of the CI Review under test",
+      "hasOptions": false,
+      "label": "",
+      "name": "GERRIT_PATCHSET_REVISION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "",
+      "description": "CI Docker image under test",
+      "hasOptions": false,
+      "label": "",
+      "name": "CI_DOCKER_IMAGE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "ciloopman-docker-auth-config",
+      "description": "ARM Docker secret which holds the username and password to log into the ARM Docker repositories.",
+      "hasOptions": false,
+      "label": "ARM Docker Secret",
+      "name": "ARMDOCKER_USER_SECRET",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "ciloopman-user-creds",
+      "description": "Functional user for logging into armdocker, gerrit etc.",
+      "hasOptions": false,
+      "label": "Functional user secret",
+      "name": "FUNCTIONAL_USER_SECRET",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "",
+      "description": "Jenkins Agent to execute the flow against",
+      "hasOptions": false,
+      "label": "Jenkins Agent",
+      "name": "SLAVE_LABEL",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    }
+  ],
+  "schema": "1",
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "CI-Test-Common-Testing-Gerrit-Gamma",
+      "master": "CONTROLLER1",
+      "name": "Chart Common PCR",
+      "parameters": {
+        "APP_NAME": "eric-ci-helm-a",
+        "ARMDOCKER_USER_SECRET": "${trigger['parameters']['ARMDOCKER_USER_SECRET']}",
+        "CHART_NAME": "",
+        "CHART_PATH": "internal/ci-chart/eric-ci-helm-a/charts/eric-ci-helm-a",
+        "CHART_REPO": "",
+        "CHART_VERSION": "",
+        "GERRIT_REFSPEC": "${trigger['parameters']['CI_REFSPEC']}",
+        "GERRIT_PATCHSET_REVISION": "${trigger['parameters']['GERRIT_PATCHSET_REVISION']}",
+        "CI_DOCKER_IMAGE": "${trigger['parameters']['CI_DOCKER_IMAGE']}",
+        "CI_REFSPEC": "${trigger['parameters']['CI_REFSPEC']}",
+        "GERRIT_PROJECT": "OSS/com.ericsson.oss.aeonic/oss-integration-ci",
+        "GERRIT_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "GIT_REPO_URL": "https://gerrit-gamma.gic.ericsson.se/a/OSS/com.ericsson.oss.aeonic/oss-integration-ci.git",
+        "HELM_REPO_CREDENTIALS_ID": "ciloopman_helm_repository_creds",
+        "PATH_TO_SITE_VALUES_FILE": "internal/ci-chart/eric-ci-helm-a/testsuite/site_values.yaml",
+        "SCHEMA_TESTS_PATH": "internal/ci-chart/eric-ci-helm-a/testsuite/schematests/tests",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}"
+      },
+      "refId": "Chart Common PCR",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "name": "Check Preconditions",
+      "preconditions": [
+        {
+          "context": {
+            "expression": "\"${#stage('Chart Common PCR')['status']}\" == \"SUCCEEDED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Build Chart using cache')['status']}\" == \"SUCCEEDED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "stageName": "Check Output From Build helm chart - Single package",
+            "stageStatus": "SUCCEEDED"
+          },
+          "failPipeline": true,
+          "type": "stageStatus"
+        },
+        {
+          "context": {
+            "stageName": "Compare Latest Versions In Application",
+            "stageStatus": "SUCCEEDED"
+          },
+          "failPipeline": true,
+          "type": "stageStatus"
+        },
+        {
+          "context": {
+            "stageName": "Check Output From Publish helm chart - Single package",
+            "stageStatus": "SUCCEEDED"
+          },
+          "failPipeline": true,
+          "type": "stageStatus"
+        }
+      ],
+      "refId": "Check Preconditions",
+      "requisiteStageRefIds": [
+        "Chart Common PCR",
+        "Build Chart using cache",
+        "Check Output From Build helm chart - Single package",
+        "Compare Latest Versions In Application",
+        "Check Output From Publish helm chart - Single package"
+      ],
+      "type": "checkPreconditions"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "CI-Test-Package-Chart-Using-CiHelm-Gerrit-Gamma",
+      "master": "CONTROLLER1",
+      "name": "Build Chart using cache",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "${trigger['parameters']['ARMDOCKER_USER_SECRET']}",
+        "ARTIFACT_UPLOAD_TO_ARM": "false",
+        "CHART_NAME": "eric-ci-helm-b",
+        "CHART_PATH": "internal/ci-chart/eric-ci-helm-a/charts/eric-ci-helm-a",
+        "CHART_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm-local",
+        "CHART_VERSION": "1.0.4",
+        "CI_DOCKER_IMAGE": "${trigger['parameters']['CI_DOCKER_IMAGE']}",
+        "CI_REFSPEC": "${trigger['parameters']['CI_REFSPEC']}",
+        "FUNCTIONAL_USER_TOKEN": "ciloopman-arm-token",
+        "GERRIT_PROJECT": "OSS/com.ericsson.oss.aeonic/oss-integration-ci",
+        "GERRIT_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "GIT_REPO_URL": "https://gerrit-gamma.gic.ericsson.se/a/OSS/com.ericsson.oss.aeonic/oss-integration-ci.git",
+        "HELM_INTERNAL_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-ci-internal-helm",
+        "HELM_REPO_CREDENTIALS_ID": "ciloopman_helm_repository_creds",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}"
+      },
+      "propertyFile": "",
+      "refId": "Build Chart using cache",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "CI-Test-Fetch-Build-Upload-Using-ADP-Inca-Gerrit-Gamma",
+      "master": "CONTROLLER1",
+      "name": "INCA Helm Chart Test - Prepare - Single package",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "ciloopman-docker-auth-config",
+        "CHART_NAME": "eric-ci-helm-b",
+        "CHART_PATH": "internal/ci-chart/eric-ci-helm-a/charts/eric-ci-helm-a",
+        "CHART_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm-local",
+        "CHART_VERSION": "1.0.4",
+        "CI_REFSPEC": "${trigger['parameters']['CI_REFSPEC']}",
+        "GERRIT_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "GIT_REPO_URL": "https://gerrit-gamma.gic.ericsson.se/a/OSS/com.ericsson.oss.aeonic/oss-integration-ci.git",
+        "HELM_DROP_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm-local",
+        "HELM_INTERNAL_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-ci-internal-helm",
+        "HELM_REPO_CREDENTIALS_ID": "ciloopman_helm_repository_creds",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "INCA Helm Chart Test - Prepare - Single package",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Check Output From Publish helm chart - Single package",
+      "preconditions": [
+        {
+          "context": {
+            "stageName": "INCA Helm Chart Test - Publish - Single package",
+            "stageStatus": "FAILED_CONTINUE"
+          },
+          "failPipeline": true,
+          "type": "stageStatus"
+        }
+      ],
+      "refId": "Check Output From Publish helm chart - Single package",
+      "requisiteStageRefIds": [
+        "INCA Helm Chart Test - Publish - Single package"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('INCA Helm Chart Test - Publish - Single package')['context']['INT_CHART_NAME']}\" == \"eric-ci-helm-a\"",
+        "type": "expression"
+      },
+      "type": "checkPreconditions"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Check Output From Build helm chart - Single package",
+      "preconditions": [
+        {
+          "context": {
+            "stageName": "INCA Helm Chart Test - Prepare - Single package",
+            "stageStatus": "SUCCEEDED"
+          },
+          "failPipeline": true,
+          "type": "stageStatus"
+        }
+      ],
+      "refId": "Check Output From Build helm chart - Single package",
+      "requisiteStageRefIds": [
+        "INCA Helm Chart Test - Prepare - Single package"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('INCA Helm Chart Test - Prepare - Single package')['context']['INT_CHART_NAME']}\" == \"eric-ci-helm-a\"",
+        "type": "expression"
+      },
+      "type": "checkPreconditions"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "CI-Test-Compare-Latest-Versions-In-Application-Gerrit-Gamma",
+      "master": "CONTROLLER1",
+      "name": "Compare Latest Versions In Application",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "${trigger['parameters']['ARMDOCKER_USER_SECRET']}",
+        "CHART_NAME": "eric-data-document-database-pg",
+        "CHART_REPO": "https://arm.sero.gic.ericsson.se/artifactory/proj-adp-gs-all-helm/",
+        "CHART_VERSION": "7.5.0+50",
+        "CI_DOCKER_IMAGE": "${trigger['parameters']['CI_DOCKER_IMAGE']}",
+        "FUNCTIONAL_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "GERRIT_REFSPEC": "${trigger['parameters']['CI_REFSPEC']}",
+        "GERRIT_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "HELMFILE_CHART_NAME": "eric-ci-helmfile",
+        "HELMFILE_CHART_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm-local",
+        "HELMFILE_CHART_VERSION": "1.18.0",
+        "PATH_TO_HELMFILE": "eric-ci-helmfile/helmfile.yaml",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+        "STATE_VALUES_FILE": "eric-ci-helmfile/build-environment/tags_true.yaml"
+      },
+      "refId": "Compare Latest Versions In Application",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "CI-Test-Fetch-Build-Upload-Using-ADP-Inca-Gerrit-Gamma",
+      "markUnstableAsSuccessful": false,
+      "master": "CONTROLLER1",
+      "name": "INCA Helm Chart Test - Publish - Single package",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "ciloopman-docker-auth-config",
+        "CHART_NAME": "eric-ci-helm-b",
+        "CHART_PATH": "internal/ci-chart/eric-ci-helm-a/charts/eric-ci-helm-a",
+        "CHART_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm-local",
+        "CHART_VERSION": "1.0.4",
+        "CI_REFSPEC": "${trigger['parameters']['CI_REFSPEC']}",
+        "GERRIT_PREPARE_OR_PUBLISH": "publish",
+        "GERRIT_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "GIT_REPO_URL": "https://gerrit-gamma.gic.ericsson.se/a/OSS/com.ericsson.oss.aeonic/oss-integration-ci.git",
+        "HELM_DROP_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm-local",
+        "HELM_INTERNAL_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-ci-internal-helm",
+        "HELM_REPO_CREDENTIALS_ID": "ciloopman_helm_repository_creds",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "INCA Helm Chart Test - Publish - Single package",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    }
+  ],
+  "tags": [
+    {
+      "name": "GERRIT_GAMMA",
+      "value": "SPINNAKER_PIPELINE_NAME"
+    }
+  ],
+  "triggers": []
+}

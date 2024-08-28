@@ -1,0 +1,3 @@
+SPINNAKER_APPLICATION_NAME,SPINNAKER_PIPELINE_NAME,CONTROLLER1
+ticketmaster-cicd,eiffel052-ci-pipeline-create-namespaces-Gerrit-Gamma,oss-aispinn-fem5s11-eiffel052
+ticketmaster-cicd,eiffel216-ci-pipeline-create-namespaces-Gerrit-Gamma,oss-fem7s11-eiffel216

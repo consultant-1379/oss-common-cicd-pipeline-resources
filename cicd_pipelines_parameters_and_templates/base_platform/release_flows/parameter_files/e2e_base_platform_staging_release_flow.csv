@@ -1,0 +1,6 @@
+SPINNAKER_APPLICATION_NAME,APP_SHORT_NAME_UPPERCASE,APPLICATION_STAGING_PIPELINE_ID,SUBMIT_TO_IDUN_STAGING_PARAMETER,SUBMIT_TO_EO_STAGING_PARAMETER,SKIP_PRE_TESTING_PARAMETER,RUN_INSTALL_TESTING_PARAMETER
+base-platform-common-base-e2e-cicd,COMMON_BASE,3fc58679-e9c4-43fb-8724-92d2d758ddef,true,true,true,false
+base-platform-sep-e2e-cicd,SEP,5f5bb197-c7ba-4208-af57-0d31aede6c68,false,false,true,false
+base-platform-sef-e2e-cicd,SEF,af5e1e73-7bcf-4110-be6c-31e97407cdeb,true,false,true,false
+base-platform-cnbase-config-e2e-cicd,CNBASE_CONFIG,ae8f805c-beda-42b7-a485-f6ce43e04d66,true,true,true,true
+base-platform-cncs-config-e2e-cicd,CNCS_CONFIG,499acb3b-d8c2-436e-ad2f-389977e83f60,true,true,true,true

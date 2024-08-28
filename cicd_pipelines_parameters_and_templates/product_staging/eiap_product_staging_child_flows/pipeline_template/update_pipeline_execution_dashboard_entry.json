@@ -1,0 +1,105 @@
+{
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten. Template name: update_pipeline_execution_dashboard_entry.json in repo https://gerrit.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources",
+  "disabled": false,
+  "name": "SPINNAKER_PIPELINE_NAME",
+  "keepWaitingPipelines": false,
+  "limitConcurrent": true,
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+    "ui": true
+  },
+  "notifications": [
+    {
+      "address": "NOTIFICATION_ADDRESS",
+      "level": "pipeline",
+      "message": {
+        "pipeline.failed": {
+          "text": "The product staging pipeline has failed"
+        }
+      },
+      "type": "email",
+      "when": ["pipeline.failed"]
+    },
+    {
+      "address": "2d8c65d4.ericsson.onmicrosoft.com@emea.teams.ms",
+      "level": "pipeline",
+      "type": "email",
+      "when": ["pipeline.failed"]
+    }
+  ],
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "failOnFailedExpressions": true,
+      "name": "Evaluate Parent Execution Variables",
+      "refId": "Evaluate Parent Execution Variables",
+      "requisiteStageRefIds": [],
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "product_version",
+          "value": "${trigger.parentExecution.stages.?[name == 'Helmfile Fetch Build Upload Release'][0]['status']=='SUCCEEDED' OR trigger.parentExecution.stages.?[name == 'Helmfile Fetch Build Upload Release from Ref Spec'][0]['status']=='SUCCEEDED'?\"${trigger.parentExecution.stages.?[name == 'EIAP_map_eiap_testware_versions'][0]['context']['parameters']['EIAP_VERSION']}\":\"DNF\"}"
+        },
+        {
+          "key": "status",
+          "value": "${trigger.parentExecution.status}"
+        },
+        {
+          "key": "end",
+          "value": "${status == 'CANCELED' ? new java.text.SimpleDateFormat(\"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'\").format(new java.util.Date()) : new java.text.SimpleDateFormat(\"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'\").format(new java.util.Date(trigger.parentExecution['endTime']))}"
+        },
+        {
+          "key": "ped_id",
+          "value": "${trigger.parentExecution.stages.?[name == 'Create Pipeline Execution Dashboard Entry'][0]['context']['webhook']['body']['_id']}"
+        },
+        {
+          "key": "environment_name",
+          "value": "${trigger.parentExecution.stages.?[name == 'Reserve Environment'][0]['status']==\"SUCCEEDED\"?\"${trigger.parentExecution.stages.?[name == 'Reserve Environment'][0]['outputs']['RESOURCE_NAME']}\":\"DNF\"}"
+        },
+        {
+          "key": "failures",
+          "value": "${status == 'CANCELED' ? trigger.parentExecution.stages.?[(status != 'SUCCEEDED' && status != 'SKIPPED' && status != 'NOT_STARTED') && type != 'checkPreconditions'].![{ 'type': type, 'name': name, 'status': status }] : trigger.parentExecution.stages.?[(status != 'SUCCEEDED' && status != 'RUNNING' && status != 'CANCELED' &&  status != 'SKIPPED' && status != 'NOT_STARTED') && type != 'checkPreconditions'].![{ 'type': type, 'name': name, 'status': status , \"errors\": context.exception.details.errors}]}"
+        },
+        {
+          "key": "ddp_url",
+          "value": "${(trigger.parentExecution.stages.?[name == 'Reserve Environment'][0]['outputs']['DDP_ID'] != null && !trigger.parentExecution.stages.?[name == 'Reserve Environment'][0]['outputs']['DDP_ID'].isEmpty()) ? 'https://ddpi.athtem.eei.ericsson.se/php/TOR/system/elasticsearch.php?site=' + trigger.parentExecution.stages.?[name == 'Reserve Environment'][0]['outputs']['DDP_ID'].replace('lmi_', 'LMI_') +'&dir=' + new java.text.SimpleDateFormat('ddMMyy').format(new java.util.Date(trigger.parentExecution.stages.?[name == 'Reserve Environment'][0]['startTime'])) + '&date=' + new java.text.SimpleDateFormat('yyyy-MM-dd').format(new java.util.Date(trigger.parentExecution.stages.?[name == 'Reserve Environment'][0]['startTime'])) +'&oss=generic&logdir=logs' : ''}"
+        },
+        {
+          "key": "testware_info",
+          "value": "${trigger.parentExecution.stages.?[name == 'Start & Assert K6 Continuous Tests'][0]?.outputs?.propertyFileContents != null ? trigger.parentExecution.stages.?[name == 'Start & Assert K6 Continuous Tests'][0].outputs.propertyFileContents : { 'null' : 'null' }}"
+        }
+      ]
+    },
+    {
+      "method": "PATCH",
+      "name": "Update Pipeline Execution Dashboard Entry",
+      "payload": {
+        "status": "${status}",
+        "environmentInfo": {
+          "name": "${environment_name}",
+          "ddpUrl": "${ddp_url}"
+        },
+        "productVersion": "${product_version}",
+        "end": "${end}",
+        "failures": "${failures}",
+        "testwareInfo": "${testware_info}"
+      },
+      "refId": "Update Pipeline Execution Dashboard Entry",
+      "requisiteStageRefIds": ["Evaluate Parent Execution Variables"],
+      "statusUrlResolution": "getMethod",
+      "type": "webhook",
+      "url": "https://ped.ews.gic.ericsson.se/api/v1/pipeline-executions/${ped_id}"
+    }
+  ],
+  "triggers": [
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "enabled": true,
+      "pipeline": "d8e85bad-3d55-433b-b7db-d3d3567e2553",
+      "status": ["successful", "failed", "canceled"],
+      "type": "pipeline"
+    }
+  ]
+}

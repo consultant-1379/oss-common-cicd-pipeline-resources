@@ -1,0 +1,13 @@
+This template generates an e2e microservice flow for ADP microservices taken into IDUN greenfield applications.
+Greenfield application are applications that were created after IDUN was established.
+These flows do not have an automatic trigger but are called by the ADP e2e cicd flows once ADP staging is complete
+Example: https://spinnaker.rnd.gic.ericsson.se/#/projects/oss_e2e_cicd/applications/dmm-e2e-cicd/executions?pipeline=eric-dmm-data-coordinator-zk-E2E-Flow
+
+These microservices can be taken into the following products:
+  IDUN
+  EO
+
+List of Applications:
+  APPMGR
+  DMM
+  TH

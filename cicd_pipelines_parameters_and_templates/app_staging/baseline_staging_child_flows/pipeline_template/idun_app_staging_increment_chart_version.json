@@ -1,0 +1,64 @@
+{
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten. Template name: idun_app_staging_increment_chart_version.json in repo https://gerrit.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources,branches",
+  "disabled": false,
+  "name": "Increment_APP_SHORT_NAME_UPPERCASE_Chart_Version",
+  "keepWaitingPipelines": false,
+  "limitConcurrent": true,
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+    "ui": true
+  },
+  "notifications": [
+    {
+      "address": "NOTIFICATION_ADDRESS",
+      "level": "pipeline",
+      "type": "email",
+      "when": [
+        "pipeline.failed"
+      ]
+    }
+  ],
+  "parameterConfig": [
+    {
+      "default": "",
+      "description": "Choose which version has to be incremented (MAJOR, MINOR or PATCH)",
+      "hasOptions": true,
+      "label": "",
+      "name": "VERSION_TYPE",
+      "options": [
+        {
+          "value": "MAJOR"
+        },
+        {
+          "value": "MINOR"
+        },
+        {
+          "value": "PATCH"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    }
+  ],
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "OSS-CI-Version-Step",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Increment_Chart_Version",
+      "parameters": {
+        "CHART_PATH": "CHART_PATH_PARAMETER",
+        "GERRIT_PROJECT": "GERRIT_PROJECT_PARAMETER",
+        "VERSION_TYPE": "${trigger['parameters']['VERSION_TYPE']}"
+      },
+      "refId": "Increment_Chart_Version",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    }
+  ],
+  "triggers": []
+}

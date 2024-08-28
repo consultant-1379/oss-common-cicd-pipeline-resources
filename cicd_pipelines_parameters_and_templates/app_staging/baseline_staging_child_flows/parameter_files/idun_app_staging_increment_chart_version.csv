@@ -1,0 +1,15 @@
+SPINNAKER_APPLICATION_NAME,APP_SHORT_NAME_UPPERCASE,CHART_PATH_PARAMETER,GERRIT_PROJECT_PARAMETER,NOTIFICATION_ADDRESS
+eas-e2e-cicd,EAS,charts/eric-oss-ericsson-adaptation,OSS/com.ericsson.oss.tic/eric-oss-ericsson-adaptation,PDLEOENFVO@pdl.internal.ericsson.com
+adc-e2e-cicd,ADC,charts/eric-oss-adc,OSS/com.ericsson.oss.dmi/eric-oss-adc,PDLTEAMPIL@pdl.internal.ericsson.com
+dmm-e2e-cicd,DMM,charts/eric-oss-dmm,OSS/com.ericsson.oss.dmi/eric-oss-dmm,PDLTEAMSUN@pdl.internal.ericsson.com
+mxe-e2e-cicd,MXE,charts/eric-oss-ml-platform,OSS/com.ericsson.oss.ami/eric-oss-ml-platform,PDLSMOKETE@pdl.internal.ericsson.com
+topology-handling-e2e-cicd,TH,charts/eric-topology-handling,OSS/com.ericsson.oss.common.topology/topology-handling,PDLENMTEAM@pdl.internal.ericsson.com
+app-mgr-e2e-cicd,APPMGR,charts/eric-oss-app-mgr,OSS/com.ericsson.oss.ae/eric-oss-app-mgr,"PDLOUTCAST@pdl.internal.ericsson.com, PDLONEYCOM@pdl.internal.ericsson.com,PDLTEAMRHA@pdl.internal.ericsson.com,PDLROGERRO@pdl.internal.ericsson.com"
+config-handling-e2e-cicd,CH,charts/eric-oss-config-handling,OSS/com.ericsson.oss.tic/eric-oss-config-handling,PDLEOENFVO@pdl.internal.ericsson.com
+pf-e2e-cicd,PF,charts/eric-oss-pf,OSS/com.ericsson.oss.orchestration/pf-baseline,PDLGITOSCA@pdl.internal.ericsson.com
+ta-e2e-cicd,TA,charts/eric-oss-task-automation-ae,OSS/com.ericsson.oss.ae/eric-oss-task-automation-ae,"PDLOUTCAST@pdl.internal.ericsson.com,PDLTEAMSAG@pdl.internal.ericsson.com,PDLAMINDIG@pdl.internal.ericsson.com"
+os-e2e-cicd,OS,charts/eric-oss-oran-support,OSS/com.ericsson.oss.tic/eric-oss-oran-support,PDLEEASWAT@pdl.internal.ericsson.com
+pmh-e2e-cicd,PMH,charts/eric-oss-pm-stats-calc-handling,OSS/com.ericsson.oss.air/eric-oss-pm-stats-calc-handling,"PDLEEASWAT@pdl.internal.ericsson.com,PDLBRAGITE@pdl.internal.ericsson.com,PDLVELOCIR@pdl.internal.ericsson.com"
+ml-e2e-cicd,ML,charts/eric-oss-ml-execution-env,OSS/com.ericsson.oss.ami/ml-execution-env,PDLSMOKETE@pdl.internal.ericsson.com
+tieh-e2e-cicd,TIEH,charts/eric-top-inv-exposure-handling,OSS/com.ericsson.oss.tic/topology-exposure-handling,PDLDYNAMOD@pdl.internal.ericsson.com
+cs-e2e-cicd,CS,charts/eric-oss-connected-systems-registry,OSS/com.ericsson.oss.tic/eric-oss-connected-systems-registry,PDLTEAMATH@pdl.internal.ericsson.com

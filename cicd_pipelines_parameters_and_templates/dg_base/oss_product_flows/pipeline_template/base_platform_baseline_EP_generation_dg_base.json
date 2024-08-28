@@ -1,0 +1,116 @@
+{
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "name": "SPINNAKER_PIPELINE_NAME",
+  "appConfig": {},
+  "description": "This spinnaker flow can be used to create used to kick-off a Base Platform version creation for a branch of the repo.",
+  "keepWaitingPipelines": false,
+  "limitConcurrent": false,
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "This pipeline is maintained by Spinnaker as a code, any changes made through the UI will be overwritten. Please see https://gerrit-gamma.gic.ericsson.se/plugins/gitiles/OSS/com.ericsson.oss.aeonic/oss-integration-ci/+/refs/heads/master/docs/flows/Base-Platform-Baseline-EP-Generation.md for details",
+    "ui": true
+  },
+  "parameterConfig": [
+    {
+      "default": "",
+      "description": "Comma-separated dependency helm chart name list. E.g.: eric-pm-server, eric-data-document-database-pg",
+      "hasOptions": false,
+      "label": "Chart Name",
+      "name": "CHART_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "",
+      "description": "Comma-separated dependency helm chart version list. E.g.: 1.0.0+66, 2.3.0+57",
+      "hasOptions": false,
+      "label": "Chart Version",
+      "name": "CHART_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "",
+      "description": "Comma-separated dependency helm chart repo list. E.g.: https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm, https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm",
+      "hasOptions": false,
+      "label": "Chart Repo",
+      "name": "CHART_REPO",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "master",
+      "description": "Branch to use to create the new Baseline version under.",
+      "hasOptions": false,
+      "label": "Branch to build From",
+      "name": "EP_BRANCH",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "The Version to pull the Base versions from",
+      "hasOptions": false,
+      "label": "Base Platform Baseline Version to build from",
+      "name": "BASE_PLATFORM_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    }
+  ],
+  "schema": "1",
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "application": "common-cicd",
+      "failPipeline": true,
+      "name": "Generate Baseline",
+      "pipeline": "2672dfb3-1714-483a-9f6e-1d66286b0459",
+      "pipelineParameters": {
+        "ALLOW_DOWNGRADE": "true",
+        "BASE_PLATFORM_VERSION": "${trigger['parameters']['BASE_PLATFORM_VERSION']}",
+        "CHART_NAME": "${parameters['CHART_NAME']}",
+        "CHART_REPO": "${parameters['CHART_REPO']}",
+        "CHART_VERSION": "${parameters['CHART_VERSION']}",
+        "EP_BRANCH": "${trigger['parameters']['EP_BRANCH']}",
+        "GERRIT_PREPARE_OR_PUBLISH": "publish",
+        "VERSION_STEP_STRATEGY_MANUAL": "PATCH"
+      },
+      "refId": "Generate Baseline",
+      "requisiteStageRefIds": [],
+      "type": "pipeline",
+      "waitForCompletion": true
+    }
+  ],
+  "tags": [
+    {
+      "name": "BASE_PLATFORM",
+      "value": "Base-Platform-Baseline-EP-Generation"
+    }
+  ],
+  "triggers": []
+}

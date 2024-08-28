@@ -1,0 +1,474 @@
+{
+  "appConfig": {},
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "name": "SPINNAKER_PIPELINE_NAME",
+  "description": "Template name: eic-connected-release-external-upgrade-flow.json in repo https://gerrit-gamma.gic.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources,branches",
+  "disabled": true,
+  "keepWaitingPipelines": false,
+  "lastModifiedBy": "tbspinauth",
+  "limitConcurrent": true,
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+    "ui": true
+  },
+  "parameterConfig": [
+    {
+      "default": "Azure_MANA",
+      "description": "Name of the test environment as registered in RPT.",
+      "hasOptions": false,
+      "name": "TEST_ENVIRONMENT",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "The version of eic to upgrade",
+      "hasOptions": false,
+      "name": "INT_CHART_VERSION",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "sshUserPrivateKey",
+      "description": "Jenkins secret credentials ID",
+      "hasOptions": true,
+      "name": "TYPE_OF_CREDENTIAL_FOR_SCP",
+      "options": [
+        {
+          "value": "UsernamePassword"
+        },
+        {
+          "value": "sshUserPrivateKey"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "Azure_CaaP_User",
+      "description": "Jenkins secret credentials ID",
+      "hasOptions": false,
+      "name": "FUNCTIONAL_SCP_USER_SECRET",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "20.47.113.40",
+      "description": "The hostname or the IP of the server on which the deployment manager will execute.",
+      "hasOptions": false,
+      "name": "DESTINATION_SERVER_HOSTNAME_OR_IP",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010181_1-",
+      "description": "Please append the R-state to the default value in the field.",
+      "hasOptions": false,
+      "name": "ERIC_OSS_ADC_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010182_1-",
+      "description": "Please append the R-state to the default value in the field.",
+      "hasOptions": false,
+      "name": "ERIC_OSS_ERICSSON_ADAPTATION_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010183_1-",
+      "description": "Please append the R-state to the default value in the field.",
+      "hasOptions": false,
+      "name": "ERIC_OSS_APP_MGR_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010184_1-",
+      "description": "Please append the R-state to the default value in the field.",
+      "hasOptions": false,
+      "name": "ERIC_OSS_CONFIG_HANDLING_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010185_1-",
+      "description": "Please append the R-state to the default value in the field.",
+      "hasOptions": false,
+      "name": "ERIC_TOPOLOGY_HANDLING_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010186_1-",
+      "description": "Please append the R-state to the default value in the field.",
+      "hasOptions": false,
+      "name": "ERIC_CLOUD_NATIVE_BASE_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010334_1-",
+      "description": "Please append the R-state to the default value in the field.",
+      "hasOptions": false,
+      "name": "ERIC_CNBASE_OSS_CONFIG_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010333_1-",
+      "description": "Please append the R-state to the default value in the field.",
+      "hasOptions": false,
+      "name": "ERIC_CNCS_OSS_CONFIG_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010187_1-",
+      "description": "Please append the R-state to the default value in the field.",
+      "hasOptions": false,
+      "label": "",
+      "name": "ERIC_OSS_DMM_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010188_1-",
+      "description": "Please append the R-state to the default value in the field.",
+      "hasOptions": false,
+      "name": "ERIC_OSS_COMMON_BASE_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010246_1-",
+      "description": "Please append the R-state to the default value in the field.",
+      "hasOptions": false,
+      "name": "ERIC_CLOUD_NATIVE_SERVICE_MESH_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010192-",
+      "description": "Please append the R-state to the default value in the field.",
+      "hasOptions": false,
+      "name": "EIAE_DEPLOYMENT_HELM_RELEASE_PACKAGE_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010193-",
+      "description": "Please append the R-state to the default value in the field.",
+      "hasOptions": false,
+      "name": "OSS_DEPLOYMENT_MANAGER_RELEASE_PACKAGE_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010222_1-",
+      "description": "Please append the R-state to the default value in the field.",
+      "hasOptions": false,
+      "name": "ERIC_OSS_ORAN_SUPPORT_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010224_1-",
+      "description": "Please append the R-state to the default value in the field.",
+      "hasOptions": false,
+      "name": "ERIC_OSS_TASK_AUTOMATION_AE_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "The version of Deployment Manager to use.",
+      "hasOptions": false,
+      "name": "OSS_DEPLOYMENT_MANAGER_VERSION",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Namespace to upgrade the Chart.",
+      "hasOptions": false,
+      "name": "NAMESPACE",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CICD_VM_in_Azure_Cloud_1",
+      "description": "Specify the customer agent to run the job on",
+      "hasOptions": false,
+      "name": "CUSTOMER_AGENT_NAME",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "/tmp",
+      "description": "Location of package on destination server",
+      "hasOptions": false,
+      "name": "DESTINATION_SERVER_PACKAGE_LOCATION",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Namespace which was used to deploy the CRD.",
+      "hasOptions": false,
+      "name": "CRD_NAMESPACE",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "false",
+      "description": "Set it to 'true' to skip the Jenkins Agent Cleanup stage or 'false' otherwise.",
+      "hasOptions": true,
+      "name": "SKIP_AGENT_CLEANUP",
+      "options": [
+        {
+          "value": "true"
+        },
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+      {
+        "default": "",
+        "description": "Path on server where the working directory is available. E.g. /mnt. The working directory 'swgw_download_dir' will automatically be created.",
+        "hasOptions": false,
+        "label": "",
+        "name": "CSAR_DOWNLOAD_LOCATION_PATH",
+        "pinned": true,
+        "required": true
+      }
+  ],
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "oss-idun-release-cicd_Jenkins_Agent_Cleanup",
+      "master": "oss-aispinn-fem5s11-eiffel052",
+      "name": "Jenkins Agent Cleanup",
+      "parameters": {
+        "SLAVE": "${parameters['CUSTOMER_AGENT_NAME']}"
+      },
+      "refId": "Jenkins Agent Cleanup",
+      "requisiteStageRefIds": [],
+      "stageEnabled": {
+        "expression": "'${parameters['SKIP_AGENT_CLEANUP']}' == 'false'",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "DSC-DIT-Download-Document-As-Artifact",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Get Environment Details",
+      "parameters": {
+        "DIT_NAME_PARAMETER": "${parameters['TEST_ENVIRONMENT']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Get Environment Details",
+      "requisiteStageRefIds": [
+        "Jenkins Agent Cleanup"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Jenkins Agent Cleanup')['status'] == 'SUCCEEDED' or #stage('Jenkins Agent Cleanup')['status'] == 'SKIPPED'",
+        "type": "expression"
+      },
+      "type": "jenkins",
+      "waitForCompletion": true
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "oss-idun-release-cicd_Files_Transfer_Between_Agents",
+      "master": "oss-aispinn-fem5s11-eiffel052",
+      "name": "Transfer Package",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "reluser-creds-docker",
+        "DESTINATION_SERVER_HOSTNAME_OR_IP": "${parameters['DESTINATION_SERVER_HOSTNAME_OR_IP']}",
+        "DESTINATION_SERVER_PACKAGE_LOCATION": "${parameters['DESTINATION_SERVER_PACKAGE_LOCATION']}",
+        "FUNCTIONAL_SCP_USER_SECRET": "${parameters['FUNCTIONAL_SCP_USER_SECRET']}",
+        "INT_CHART_VERSION": "${parameters['INT_CHART_VERSION']}",
+        "PATH_TO_CERTIFICATES_FILES": "${#stage('Get Environment Details')['context']['PATH_TO_CERTIFICATES_FILES']}",
+        "PATH_TO_SITE_VALUES_FILE": "${#stage('Get Environment Details')['context']['PATH_TO_TO_STATE_SITE_VALUES_FILE']}site_values_${parameters['INT_CHART_VERSION']}.yaml",
+        "TYPE_OF_CREDENTIAL_FOR_SCP": "${parameters['TYPE_OF_CREDENTIAL_FOR_SCP']}"
+      },
+      "refId": "Transfer Package",
+      "requisiteStageRefIds": [
+        "Get Environment Details"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Get Environment Details')['status'] == 'SUCCEEDED'",
+        "type": "expression"
+      },
+      "type": "jenkins",
+      "waitForCompletion": true
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "oss-idun-release-cicd_Unpack_And_Push_Images",
+      "master": "oss-aispinn-fem5s11-eiffel052",
+      "name": "Unpack and Push Images",
+      "parameters": {
+        "CSAR_DOWNLOAD_LOCATION_PATH": "${parameters['CSAR_DOWNLOAD_LOCATION_PATH']}",
+        "DESTINATION_SERVER_PACKAGE_LOCATION": "${parameters['DESTINATION_SERVER_PACKAGE_LOCATION']}",
+        "EIAE_DEPLOYMENT_HELM_RELEASE_PACKAGE_PRODUCT_NO": "${parameters['EIAE_DEPLOYMENT_HELM_RELEASE_PACKAGE_PRODUCT_NO']}",
+        "ERIC_CLOUD_NATIVE_BASE_PRODUCT_NO": "${parameters['ERIC_CLOUD_NATIVE_BASE_PRODUCT_NO']}",
+        "ERIC_CLOUD_NATIVE_SERVICE_MESH_PRODUCT_NO": "${parameters['ERIC_CLOUD_NATIVE_SERVICE_MESH_PRODUCT_NO']}",
+        "ERIC_CNBASE_OSS_CONFIG_PRODUCT_NO": "${parameters['ERIC_CNBASE_OSS_CONFIG_PRODUCT_NO']}",
+        "ERIC_CNCS_OSS_CONFIG_PRODUCT_NO": "${parameters['ERIC_CNCS_OSS_CONFIG_PRODUCT_NO']}",
+        "ERIC_OSS_ADC_PRODUCT_NO": "${parameters['ERIC_OSS_ADC_PRODUCT_NO']}",
+        "ERIC_OSS_APP_MGR_PRODUCT_NO": "${parameters['ERIC_OSS_APP_MGR_PRODUCT_NO']}",
+        "ERIC_OSS_COMMON_BASE_PRODUCT_NO": "${parameters['ERIC_OSS_COMMON_BASE_PRODUCT_NO']}",
+        "ERIC_OSS_CONFIG_HANDLING_PRODUCT_NO": "${parameters['ERIC_OSS_CONFIG_HANDLING_PRODUCT_NO']}",
+        "ERIC_OSS_DMM_PRODUCT_NO": "${parameters['ERIC_OSS_DMM_PRODUCT_NO']}",
+        "ERIC_OSS_ERICSSON_ADAPTATION_PRODUCT_NO": "${parameters['ERIC_OSS_ERICSSON_ADAPTATION_PRODUCT_NO']}",
+        "ERIC_OSS_ORAN_SUPPORT_PRODUCT_NO": "${parameters['ERIC_OSS_ORAN_SUPPORT_PRODUCT_NO']}",
+        "ERIC_OSS_TASK_AUTOMATION_AE_PRODUCT_NO": "${parameters['ERIC_OSS_TASK_AUTOMATION_AE_PRODUCT_NO']}",
+        "ERIC_TOPOLOGY_HANDLING_PRODUCT_NO": "${parameters['ERIC_TOPOLOGY_HANDLING_PRODUCT_NO']}",
+        "KUBECONFIG_FILE": "${#stage('Get Environment Details')['context']['KUBE_CONFIG_FILE_CREDENTIAL_ID']}",
+        "NAMESPACE": "${parameters['NAMESPACE']}",
+        "OSS_DEPLOYMENT_MANAGER_RELEASE_PACKAGE_PRODUCT_NO": "${parameters['OSS_DEPLOYMENT_MANAGER_RELEASE_PACKAGE_PRODUCT_NO']}",
+        "OSS_DEPLOYMENT_MANAGER_VERSION": "${parameters['OSS_DEPLOYMENT_MANAGER_VERSION']}",
+        "SLAVE_LABEL": "${parameters['CUSTOMER_AGENT_NAME']}"
+      },
+      "refId": "Unpack and Push Images",
+      "requisiteStageRefIds": [
+        "Transfer Package"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Transfer Package')['status'] == 'SUCCEEDED'",
+        "type": "expression"
+      },
+      "stageTimeoutMs": 18000000,
+      "type": "jenkins",
+      "waitForCompletion": true
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "instructions": "Check the transferred package. Does it have correct files?",
+      "judgmentInputs": [],
+      "name": "Checkpoint",
+      "notifications": [],
+      "refId": "Checkpoint",
+      "requisiteStageRefIds": [
+        "Unpack and Push Images"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Unpack and Push Images')['status'] == 'SUCCEEDED'",
+        "type": "expression"
+      },
+      "stageTimeoutMs": 28800000,
+      "type": "manualJudgment",
+      "waitForCompletion": true
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "oss-idun-release-cicd_MANA_Health_Check",
+      "master": "oss-aispinn-fem5s11-eiffel052",
+      "name": "Pre Deploy Health Check",
+      "parameters": {
+        "CSAR_DOWNLOAD_LOCATION_PATH": "${parameters['CSAR_DOWNLOAD_LOCATION_PATH']}",
+        "KUBECONFIG_FILE": "${#stage('Get Environment Details')['context']['KUBE_CONFIG_FILE_CREDENTIAL_ID']}",
+        "NAMESPACE": "${parameters['NAMESPACE']}",
+        "OSS_DEPLOYMENT_MANAGER_RELEASE_PACKAGE_PRODUCT_NO": "${parameters['OSS_DEPLOYMENT_MANAGER_RELEASE_PACKAGE_PRODUCT_NO']}",
+        "OSS_DEPLOYMENT_MANAGER_VERSION": "${parameters['OSS_DEPLOYMENT_MANAGER_VERSION']}",
+        "SLAVE_LABEL": "${parameters['CUSTOMER_AGENT_NAME']}"
+      },
+      "refId": "Pre Deploy Health Check",
+      "requisiteStageRefIds": [
+        "Checkpoint"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Checkpoint')['status'] == 'SUCCEEDED'",
+        "type": "expression"
+      },
+      "type": "jenkins",
+      "waitForCompletion": true
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "oss-idun-release-cicd_MANA_Deploy",
+      "master": "oss-aispinn-fem5s11-eiffel052",
+      "name": "MANA Deploy",
+      "parameters": {
+        "CRD_NAMESPACE": "${parameters['CRD_NAMESPACE']}",
+        "CSAR_DOWNLOAD_LOCATION_PATH": "${parameters['CSAR_DOWNLOAD_LOCATION_PATH']}",
+        "DEPLOYMENT_TYPE": "upgrade",
+        "DESTINATION_SERVER_PACKAGE_LOCATION": "${parameters['DESTINATION_SERVER_PACKAGE_LOCATION']}",
+        "EIAE_DEPLOYMENT_HELM_RELEASE_PACKAGE_PRODUCT_NO": "${parameters['EIAE_DEPLOYMENT_HELM_RELEASE_PACKAGE_PRODUCT_NO']}",
+        "ERIC_CLOUD_NATIVE_BASE_PRODUCT_NO": "${parameters['ERIC_CLOUD_NATIVE_BASE_PRODUCT_NO']}",
+        "ERIC_CLOUD_NATIVE_SERVICE_MESH_PRODUCT_NO": "${parameters['ERIC_CLOUD_NATIVE_SERVICE_MESH_PRODUCT_NO']}",
+        "ERIC_CNBASE_OSS_CONFIG_PRODUCT_NO": "${parameters['ERIC_CNBASE_OSS_CONFIG_PRODUCT_NO']}",
+        "ERIC_CNCS_OSS_CONFIG_PRODUCT_NO": "${parameters['ERIC_CNCS_OSS_CONFIG_PRODUCT_NO']}",
+        "ERIC_OSS_ADC_PRODUCT_NO": "${parameters['ERIC_OSS_ADC_PRODUCT_NO']}",
+        "ERIC_OSS_APP_MGR_PRODUCT_NO": "${parameters['ERIC_OSS_APP_MGR_PRODUCT_NO']}",
+        "ERIC_OSS_COMMON_BASE_PRODUCT_NO": "${parameters['ERIC_OSS_COMMON_BASE_PRODUCT_NO']}",
+        "ERIC_OSS_CONFIG_HANDLING_PRODUCT_NO": "${parameters['ERIC_OSS_CONFIG_HANDLING_PRODUCT_NO']}",
+        "ERIC_OSS_DMM_PRODUCT_NO": "${parameters['ERIC_OSS_DMM_PRODUCT_NO']}",
+        "ERIC_OSS_ERICSSON_ADAPTATION_PRODUCT_NO": "${parameters['ERIC_OSS_ERICSSON_ADAPTATION_PRODUCT_NO']}",
+        "ERIC_OSS_ORAN_SUPPORT_PRODUCT_NO": "${parameters['ERIC_OSS_ORAN_SUPPORT_PRODUCT_NO']}",
+        "ERIC_OSS_TASK_AUTOMATION_AE_PRODUCT_NO": "${parameters['ERIC_OSS_TASK_AUTOMATION_AE_PRODUCT_NO']}",
+        "ERIC_TOPOLOGY_HANDLING_PRODUCT_NO": "${parameters['ERIC_TOPOLOGY_HANDLING_PRODUCT_NO']}",
+        "KUBECONFIG_FILE": "${#stage('Get Environment Details')['context']['KUBE_CONFIG_FILE_CREDENTIAL_ID']}",
+        "NAMESPACE": "${parameters['NAMESPACE']}",
+        "OSS_DEPLOYMENT_MANAGER_RELEASE_PACKAGE_PRODUCT_NO": "${parameters['OSS_DEPLOYMENT_MANAGER_RELEASE_PACKAGE_PRODUCT_NO']}",
+        "OSS_DEPLOYMENT_MANAGER_VERSION": "${parameters['OSS_DEPLOYMENT_MANAGER_VERSION']}",
+        "SLAVE_LABEL": "${parameters['CUSTOMER_AGENT_NAME']}"
+      },
+      "refId": "MANA Deploy",
+      "requisiteStageRefIds": [
+        "Pre Deploy Health Check"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Checkpoint')['status'] == 'SUCCEEDED'",
+        "type": "expression"
+      },
+      "type": "jenkins",
+      "waitForCompletion": true
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "oss-idun-release-cicd_MANA_Health_Check",
+      "master": "oss-aispinn-fem5s11-eiffel052",
+      "name": "Post Deploy Health Check",
+      "parameters": {
+        "CSAR_DOWNLOAD_LOCATION_PATH": "${parameters['CSAR_DOWNLOAD_LOCATION_PATH']}",
+        "KUBECONFIG_FILE": "${#stage('Get Environment Details')['context']['KUBE_CONFIG_FILE_CREDENTIAL_ID']}",
+        "NAMESPACE": "${parameters['NAMESPACE']}",
+        "OSS_DEPLOYMENT_MANAGER_RELEASE_PACKAGE_PRODUCT_NO": "${parameters['OSS_DEPLOYMENT_MANAGER_RELEASE_PACKAGE_PRODUCT_NO']}",
+        "OSS_DEPLOYMENT_MANAGER_VERSION": "${parameters['OSS_DEPLOYMENT_MANAGER_VERSION']}",
+        "SLAVE_LABEL": "${parameters['CUSTOMER_AGENT_NAME']}"
+      },
+      "refId": "Post Deploy Health Check",
+      "requisiteStageRefIds": [
+        "MANA Deploy"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('MANA Deploy')['status'] == 'SUCCEEDED'",
+        "type": "expression"
+      },
+      "type": "jenkins",
+      "waitForCompletion": true
+    }
+  ],
+  "triggers": []
+}

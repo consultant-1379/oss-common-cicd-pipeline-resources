@@ -1,0 +1,354 @@
+{
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten. Template name: e2e_app_product_pipeline.json in repo https://gerrit.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources,branches",
+  "disabled": false,
+  "name": "SPINNAKER_PIPELINE_NAME",
+  "limitConcurrent": false,
+  "parameterConfig": [
+    {
+      "default": "SUBMIT_TO_IDUN_STAGING_PARAMETER",
+      "description": "",
+      "hasOptions": true,
+      "label": "",
+      "name": "SUBMIT_TO_IDUN_STAGING",
+      "options": [
+        {
+          "value": "true"
+        },
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "SUBMIT_TO_EO_STAGING_PARAMETER",
+      "description": "",
+      "hasOptions": true,
+      "label": "",
+      "name": "SUBMIT_TO_EO_STAGING",
+      "options": [
+        {
+          "value": "true"
+        },
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "SKIP_PRE_TESTING_PARAMETER",
+      "description": "",
+      "hasOptions": true,
+      "label": "",
+      "name": "SKIP_PRE_TESTING",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "USE_INT_CHART_PARAMETERS_PARAMETER",
+      "description": "If set to \"true \" it will take CHART parameters with \"INT_\" prefix from artifact.properties file",
+      "hasOptions": true,
+      "label": "",
+      "name": "USE_INT_CHART_PARAMETERS",
+      "options": [
+        {
+          "value": "false"
+        },
+        {
+          "value": "true"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "eric-eo-helmfile",
+      "description": "Name of the integration chart which will be used for the Initial install",
+      "hasOptions": false,
+      "label": "",
+      "name": "II_INT_CHART_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "https://arm.seli.gic.ericsson.se/artifactory/proj-eo-drop-helm",
+      "description": "Repo of the Integration Chart which will be used for the Initial Install",
+      "hasOptions": false,
+      "label": "",
+      "name": "II_INT_CHART_REPO",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "0.0.0",
+      "description": "Version of the Integration Chart which will be used for the Initial Install",
+      "hasOptions": false,
+      "label": "",
+      "name": "II_INT_CHART_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    }
+  ],
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "failOnFailedExpressions": true,
+      "name": "Evaluate Chart Variables",
+      "notifications": [
+        {
+          "address": "PDLAPPSTAG@pdl.internal.ericsson.com",
+          "level": "stage",
+          "type": "email",
+          "when": [
+            "stage.failed"
+          ]
+        }
+      ],
+      "refId": "Evaluate Chart Variables",
+      "requisiteStageRefIds": [],
+      "sendNotifications": true,
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "MICROSERVICE_CHART_NAME",
+          "value": "${(trigger.parameters[\"USE_INT_CHART_PARAMETERS\"] == \"true\")? trigger.properties['INT_CHART_NAME'] : trigger.properties['CHART_NAME']}"
+        },
+        {
+          "key": "MICROSERVICE_CHART_VERSION",
+          "value": "${(trigger.parameters[\"USE_INT_CHART_PARAMETERS\"] == \"true\")? trigger.properties['INT_CHART_VERSION'] : trigger.properties['CHART_VERSION']}"
+        },
+        {
+          "key": "MICROSERVICE_CHART_REPO",
+          "value": "${(trigger.parameters[\"USE_INT_CHART_PARAMETERS\"] == \"true\")? trigger.properties['INT_CHART_REPO'] : trigger.properties['CHART_REPO']}"
+        }
+      ]
+    },
+    {
+      "failOnFailedExpressions": true,
+      "name": "Evaluate Git Commit Author",
+      "refId": "Evaluate Git Commit Author",
+      "requisiteStageRefIds": [],
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "GIT_COMMIT_AUTHOR",
+          "value": "${trigger.properties['GIT_COMMIT_AUTHOR']?: '<Commit info missing in release job>'}"
+        },
+        {
+          "key": "GIT_COMMIT_AUTHOR_EMAIL",
+          "value": "${trigger.properties['GIT_COMMIT_AUTHOR_EMAIL']?: (trigger.properties['GIT_AUTHOR_EMAIL']?:'MICROSERVICE_TEAM_EMAILS')}"
+        }
+      ]
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failPipeline": true,
+      "name": "APP_SHORT_NAME_UPPERCASE_Application_Staging",
+      "notifications": [
+        {
+          "address": "${GIT_COMMIT_AUTHOR_EMAIL}",
+          "cc": "PDLAPPSTAG@pdl.internal.ericsson.com,MICROSERVICE_TEAM_EMAILS",
+          "level": "stage",
+          "message": {
+            "stage.complete": {
+              "text": "Stage successful"
+            },
+            "stage.failed": {
+              "text": "This stage has been failed. Please investigate the failure"
+            }
+          },
+          "type": "email",
+          "when": ["stage.failed"]
+        },
+        {
+          "address": "${GIT_COMMIT_AUTHOR_EMAIL}",
+          "level": "stage",
+          "message": {
+            "stage.complete": {
+              "text": "Hi ${GIT_COMMIT_AUTHOR},\nThis stage has been completed successfully"
+            },
+            "stage.starting": {
+              "text": "Hi ${GIT_COMMIT_AUTHOR},\nThis stage has been started. "
+            }
+          },
+          "type": "email",
+          "when": ["stage.starting", "stage.complete"]
+        }
+      ],
+      "pipeline": "APPLICATION_STAGING_PIPELINE_ID",
+      "pipelineParameters": {
+        "CHART_NAME": "${MICROSERVICE_CHART_NAME}",
+        "CHART_REPO": "${MICROSERVICE_CHART_REPO}",
+        "CHART_VERSION": "${MICROSERVICE_CHART_VERSION}",
+        "II_INT_CHART_NAME": "${parameters['II_INT_CHART_NAME']}",
+        "II_INT_CHART_REPO": "${parameters['II_INT_CHART_REPO']}",
+        "SKIP_PRE_TESTING": "${parameters['SKIP_PRE_TESTING']}"
+      },
+      "refId": "APP_SHORT_NAME_UPPERCASE_Application_Staging",
+      "requisiteStageRefIds": [
+        "Evaluate Chart Variables",
+        "Evaluate Git Commit Author"
+      ],
+      "sendNotifications": true,
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "application": "product-e2e-cicd",
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "name": "IDUN_Product_Staging",
+      "notifications": [
+        {
+          "address": "${GIT_COMMIT_AUTHOR_EMAIL}",
+          "cc": "PDLDUNPROD@pdl.internal.ericsson.com,MICROSERVICE_TEAM_EMAILS",
+          "level": "stage",
+          "message": {
+            "stage.failed": {
+              "text": "This stage has been failed. Please investigate the failure"
+            }
+          },
+          "type": "email",
+          "when": ["stage.failed"]
+        },
+        {
+          "address": "${GIT_COMMIT_AUTHOR_EMAIL}",
+          "level": "stage",
+          "message": {
+            "stage.complete": {
+              "text": "Hi ${GIT_COMMIT_AUTHOR},\nThis stage has been completed successfully. "
+            },
+            "stage.starting": {
+              "text": "Hi ${GIT_COMMIT_AUTHOR},\nThis stage has been started. "
+            }
+          },
+          "type": "email",
+          "when": ["stage.starting", "stage.complete"]
+        }
+      ],
+      "pipeline": "d8e85bad-3d55-433b-b7db-d3d3567e2553",
+      "pipelineParameters": {
+        "CHART_NAME": "${#stage(\"APP_SHORT_NAME_UPPERCASE_Application_Staging\")[\"context\"][\"INT_CHART_NAME\"]}",
+        "CHART_REPO": "${#stage(\"APP_SHORT_NAME_UPPERCASE_Application_Staging\")[\"context\"][\"INT_CHART_REPO\"]}",
+        "CHART_VERSION": "${#stage(\"APP_SHORT_NAME_UPPERCASE_Application_Staging\")[\"context\"][\"INT_CHART_VERSION\"]}"
+      },
+      "refId": "IDUN_Product_Staging",
+      "requisiteStageRefIds": [
+        "APP_SHORT_NAME_UPPERCASE_Application_Staging"
+      ],
+      "sendNotifications": true,
+      "stageEnabled": {
+        "expression": "\"${trigger['parameters']['SUBMIT_TO_IDUN_STAGING']}\" == \"true\"",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "application": "eoapp",
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "name": "EO_Product_Staging",
+      "sendNotifications": true,
+      "notifications": [
+        {
+          "address": "${GIT_COMMIT_AUTHOR_EMAIL}",
+          "cc": "PDLAPPSTAG@pdl.internal.ericsson.com,PDLEOENFVO@pdl.internal.ericsson.com,MICROSERVICE_TEAM_EMAILS",
+          "level": "stage",
+          "message": {
+            "stage.failed": {
+              "text": "Please investigate this failure"
+            }
+          },
+          "type": "email",
+          "when": ["stage.failed"]
+        },
+        {
+          "address": "${GIT_COMMIT_AUTHOR_EMAIL}",
+          "level": "stage",
+          "message": {
+            "stage.complete": {
+              "text": "Hi ${GIT_COMMIT_AUTHOR},\nThis stage has been completed successfully. "
+            },
+            "stage.starting": {
+              "text": "Hi ${GIT_COMMIT_AUTHOR},\nThis stage has been started. "
+            }
+          },
+          "type": "email",
+          "when": ["stage.starting", "stage.complete"]
+        }
+      ],
+      "pipeline": "fe9cb49d-cb50-4966-bcf5-2c51dd381399",
+      "pipelineParameters": {
+        "CHART_NAME": "${#stage(\"APP_SHORT_NAME_UPPERCASE_Application_Staging\")[\"context\"][\"INT_CHART_NAME\"]}",
+        "CHART_REPO": "${#stage(\"APP_SHORT_NAME_UPPERCASE_Application_Staging\")[\"context\"][\"INT_CHART_REPO\"]}",
+        "CHART_VERSION": "${#stage(\"APP_SHORT_NAME_UPPERCASE_Application_Staging\")[\"context\"][\"INT_CHART_VERSION\"]}",
+        "MICROSERVICE_CHART_NAME": "${MICROSERVICE_CHART_NAME}",
+        "MICROSERVICE_CHART_REPO": "${MICROSERVICE_CHART_REPO}",
+        "MICROSERVICE_CHART_VERSION": "${MICROSERVICE_CHART_VERSION}"
+      },
+      "refId": "EO_Product_Staging",
+      "requisiteStageRefIds": [
+        "APP_SHORT_NAME_UPPERCASE_Application_Staging"
+      ],
+      "stageEnabled": {
+        "expression": "\"${trigger['parameters']['SUBMIT_TO_EO_STAGING']}\" == \"true\"",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "application": "idun-aas-e2e-cicd",
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "isNew": true,
+      "name": "AAS_E2E_Flow",
+      "pipeline": "AAS_E2E_FLOW_PIPELINE_ID",
+      "refId": "AAS_E2E_Flow",
+      "requisiteStageRefIds": [
+        "IDUN_Product_Staging"
+      ],
+      "type": "pipeline",
+      "waitForCompletion": false
+    }
+  ],
+  "triggers": [
+    {
+      "enabled": true,
+      "job": "TRIGGER_JOB_NAME",
+      "master": "TRIGGER_FEM_CONTROLLER",
+      "propertyFile": "artifact.properties",
+      "type": "jenkins"
+    }
+  ]
+}

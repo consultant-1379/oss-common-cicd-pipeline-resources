@@ -1,0 +1,119 @@
+{
+    "appConfig": {},
+    "application": "SPINNAKER_APPLICATION_NAME",
+    "name": "SPINNAKER_PIPELINE_NAME",
+    "description": "Template name: eic_release_software_upload_flow.json in repo https://gerrit-gamma.gic.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources,branches",
+    "keepWaitingPipelines": false,
+    "limitConcurrent": false,
+    "locked": {
+      "allowUnlockUi": true,
+      "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten.",
+      "ui": true
+    },
+    "parameterConfig": [
+      {
+        "default": "",
+        "description": "The EIC helmfile version.",
+        "hasOptions": false,
+        "name": "RELEASE_INT_CHART_VERSION",
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "",
+        "description": "The DM version to upload.",
+        "hasOptions": false,
+        "name": "DEPLOYMENT_MANAGER_VERSION",
+        "pinned": true,
+        "required": true
+      }
+    ],
+    "stages": [
+      {
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": false,
+        "failPipeline": true,
+        "job": "GetAppVersionFromHelmfile",
+        "master": "oss-aispinn-fem5s11-eiffel052",
+        "name": "Get Details of EIC Release",
+        "parameters": {
+          "FUNCTIONAL_USER_SECRET": "reluser-user-creds",
+          "INT_CHART_VERSION": "${parameters['RELEASE_INT_CHART_VERSION']}"
+        },
+        "propertyFile": "artifact.properties",
+        "refId": "Get Details of EIC Release",
+        "requisiteStageRefIds": [],
+        "type": "jenkins"
+      },
+      {
+        "failOnFailedExpressions": true,
+        "name": "Generate SW Artifact",
+        "refId": "Generate SW Artifact",
+        "requisiteStageRefIds": [
+          "Get Details of EIC Release"
+        ],
+        "type": "evaluateVariables",
+        "variables": [
+          {
+            "key": "ADDITIONAL_PACKAGES",
+            "value": "{\"eric-eiae-helmfile\":\"${trigger['parameters']['RELEASE_INT_CHART_VERSION']}\",\"deployment-manager\":\"${trigger['parameters']['DEPLOYMENT_MANAGER_VERSION']}\","
+          }
+        ]
+      },
+      {
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": false,
+        "failPipeline": true,
+        "job": "DP-RAF",
+        "master": "oss-aeonic-fem2s11",
+        "name": "SW Upload",
+        "parameters": {
+          "fileInput": "${new String( #toJson ( #stage('Get Details of EIC Release')['context']['propertyFileContents'] ) ).replace('{', #stage('Generate SW Artifact')['context']['ADDITIONAL_PACKAGES'] )}"
+        },
+        "refId": "SW Upload",
+        "requisiteStageRefIds": [
+          "Generate SW Artifact"
+        ],
+        "type": "jenkins",
+        "waitForCompletion": true
+      },
+      {
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": false,
+        "failPipeline": true,
+        "job": "BASE-VERS_Update_Baseline_Version_In_Repository",
+        "master": "oss-fem5s11-eiffel216",
+        "name": "Update Release INT chart version",
+        "parameters": {
+          "KEY_TO_UPDATE_BASELINE_VERSION_OF": "LAST_RELEASE_INT_CHART_VERSION",
+          "NEW_BASELINE_VERSION": "${parameters['RELEASE_INT_CHART_VERSION']}",
+          "VERSIONS_FILENAME": "versions"
+        },
+        "refId": "Update Release INT chart version",
+        "requisiteStageRefIds": [
+          "SW Upload"
+        ],
+        "type": "jenkins"
+      },
+      {
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": false,
+        "failPipeline": true,
+        "job": "CICD-UTILS-Create-Rcd-Json",
+        "master": "oss-fem5s11-eiffel216",
+        "name": "Create RCD JSON",
+        "parameters": {
+          "PRODUCT_NAME": "EIC",
+          "PRODUCT_SET": "${parameters['RELEASE_INT_CHART_VERSION']}",
+          "PRODUCT_SET_TYPE": "release_candidate",
+          "SPINNAKER_PIPELINE_ID": "${execution['id']}"
+        },
+        "refId": "Create RCD JSON",
+        "requisiteStageRefIds": [
+          "Update Release INT chart version"
+        ],
+        "type": "jenkins"
+      }
+    ],
+    "triggers": []
+  }

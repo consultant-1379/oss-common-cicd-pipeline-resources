@@ -1,0 +1,287 @@
+{
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten. Template name: e2e_app_product_pipeline_evnfm_ADP.json in repo https://gerrit.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources",
+  "disabled": false,
+  "name": "SPINNAKER_PIPELINE_NAME",
+  "limitConcurrent": false,
+  "parameterConfig": [
+ {
+      "default": "",
+      "description": "Name of the microservice chart within the integration chart",
+      "hasOptions": false,
+      "label": "CHART_NAME",
+      "name": "CHART_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Version of the microservice chart within the integration chart",
+      "hasOptions": false,
+      "label": "CHART_VERSION",
+      "name": "CHART_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Repo of the microservice chart within the integration chart",
+      "hasOptions": false,
+      "label": "CHART_REPO",
+      "name": "CHART_REPO",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "SUBMIT_TO_IDUN_STAGING_PARAMETER",
+      "description": "",
+      "hasOptions": true,
+      "label": "",
+      "name": "SUBMIT_TO_IDUN_STAGING",
+      "options": [
+        {
+          "value": "true"
+        },
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "SUBMIT_TO_EO_STAGING_PARAMETER",
+      "description": "",
+      "hasOptions": true,
+      "label": "",
+      "name": "SUBMIT_TO_EO_STAGING",
+      "options": [
+        {
+          "value": "true"
+        },
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "eric-eo-helmfile",
+      "description": "Name of the integration chart which will be used for the Initial install",
+      "hasOptions": false,
+      "label": "",
+      "name": "II_INT_CHART_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "https://arm.seli.gic.ericsson.se/artifactory/proj-eo-drop-helm",
+      "description": "Repo of the Integration Chart which will be used for the Initial Install",
+      "hasOptions": false,
+      "label": "",
+      "name": "II_INT_CHART_REPO",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    }
+  ],
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "failOnFailedExpressions": true,
+      "name": "Check_if_releasable_version",
+      "notifications": [
+        {
+          "address": "PDLAPPSTAG@pdl.internal.ericsson.com",
+          "level": "stage",
+          "type": "email",
+          "when": [
+            "stage.failed"
+          ]
+        }
+      ],
+      "refId": "Check_if_releasable_version",
+      "requisiteStageRefIds": [],
+      "sendNotifications": true,
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "SKIP_CHART_RELEASE",
+          "value": "${ (parameters['CHART_VERSION'].contains(\"+\"))? \"false\" : \"true\" }"
+        }
+      ]
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failPipeline": true,
+      "name": "APP_SHORT_NAME_UPPERCASE_Application_Staging",
+      "notifications": [
+        {
+          "address": "MICROSERVICE_TEAM_EMAILS",
+          "cc": "PDLAPPSTAG@pdl.internal.ericsson.com",
+          "level": "stage",
+          "message": {
+            "stage.complete": {
+              "text": "Stage successful"
+            },
+            "stage.failed": {
+              "text": "Please investigate this failure"
+            }
+          },
+          "type": "email",
+          "when": [
+            "stage.failed"
+          ]
+        }
+      ],
+      "pipeline": "APPLICATION_STAGING_PIPELINE_ID",
+      "pipelineParameters": {
+        "CHART_NAME": "${trigger.parameters[\"CHART_NAME\"]}",
+        "CHART_REPO": "${trigger.parameters[\"CHART_REPO\"]}",
+        "CHART_VERSION": "${trigger.parameters[\"CHART_VERSION\"]}",
+        "SKIP_CHART_RELEASE": "${SKIP_CHART_RELEASE}",
+        "II_INT_CHART_NAME": "${parameters['II_INT_CHART_NAME']}",
+        "II_INT_CHART_REPO": "${parameters['II_INT_CHART_REPO']}"
+      },
+      "refId": "APP_SHORT_NAME_UPPERCASE_Application_Staging",
+      "requisiteStageRefIds": [
+        "Check_if_releasable_version"
+      ],
+      "sendNotifications": true,
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "application": "product-e2e-cicd",
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "name": "IDUN_Product_Staging",
+      "notifications": [
+        {
+          "address": "MICROSERVICE_TEAM_EMAILS",
+          "cc": "PDLDUNPROD@pdl.internal.ericsson.com",
+          "level": "stage",
+          "message": {
+            "stage.failed": {
+              "text": "Please investigate this failure"
+            }
+          },
+          "type": "email",
+          "when": [
+            "stage.failed"
+          ]
+        }
+      ],
+      "pipeline": "d8e85bad-3d55-433b-b7db-d3d3567e2553",
+      "pipelineParameters": {
+        "CHART_NAME": "${#stage(\"APP_SHORT_NAME_UPPERCASE_Application_Staging\")[\"context\"][\"INT_CHART_NAME\"]}",
+        "CHART_REPO": "${#stage(\"APP_SHORT_NAME_UPPERCASE_Application_Staging\")[\"context\"][\"INT_CHART_REPO\"]}",
+        "CHART_VERSION": "${#stage(\"APP_SHORT_NAME_UPPERCASE_Application_Staging\")[\"context\"][\"INT_CHART_VERSION\"]}",
+        "MICROSERVICE_CHART_NAME": "${trigger.parameters[\"CHART_NAME\"]}",
+        "MICROSERVICE_CHART_REPO": "${trigger.parameters[\"CHART_REPO\"]}",
+        "MICROSERVICE_CHART_VERSION": "${trigger.parameters[\"CHART_VERSION\"]}"
+      },
+      "refId": "IDUN_Product_Staging",
+      "requisiteStageRefIds": [
+        "APP_SHORT_NAME_UPPERCASE_Application_Staging"
+      ],
+      "sendNotifications": true,
+      "stageEnabled": {
+        "expression": "\"${parameters['SUBMIT_TO_IDUN_STAGING']}\" == \"true\" and \"${SKIP_CHART_RELEASE}\" == \"false\"",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "application": "eoapp",
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "name": "EO_Product_Staging",
+      "notifications": [
+        {
+          "address": "PDLEOENFVO@pdl.internal.ericsson.com",
+          "cc": "PDLAPPSTAG@pdl.internal.ericsson.com",
+          "level": "stage",
+          "message": {
+            "stage.failed": {
+              "text": "Please investigate this failure"
+            }
+          },
+          "type": "email",
+          "when": [
+            "stage.failed"
+          ]
+        }
+      ],
+      "pipeline": "fe9cb49d-cb50-4966-bcf5-2c51dd381399",
+      "pipelineParameters": {
+        "CHART_NAME": "${#stage(\"APP_SHORT_NAME_UPPERCASE_Application_Staging\")[\"context\"][\"INT_CHART_NAME\"]}",
+        "CHART_REPO": "${#stage(\"APP_SHORT_NAME_UPPERCASE_Application_Staging\")[\"context\"][\"INT_CHART_REPO\"]}",
+        "CHART_VERSION": "${#stage(\"APP_SHORT_NAME_UPPERCASE_Application_Staging\")[\"context\"][\"INT_CHART_VERSION\"]}",
+        "MICROSERVICE_CHART_NAME": "${trigger.parameters[\"CHART_NAME\"]}",
+        "MICROSERVICE_CHART_REPO": "${trigger.parameters[\"CHART_REPO\"]}",
+        "MICROSERVICE_CHART_VERSION": "${trigger.parameters[\"CHART_VERSION\"]}"
+      },
+      "refId": "EO_Product_Staging",
+      "requisiteStageRefIds": [
+        "APP_SHORT_NAME_UPPERCASE_Application_Staging"
+      ],
+      "stageEnabled": {
+        "expression": "\"${parameters['SUBMIT_TO_EO_STAGING']}\" == \"true\" and \"${SKIP_CHART_RELEASE}\" == \"false\"",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "application": "idun-aas-e2e-cicd",
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "isNew": true,
+      "name": "AAS_E2E_Flow",
+      "pipeline": "AAS_E2E_FLOW_PIPELINE_ID",
+      "refId": "AAS_E2E_Flow",
+      "requisiteStageRefIds": [
+        "IDUN_Product_Staging"
+      ],
+      "stageEnabled": {
+        "expression": "\"${SKIP_CHART_RELEASE}\" == \"false\"",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": false
+    }
+  ],
+  "triggers": []
+}

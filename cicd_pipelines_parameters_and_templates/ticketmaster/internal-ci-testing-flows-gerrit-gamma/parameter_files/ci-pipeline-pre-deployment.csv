@@ -1,0 +1,3 @@
+SPINNAKER_APPLICATION_NAME,SPINNAKER_PIPELINE_NAME,CONTROLLER1,OSS_COMMON_PRE_DEPLOYMENT_TEST_PIPELINE_ID,CREATE_NAMESPACES_TEST_PIPELINE_ID
+ticketmaster-cicd,eiffel052-ci-pipeline-pre-deployment-Gerrit-Gamma,oss-aispinn-fem5s11-eiffel052,781bf181-fe8e-4370-ab71-c3a235b017d4,c83d0bb6-3271-40e8-a47f-3a384d10c7a0
+ticketmaster-cicd,eiffel216-ci-pipeline-pre-deployment-Gerrit-Gamma,oss-fem7s11-eiffel216,bdd43e54-d5ad-4864-90ec-d1105a8e9e86,6938b759-1d15-427d-8586-fbed17384ed3

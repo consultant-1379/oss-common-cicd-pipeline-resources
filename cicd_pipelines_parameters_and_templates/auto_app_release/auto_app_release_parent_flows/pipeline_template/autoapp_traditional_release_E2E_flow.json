@@ -1,0 +1,229 @@
+{
+  "appConfig": {},
+  "keepWaitingPipelines": false,
+  "limitConcurrent": true,
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "name": "SPINNAKER_PIPELINE_NAME",
+  "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten. Template name: autoapp_traditional_release_E2E_Flow.json in repo https://gerrit.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources",
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+    "ui": true
+  },
+  "notifications": [
+    {
+      "address": "NOTIFICATION_ADDRESS",
+      "cc": "CC_ADDRESS",
+      "level": "pipeline",
+      "message": {
+        "pipeline.failed": {
+          "text": "The pipeline has failed."
+        }
+      },
+      "type": "email",
+      "when": [
+        "pipeline.failed"
+      ]
+    }
+  ],
+  "parameterConfig": [
+    {
+      "default": "",
+      "description": "Name of the auto app helm chart",
+      "hasOptions": false,
+      "label": "",
+      "name": "CHART_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Repo of the auto app helm chart",
+      "hasOptions": false,
+      "label": "",
+      "name": "CHART_REPO",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Version of the auto app helm chart",
+      "hasOptions": false,
+      "label": "",
+      "name": "CHART_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "https://arm.seli.gic.ericsson.se",
+      "description": "Storage Instance (Staging and Release) to receive CSARs from",
+      "hasOptions": false,
+      "label": "",
+      "name": "CSAR_STORAGE_INSTANCE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "proj-eric-oss-drop-generic-local",
+      "description": "Storage directory (Release) to receive the CSARs from",
+      "hasOptions": false,
+      "label": "",
+      "name": "CSAR_STORAGE_REPO_RELEASE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "true",
+      "description": "",
+      "hasOptions": true,
+      "label": "",
+      "name": "LATEST_RELEASED_AUTO_APP_BRANCH",
+      "options": [
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "true",
+      "description": "",
+      "hasOptions": true,
+      "label": "",
+      "name": "OLDEST_SUPPORTED_AUTO_APP_BRANCH",
+      "options": [
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "AutoApp_Release",
+      "description": "RCR Tag is used to identify the environment by Report Center Registration Stage for AutoApp release",
+      "hasOptions": false,
+      "label": "",
+      "name": "RCR_TAG",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    }
+  ],
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "Staging-Report-Register",
+      "master": "oss-fem4s11-eiffel216",
+      "name": "Report Center Registration",
+      "parameters": {
+        "EXEC_ID": "${execution.id}"
+      },
+      "refId": "1",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "name": "Oldest Supported AUTO_APP_SHORT_NAME To Latest Candidate AUTO_APP_SHORT_NAME On Latest Release EIAP",
+      "pipeline": "OLDEST_SUPPORTED_TO_LATEST_CANDIDATE_PIPELINE_ID",
+      "pipelineParameters": {
+        "CHART_NAME": "${parameters['CHART_NAME']}",
+        "CHART_REPO": "${parameters['CHART_REPO']}",
+        "CHART_VERSION": "${parameters['CHART_VERSION']}",
+        "CSAR_STORAGE_INSTANCE": "${parameters['CSAR_STORAGE_INSTANCE']}",
+        "CSAR_STORAGE_REPO_RELEASE": "${parameters['CSAR_STORAGE_REPO_RELEASE']}",
+        "ENVIRONMENT_NAME": "LATEST_ENVIRONMENT_NAME"
+      },
+      "refId": "Oldest Supported AUTO_APP_SHORT_NAME To Latest Candidate AUTO_APP_SHORT_NAME On Latest Release EIAP",
+      "requisiteStageRefIds": [],
+      "stageEnabled": {
+        "expression": "${ parameters['OLDEST_SUPPORTED_AUTO_APP_BRANCH'] == 'true' }",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "name": "Last Released AUTO_APP_SHORT_NAME To Latest Candidate AUTO_APP_SHORT_NAME On Oldest Supported EIAP",
+      "pipeline": "LAST_RELEASED_TO_LATEST_CANDIDATE_PIPELINE_ID",
+      "pipelineParameters": {
+        "CHART_NAME": "${parameters['CHART_NAME']}",
+        "CHART_REPO": "${parameters['CHART_REPO']}",
+        "CHART_VERSION": "${parameters['CHART_VERSION']}",
+        "CSAR_STORAGE_INSTANCE": "${parameters['CSAR_STORAGE_INSTANCE']}",
+        "CSAR_STORAGE_REPO_RELEASE": "${parameters['CSAR_STORAGE_REPO_RELEASE']}",
+        "ENVIRONMENT_NAME": "OLDEST_ENVIRONMENT_NAME"
+      },
+      "refId": "Last Released AUTO_APP_SHORT_NAME To Latest Candidate AUTO_APP_SHORT_NAME On Oldest Supported EIAP",
+      "requisiteStageRefIds": [],
+      "stageEnabled": {
+        "expression": "${ parameters['LATEST_RELEASED_AUTO_APP_BRANCH'] == 'true' }",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "failPipeline": true,
+      "name": "Update Latest Auto App Baseline",
+      "pipeline": "UPDATE_AUTO_APP_BASELINE_PIPELINE_ID",
+      "pipelineParameters": {
+        "VERSION_FOR_COMPARISON": "${parameters['CHART_VERSION']}"
+      },
+      "refId": "Update Latest Auto App Baseline",
+      "requisiteStageRefIds": [
+        "Oldest Supported AUTO_APP_SHORT_NAME To Latest Candidate AUTO_APP_SHORT_NAME On Latest Release EIAP",
+        "Last Released AUTO_APP_SHORT_NAME To Latest Candidate AUTO_APP_SHORT_NAME On Oldest Supported EIAP"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Last Released AUTO_APP_SHORT_NAME To Latest Candidate AUTO_APP_SHORT_NAME On Oldest Supported EIAP')['status']}\" == \"SUCCEEDED\" and \"${#stage('Oldest Supported AUTO_APP_SHORT_NAME To Latest Candidate AUTO_APP_SHORT_NAME On Latest Release EIAP')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    }
+  ],
+  "triggers": []
+}

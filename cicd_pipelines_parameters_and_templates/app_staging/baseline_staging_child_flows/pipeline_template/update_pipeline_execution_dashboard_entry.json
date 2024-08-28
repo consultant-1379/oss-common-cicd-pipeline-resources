@@ -1,0 +1,265 @@
+{
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten. Template name: update_pipeline_execution_dashboard_entry.json in repo https://gerrit.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources,branches",
+  "disabled": false,
+  "name": "APP_SHORT_NAME_UPPERCASE_update_pipeline_execution_dashboard_entry",
+  "keepWaitingPipelines": false,
+  "limitConcurrent": true,
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+    "ui": true
+  },
+  "notifications": [
+    {
+      "address": "2d8c65d4.ericsson.onmicrosoft.com@emea.teams.ms",
+      "level": "pipeline",
+      "type": "email",
+      "when": ["pipeline.failed"]
+    }
+  ],
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "failOnFailedExpressions": true,
+      "name": "Evaluate Parent Execution Variables",
+      "refId": "Evaluate Parent Execution Variables",
+      "requisiteStageRefIds": [],
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "application_version",
+          "value": "${(trigger.parentExecution.trigger.parameters.SKIP_CHART_RELEASE.toString()=='false') ? (trigger.parentExecution.stages.?[name == 'Fetch Build Upload Release'][0]['status']==\"SUCCEEDED\" ? \"${trigger.parentExecution.stages.?[name == 'Fetch Build Upload Release'][0]['context']['INT_CHART_VERSION']}\":\"DNF\"): \"N/A\" }"
+        },
+        {
+          "key": "status",
+          "value": "${trigger.parentExecution.status}"
+        },
+        {
+          "key": "end",
+          "value": "${status == 'CANCELED' ? new java.text.SimpleDateFormat(\"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'\").format(new java.util.Date()) : new java.text.SimpleDateFormat(\"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'\").format(new java.util.Date(trigger.parentExecution['endTime']))}"
+        },
+        {
+          "key": "ped_id",
+          "value": "${trigger.parentExecution.stages.?[name == 'Create Pipeline Execution Dashboard Entry'][0]['context']['webhook']['body']['_id']}"
+        },
+        {
+          "key": "failures",
+          "value": "${status == 'CANCELED' ? trigger.parentExecution.stages.?[(status != 'SUCCEEDED' && status != 'SKIPPED' && status != 'NOT_STARTED') && type != 'checkPreconditions'].![{ 'type': type, 'name': name, 'status': status }] : trigger.parentExecution.stages.?[(status != 'SUCCEEDED' && status != 'RUNNING' && status != 'CANCELED' && status != 'SKIPPED' && status != 'NOT_STARTED') && type != 'checkPreconditions'].![{ 'type': type, 'name': name, 'status': status , \"errors\": context.exception.details.errors}]}"
+        }
+      ]
+    },
+    {
+      "condition": "${trigger.parentExecution.stages.?[name == 'Upgrade_flow'][0]?.status != 'NOT_STARTED' && trigger.parentExecution.stages.?[name == 'Upgrade_flow'][0]?.status != 'SKIPPED'}",
+      "failOnFailedExpressions": true,
+      "name": "Evaluate Parent Execution Variables Upgrade_flow",
+      "refId": "Evaluate Parent Execution Variables Upgrade_flow",
+      "requisiteStageRefIds": [
+        "Evaluate Parent Execution Variables"
+      ],
+      "stageEnabled": {
+        "expression": "${trigger.parentExecution.stages.?[name == 'Upgrade_flow'][0]?.status != 'NOT_STARTED' && trigger.parentExecution.stages.?[name == 'Upgrade_flow'][0]?.status != 'SKIPPED'}",
+        "type": "expression"
+      },
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "environment_name",
+          "value": "${trigger.parentExecution.stages.?[name == 'Upgrade_flow'][0]['status'] == \"SUCCEEDED\" ? trigger.parentExecution.stages.?[name == 'Upgrade_flow'][0]['outputs']['RESOURCE_NAME'] : 'DNF'}"
+        },
+        {
+          "key": "ddp_url",
+          "value": "${trigger.parentExecution.stages.?[name == 'Upgrade_flow'][0]['outputs']['DDP_ID'] != null && !trigger.parentExecution.stages.?[name == 'Upgrade_flow'][0]['outputs']['DDP_ID'].isEmpty() ? 'https://ddpi.athtem.eei.ericsson.se/php/TOR/system/elasticsearch.php?site=' + trigger.parentExecution.stages.?[name == 'Upgrade_flow'][0]['outputs']['DDP_ID'].replace('lmi_', 'LMI_') + '&dir=' + new java.text.SimpleDateFormat('ddMMyy').format(new java.util.Date(trigger.parentExecution.stages.?[name == 'Upgrade_flow'][0]['startTime'])) + '&date=' + new java.text.SimpleDateFormat('yyyy-MM-dd').format(new java.util.Date(trigger.parentExecution.stages.?[name == 'Upgrade_flow'][0]['startTime'])) + '&oss=generic&logdir=logs' : ''}"
+        },
+        {
+          "key": "testware_info",
+          "value": "${trigger.parentExecution.stages.?[name == 'Upgrade_flow'][0]?.outputs?.propertyFileContents != null ? trigger.parentExecution.stages.?[name == 'Upgrade_flow'][0].outputs.propertyFileContents : { 'null' : 'null' }}"
+        },
+        {
+          "key": "testware_info_testwareVersion",
+          "value": "${trigger.parentExecution.stages.?[name == 'Upgrade_flow'][0]?.outputs?.propertyFileContents != null && trigger.parentExecution.stages.?[name == 'Upgrade_flow'][0].outputs.propertyFileContents.testwareVersion != null ? trigger.parentExecution.stages.?[name == 'Upgrade_flow'][0].outputs.propertyFileContents.testwareVersion : '-'}"
+        },
+        {
+          "key": "testware_info_testVersion",
+          "value": "${trigger.parentExecution.stages.?[name == 'Upgrade_flow'][0]?.outputs?.propertyFileContents != null && trigger.parentExecution.stages.?[name == 'Upgrade_flow'][0].outputs.propertyFileContents.testVersion!= null ? trigger.parentExecution.stages.?[name == 'Upgrade_flow'][0].outputs.propertyFileContents.testVersion: '-'}"
+        },
+        {
+          "key": "testware_info_status",
+          "value": "${trigger.parentExecution.stages.?[name == 'Upgrade_flow'][0]?.outputs?.propertyFileContents != null && trigger.parentExecution.stages.?[name == 'Upgrade_flow'][0].outputs.propertyFileContents.testVersion!= null ? trigger.parentExecution.stages.?[name == 'Upgrade_flow'][0].outputs.propertyFileContents.status: '-'}"
+        },
+        {
+          "key": "testware_info_jobDetailsUrl",
+          "value": "${trigger.parentExecution.stages.?[name == 'Upgrade_flow'][0]?.outputs?.propertyFileContents != null && trigger.parentExecution.stages.?[name == 'Upgrade_flow'][0].outputs.propertyFileContents.jobDetailsUrl!= null ? trigger.parentExecution.stages.?[name == 'Upgrade_flow'][0].outputs.propertyFileContents.jobDetailsUrl: '-'}"
+        }
+      ]
+    },
+    {
+      "condition": "${trigger.parentExecution.stages.?[name == 'Install_flow'][0]?.status != 'NOT_STARTED' && trigger.parentExecution.stages.?[name == 'Install_flow'][0]?.status != 'SKIPPED'}",
+      "failOnFailedExpressions": true,
+      "name": "Evaluate Parent Execution Variables Install_flow",
+      "refId": "Evaluate Parent Execution Variables Install_flow",
+      "requisiteStageRefIds": [
+        "Evaluate Parent Execution Variables"
+      ],
+      "stageEnabled": {
+        "expression": "${trigger.parentExecution.stages.?[name == 'Install_flow'][0]?.status != 'NOT_STARTED' && trigger.parentExecution.stages.?[name == 'Install_flow'][0]?.status != 'SKIPPED'}",
+        "type": "expression"
+      },
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "environment_name",
+          "value": "${trigger.parentExecution.stages.?[name == 'Install_flow'][0]['status'] == \"SUCCEEDED\" ? trigger.parentExecution.stages.?[name == 'Install_flow'][0]['outputs']['RESOURCE_NAME'] : 'DNF'}"
+        },
+        {
+          "key": "ddp_url",
+          "value": "${trigger.parentExecution.stages.?[name == 'Install_flow'][0]['outputs']['DDP_ID'] != null && !trigger.parentExecution.stages.?[name == 'Install_flow'][0]['outputs']['DDP_ID'].isEmpty() ? 'https://ddpi.athtem.eei.ericsson.se/php/TOR/system/elasticsearch.php?site=' + trigger.parentExecution.stages.?[name == 'Install_flow'][0]['outputs']['DDP_ID'].replace('lmi_', 'LMI_') + '&dir=' + new java.text.SimpleDateFormat('ddMMyy').format(new java.util.Date(trigger.parentExecution.stages.?[name == 'Install_flow'][0]['startTime'])) + '&date=' + new java.text.SimpleDateFormat('yyyy-MM-dd').format(new java.util.Date(trigger.parentExecution.stages.?[name == 'Install_flow'][0]['startTime'])) + '&oss=generic&logdir=logs' : ''}"
+        },
+        {
+          "key": "testware_info",
+          "value": "${trigger.parentExecution.stages.?[name == 'Install_flow'][0]?.outputs?.propertyFileContents != null ? trigger.parentExecution.stages.?[name == 'Install_flow'][0].outputs.propertyFileContents : { 'null' : 'null' }}"
+        },
+        {
+          "key": "testware_info_testwareVersion",
+          "value": "${trigger.parentExecution.stages.?[name == 'Install_flow'][0]?.outputs?.propertyFileContents != null && trigger.parentExecution.stages.?[name == 'Install_flow'][0].outputs.propertyFileContents.testwareVersion != null ? trigger.parentExecution.stages.?[name == 'Install_flow'][0].outputs.propertyFileContents.testwareVersion : '-'}"
+        },
+        {
+          "key": "testware_info_testVersion",
+          "value": "${trigger.parentExecution.stages.?[name == 'Install_flow'][0]?.outputs?.propertyFileContents != null && trigger.parentExecution.stages.?[name == 'Install_flow'][0].outputs.propertyFileContents.testVersion!= null ? trigger.parentExecution.stages.?[name == 'Install_flow'][0].outputs.propertyFileContents.testVersion: '-'}"
+        },
+        {
+          "key": "testware_info_status",
+          "value": "${trigger.parentExecution.stages.?[name == 'Install_flow'][0]?.outputs?.propertyFileContents != null && trigger.parentExecution.stages.?[name == 'Install_flow'][0].outputs.propertyFileContents.status!= null ? trigger.parentExecution.stages.?[name == 'Install_flow'][0].outputs.propertyFileContents.status: '-'}"
+        },
+        {
+          "key": "testware_info_jobDetailsUrl",
+          "value": "${trigger.parentExecution.stages.?[name == 'Install_flow'][0]?.outputs?.propertyFileContents != null && trigger.parentExecution.stages.?[name == 'Install_flow'][0].outputs.propertyFileContents.jobDetailsUrl!= null ? trigger.parentExecution.stages.?[name == 'Install_flow'][0].outputs.propertyFileContents.jobDetailsUrl: '-'}"
+        }
+      ]
+    },
+    {
+      "condition": "${trigger.parentExecution.stages.?[name == 'Evaluate Parent Execution Variables Install_flow'][0]?.status == 'SUCCEEDED' && trigger.parentExecution.stages.?[name == 'Evaluate Parent Execution Variables Upgrade_flow'][0]?.status == 'SUCCEEDED'}",
+      "method": "PATCH",
+      "name": "Update Pipeline Execution Dashboard Entry Merged",
+      "payload": {
+        "applicationVersion": "${application_version}",
+        "end": "${end}",
+        "environmentInfo": {
+          "ddpUrl": "${ddp_url}",
+          "name": "${environment_name}"
+        },
+        "failures": "${failures}",
+        "status": "${status}",
+        "testwareInfo": {
+          "jobDetailsUrl": "${testware_info_jobDetailsUrl}",
+          "status": "${testware_info_status}",
+          "testVersion": "${testware_info_testVersion}"
+        }
+      },
+      "refId": "Update Pipeline Execution Dashboard Entry Merged",
+      "requisiteStageRefIds": [
+        "Evaluate Parent Execution Variables Merged"
+      ],
+      "stageEnabled": {
+        "expression": "${#stage('Evaluate Parent Execution Variables Merged')['status'] == 'SUCCEEDED'}",
+        "type": "expression"
+      },
+      "statusUrlResolution": "getMethod",
+      "type": "webhook",
+      "url": "https://ped.ews.gic.ericsson.se/api/v1/pipeline-executions/${ped_id}"
+    },
+    {
+      "failOnFailedExpressions": true,
+      "name": "Evaluate Parent Execution Variables Merged",
+      "refId": "Evaluate Parent Execution Variables Merged",
+      "requisiteStageRefIds": [
+        "Evaluate Parent Execution Variables Upgrade_flow",
+        "Evaluate Parent Execution Variables Install_flow"
+      ],
+      "stageEnabled": {
+        "expression": "${#stage('Evaluate Parent Execution Variables Install_flow')['status'] == 'SUCCEEDED' && #stage('Evaluate Parent Execution Variables Upgrade_flow')['status'] == 'SUCCEEDED'}",
+        "type": "expression"
+      },
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "environment_name",
+          "value": "${#stage('Evaluate Parent Execution Variables Upgrade_flow')['outputs']['environment_name'] != null && #stage('Evaluate Parent Execution Variables Upgrade_flow')['outputs']['environment_name'].trim() != '' ? #stage('Evaluate Parent Execution Variables Upgrade_flow')['outputs']['environment_name'] : 'DNF'},${#stage('Evaluate Parent Execution Variables Install_flow')['outputs']['environment_name'] != null && #stage('Evaluate Parent Execution Variables Install_flow')['outputs']['environment_name'].trim() != '' ? #stage('Evaluate Parent Execution Variables Install_flow')['outputs']['environment_name'] : 'DNF'}"
+        },
+        {
+          "key": "ddp_url",
+          "value": "${#stage('Evaluate Parent Execution Variables Upgrade_flow')['outputs']['ddp_url_merged'] != null && #stage('Evaluate Parent Execution Variables Upgrade_flow')['outputs']['ddp_url_merged'].trim() != '' ? #stage('Evaluate Parent Execution Variables Upgrade_flow')['outputs']['ddp_url_merged'] : '-'},${#stage('Evaluate Parent Execution Variables Install_flow')['outputs']['ddp_url_merged'] != null && #stage('Evaluate Parent Execution Variables Install_flow')['outputs']['ddp_url_merged'].trim() != '' ? #stage('Evaluate Parent Execution Variables Install_flow')['outputs']['ddp_url_merged'] : '-'}"
+        },
+        {
+          "key": "testware_info_jobDetailsUrl",
+          "value": "${#stage('Evaluate Parent Execution Variables Upgrade_flow')['outputs']['testware_info']['jobDetailsUrl'] != null && #stage('Evaluate Parent Execution Variables Upgrade_flow')['outputs']['testware_info']['jobDetailsUrl'].trim() != '' ? #stage('Evaluate Parent Execution Variables Upgrade_flow')['outputs']['testware_info']['jobDetailsUrl'] : '-'},${#stage('Evaluate Parent Execution Variables Install_flow')['outputs']['testware_info']['jobDetailsUrl'] != null && #stage('Evaluate Parent Execution Variables Install_flow')['outputs']['testware_info']['jobDetailsUrl'].trim() != '' ? #stage('Evaluate Parent Execution Variables Install_flow')['outputs']['testware_info']['jobDetailsUrl'] : '-'}"
+        },
+        {
+          "key": "testware_info_status",
+          "value": "${#stage('Evaluate Parent Execution Variables Upgrade_flow')['outputs']['testware_info']['status'] != null && #stage('Evaluate Parent Execution Variables Upgrade_flow')['outputs']['testware_info']['status'].trim() != '' ? #stage('Evaluate Parent Execution Variables Upgrade_flow')['outputs']['testware_info']['status'] : '-'},${#stage('Evaluate Parent Execution Variables Install_flow')['outputs']['testware_info']['status'] != null && #stage('Evaluate Parent Execution Variables Install_flow')['outputs']['testware_info']['status'].trim() != '' ? #stage('Evaluate Parent Execution Variables Install_flow')['outputs']['testware_info']['status'] : '-'}"
+        },
+        {
+          "key": "testware_info_testVersion",
+          "value": "${#stage('Evaluate Parent Execution Variables Upgrade_flow')['outputs']['testware_info']['testVersion'] != null && #stage('Evaluate Parent Execution Variables Upgrade_flow')['outputs']['testware_info']['testVersion'].trim() != '' ? #stage('Evaluate Parent Execution Variables Upgrade_flow')['outputs']['testware_info']['testVersion'] : '-'},${#stage('Evaluate Parent Execution Variables Install_flow')['outputs']['testware_info']['testVersion'] != null && #stage('Evaluate Parent Execution Variables Install_flow')['outputs']['testware_info']['testVersion'].trim() != '' ? #stage('Evaluate Parent Execution Variables Install_flow')['outputs']['testware_info']['testVersion'] : '-'}"
+        }
+      ]
+    },
+    {
+      "method": "PATCH",
+      "name": "Update Pipeline Execution Dashboard Entry",
+      "payload": {
+        "applicationVersion": "${application_version}",
+        "end": "${end}",
+        "environmentInfo": {
+          "ddpUrl": "${ddp_url}",
+          "name": "${environment_name}"
+        },
+        "failures": "${failures}",
+        "status": "${status}",
+        "testwareInfo": "${testware_info}"
+      },
+      "refId": "Update Pipeline Execution Dashboard Entry",
+      "requisiteStageRefIds": [
+        "Evaluate Parent Execution Variables Upgrade_flow",
+        "Evaluate Parent Execution Variables Install_flow"
+      ],
+      "stageEnabled": {
+        "expression": "${(#stage('Evaluate Parent Execution Variables Install_flow')['status'] == 'SUCCEEDED' && #stage('Evaluate Parent Execution Variables Upgrade_flow')['status'] != 'SUCCEEDED') || (#stage('Evaluate Parent Execution Variables Install_flow')['status'] != 'SUCCEEDED' && #stage('Evaluate Parent Execution Variables Upgrade_flow')['status'] == 'SUCCEEDED')}",
+        "type": "expression"
+      },
+      "statusUrlResolution": "getMethod",
+      "type": "webhook",
+      "url": "https://ped.ews.gic.ericsson.se/api/v1/pipeline-executions/${ped_id}"
+    },
+    {
+      "method": "PATCH",
+      "name": "Update Pipeline Execution Dashboard Entry CANCELED or TERMINAL",
+      "payload": {
+        "applicationVersion": "${application_version}",
+        "end": "${end}",
+        "failures": "${failures}",
+        "status": "${status}"
+      },
+      "refId": "Update Pipeline Execution Dashboard Entry CANCELED or TERMINAL",
+      "requisiteStageRefIds": [
+        "Evaluate Parent Execution Variables"
+      ],
+      "stageEnabled": {
+        "expression": "${trigger.parentExecution.status.matches('CANCELED|TERMINAL') && (trigger.parentExecution.stages.?[name == 'Install_flow'][0]?.status.matches('NOT_STARTED|SKIPPED') && trigger.parentExecution.stages.?[name == 'Upgrade_flow'][0]?.status.matches('NOT_STARTED|SKIPPED'))}",
+        "type": "expression"
+      },
+      "statusUrlResolution": "getMethod",
+      "type": "webhook",
+      "url": "https://ped.ews.gic.ericsson.se/api/v1/pipeline-executions/${ped_id}"
+    }
+  ],
+  "triggers": [
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "enabled": true,
+      "pipeline": "APPLICATION_STAGING_PIPELINE_ID",
+      "status": ["successful", "failed", "canceled"],
+      "type": "pipeline"
+    }
+  ]
+}

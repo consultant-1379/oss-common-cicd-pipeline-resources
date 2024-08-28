@@ -1,0 +1,4 @@
+SPINNAKER_APPLICATION_NAME,SPINNAKER_PIPELINE_NAME,TRIGGER_JOB_NAME,TRIGGER_FEM_CONTROLLER
+so-e2e-cicd,eric-oss-so-release-E2E-Flow,SO_baseline_Release,oss-aispinn-fem2s11-eiffel052
+uds-e2e-cicd,eric-oss-uds-release-E2E-Flow,udsBaseline_Release,oss-aispinn-fem2s11-eiffel052
+pf-e2e-cicd,eric-oss-pf-release-E2E-Flow,pf_baseline_Release,oss-aispinn-fem2s11-eiffel052

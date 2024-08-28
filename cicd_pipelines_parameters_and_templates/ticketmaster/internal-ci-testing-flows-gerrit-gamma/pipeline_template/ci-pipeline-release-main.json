@@ -1,0 +1,661 @@
+{
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "name": "SPINNAKER_PIPELINE_NAME",
+  "appConfig": {},
+  "description": "The is a CI Release pipeline to be used by Team TicketMaster",
+  "disabled": false,
+  "keepWaitingPipelines": false,
+  "limitConcurrent": false,
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "This pipeline is maintained by Spinnaker as a code, any changes made through the UI will be overwritten. Please see https://gerrit-gamma.gic.ericsson.se/plugins/gitiles/OSS/com.ericsson.oss.aeonic/oss-integration-ci/+/refs/heads/master/docs/flows/Internal_CI_Test_Flow.md for details",
+    "ui": true
+  },
+  "notifications": [],
+  "parameterConfig": [
+    {
+      "default": "ciloopman-docker-auth-config",
+      "description": "ARM Docker secret which holds the username and password to log into the ARM Docker repositories.",
+      "hasOptions": false,
+      "label": "ARM Docker Secret",
+      "name": "ARMDOCKER_USER_SECRET",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "ciloopman-user-creds",
+      "description": "Gerrit secret which holds the username and password to log into the Gerrit repositories.",
+      "hasOptions": false,
+      "label": "Gerrit User Secret",
+      "name": "GERRIT_USER_SECRET",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "eric-ci-helmfile",
+      "description": "Name of the integration chart which will be used for the Initial install",
+      "hasOptions": false,
+      "label": "",
+      "name": "HELMFILE_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "0.0.0",
+      "description": "Version of the Integration Chart which will be used for the Initial Install",
+      "hasOptions": false,
+      "label": "",
+      "name": "HELMFILE_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": " https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm-local",
+      "description": "Repo of the Integration Chart which will be used for the Initial Install",
+      "hasOptions": false,
+      "label": "",
+      "name": "HELMFILE_REPO",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "evo_docker_engine_gic",
+      "description": "Jenkins Agent to execute the flow against",
+      "hasOptions": false,
+      "label": "Jenkins Agent",
+      "name": "SLAVE_LABEL",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "armdocker.rnd.ericsson.se",
+      "description": "Registry that should be used for the deployment",
+      "hasOptions": false,
+      "label": "DOCKER_REGISTRY",
+      "name": "DOCKER_REGISTRY",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "None",
+      "description": "Docker Registry Credentials, Only should be populated if using the local registry",
+      "hasOptions": false,
+      "label": "DOCKER_REGISTRY_CREDENTIALS",
+      "name": "DOCKER_REGISTRY_CREDENTIALS",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "eo-integration-ci/honeypots/pooling/environments",
+      "description": "This is the directory within the Repo specified within the Gather-Env-Details Jenkins job where to find the pooling environment details",
+      "hasOptions": false,
+      "label": "",
+      "name": "ENV_DETAILS_DIR",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "ciloopman-user-creds",
+      "description": "Functional user for logging into armdocker",
+      "hasOptions": false,
+      "label": "",
+      "name": "FUNCTIONAL_USER_SECRET",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "1800",
+      "description": "Timeout for helmfile deploy",
+      "hasOptions": false,
+      "label": "",
+      "name": "HELM_TIMEOUT",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "site-values/idun/ci/template/site-values-latest.yaml",
+      "description": "The Path where all the necessary site values are located for the install/upgrade",
+      "hasOptions": false,
+      "label": "",
+      "name": "PATH_TO_SITE_VALUES_FILE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "site-values/idun/ci/override/override-site-values-ci-test.yaml",
+      "description": "PATH_TO_SITE_VALUES_OVERRIDE_FILE",
+      "hasOptions": false,
+      "label": "PATH_TO_SITE_VALUES_OVERRIDE_FILE",
+      "name": "PATH_TO_SITE_VALUES_OVERRIDE_FILE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "true",
+      "description": "Set this parameter to true if you wish for the environment to be quarantined if the deployment flow false",
+      "hasOptions": false,
+      "label": "",
+      "name": "QUARANTINE_ENV",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "appmgr",
+      "description": "Applications that should be switch on during deployment",
+      "hasOptions": false,
+      "label": "TAGS",
+      "name": "TAGS",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "120",
+      "description": "This is the time to wait for an Environment to become available. After the time expires the job will fail out",
+      "hasOptions": false,
+      "label": "",
+      "name": "WAIT_TIME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "eric-ci-helmfile/helmfile.yaml",
+      "description": "Path to the helmfile.yaml from the extracted helmfile.",
+      "hasOptions": false,
+      "label": "Path to the helmfile.yaml",
+      "name": "PATH_TO_HELMFILE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "",
+      "description": "Gerrit change number for the Review under test",
+      "hasOptions": false,
+      "label": "Gerrit Change Number",
+      "name": "GERRIT_CHANGE_NUMBER",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Gerrit patch set number for the review under test",
+      "hasOptions": false,
+      "label": "Gerrit Patchset Number",
+      "name": "GERRIT_PATCHSET_NUMBER",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "",
+      "description": "Gerrit patch set revision id for the review under test",
+      "hasOptions": false,
+      "label": "Gerrit Patchset Revision",
+      "name": "GERRIT_PATCHSET_REVISION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Gerrit Refspec for the review under test",
+      "hasOptions": false,
+      "label": "Gerrit Refspec",
+      "name": "GERRIT_REFSPEC",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "",
+      "description": "CI Docker image under test from review ",
+      "hasOptions": false,
+      "label": "CI Docker Image",
+      "name": "CI_DOCKER_IMAGE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "",
+      "description": "This is the label to reserve an environment from lockable resources for initial install testing.",
+      "hasOptions": false,
+      "label": "Env Label for Install",
+      "name": "ENV_LABEL_INSTALL",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "",
+      "description": "This is the label to reserve an environment from lockable resources for upgrade testing.",
+      "hasOptions": false,
+      "label": "Env Label for Upgrade",
+      "name": "ENV_LABEL_UPGRADE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    }
+  ],
+  "schema": "1",
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "Gerrit-Notification-Gerrit-Gamma",
+      "master": "CONTROLLER1",
+      "name": "Notification CI Flow Test Started",
+      "parameters": {
+        "GERRIT_CHANGE_NUMBER": "${trigger['parameters']['GERRIT_CHANGE_NUMBER']}",
+        "GERRIT_PATCHSET_NUMBER": "${trigger['parameters']['GERRIT_PATCHSET_NUMBER']}",
+        "Message": "CI Release Flow on EIFFEL_IDENTIFIER has Started, https://spinnaker.rnd.gic.ericsson.se/#/applications/${execution['application']}/executions/details/${execution['id']}"
+      },
+      "refId": "Notification CI Flow Test Started",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Helmfile Tests",
+      "pipeline": "HELMFILE_TESTS_PIPELINE_ID",
+      "pipelineParameters": {
+        "CHART_NAME": "eric-eo-act-cna",
+        "CHART_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eo-cm-helm",
+        "CHART_VERSION": "1.14.0-42",
+        "CI_DOCKER_IMAGE": "${trigger['parameters']['CI_DOCKER_IMAGE']}",
+        "FUNCTIONAL_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "GERRIT_REFSPEC": "${trigger['parameters']['GERRIT_REFSPEC']}",
+        "II_INT_CHART_NAME": "${trigger['parameters']['HELMFILE_NAME']}",
+        "II_INT_CHART_REPO": "${trigger['parameters']['HELMFILE_REPO']}",
+        "II_INT_CHART_VERSION": "${#stage(\"Get Latest Helmfile Version\")[\"context\"][\"INT_CHART_VERSION\"]}",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}"
+      },
+      "refId": "Helmfile Tests",
+      "requisiteStageRefIds": [
+        "Get Latest Helmfile Version"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Get Latest Helmfile Version')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failPipeline": true,
+      "name": "Check Preconditions",
+      "preconditions": [
+        {
+          "context": {
+            "expression": "\"${#stage('Helmfile Tests')['status']}\" == \"SUCCEEDED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('CSAR Checks')['status']}\" == \"SUCCEEDED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Initial Install (Clean Down, Pre-deployment and Install Testing)')['status']}\" == \"SUCCEEDED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Upgrade (Install Testing)')['status']}\" == \"SUCCEEDED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Initial Install using DIT (Clean Down, Pre-deployment and Install Testing)')['status']}\" == \"SUCCEEDED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Helm Chart Tests')['status']}\" == \"SUCCEEDED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Upgrade (Install Testing)')['status']}\" == \"SUCCEEDED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        }
+      ],
+      "refId": "Check Preconditions",
+      "requisiteStageRefIds": [
+        "Helmfile Tests",
+        "CSAR Checks",
+        "Initial Install (Clean Down, Pre-deployment and Install Testing)",
+        "Upgrade (Install Testing)",
+        "Initial Install using DIT (Clean Down, Pre-deployment and Install Testing)",
+        "Helm Chart Tests"
+      ],
+      "sendNotifications": false,
+      "type": "checkPreconditions"
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "CSAR Checks",
+      "pipeline": "CSAR_CHECKS_PIPELINE_ID",
+      "pipelineParameters": {
+        "ARMDOCKER_USER_SECRET": "${trigger['parameters']['ARMDOCKER_USER_SECRET']}",
+        "CI_DOCKER_IMAGE": "${trigger['parameters']['CI_DOCKER_IMAGE']}",
+        "GERRIT_REFSPEC": "${trigger['parameters']['GERRIT_REFSPEC']}",
+        "INT_CHART_NAME": "${trigger['parameters']['HELMFILE_NAME']}",
+        "INT_CHART_REPO": "${trigger['parameters']['HELMFILE_REPO']}",
+        "INT_CHART_VERSION": "${#stage(\"Get Latest Helmfile Version\")[\"context\"][\"INT_CHART_VERSION\"]}",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}"
+      },
+      "refId": "CSAR Checks",
+      "requisiteStageRefIds": [
+        "Get Latest Helmfile Version"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Get Latest Helmfile Version')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "CI-Test-Get-Latest-ChartOrHelmfile-Gerrit-Gamma",
+      "master": "CONTROLLER1",
+      "name": "Get Latest Helmfile Version",
+      "parameters": {
+        "CI_DOCKER_IMAGE": "${trigger['parameters']['CI_DOCKER_IMAGE']}",
+        "FUNCTIONAL_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "GERRIT_REFSPEC": "${trigger['parameters']['GERRIT_REFSPEC']}",
+        "INT_CHART_NAME": "${trigger['parameters']['HELMFILE_NAME']}",
+        "INT_CHART_REPO": "${trigger['parameters']['HELMFILE_REPO']}",
+        "INT_CHART_VERSION": "${trigger['parameters']['HELMFILE_VERSION']}",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Get Latest Helmfile Version",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Initial Install (Clean Down, Pre-deployment and Install Testing)",
+      "pipeline": "INITIAL_INSTALL_TEST_PIPELINE_ID",
+      "pipelineParameters": {
+        "ARMDOCKER_USER_SECRET": "${trigger['parameters']['ARMDOCKER_USER_SECRET']}",
+        "CI_DOCKER_IMAGE": "${trigger['parameters']['CI_DOCKER_IMAGE']}",
+        "CI_GERRIT_REFSPEC": "${trigger['parameters']['GERRIT_REFSPEC']}",
+        "ENV_LABEL": "${trigger['parameters']['ENV_LABEL_INSTALL']}",
+        "DOCKER_REGISTRY": "${trigger['parameters']['DOCKER_REGISTRY']}",
+        "DOCKER_REGISTRY_CREDENTIALS": "${trigger['parameters']['DOCKER_REGISTRY_CREDENTIALS']}",
+        "ENV_DETAILS_DIR": "${trigger['parameters']['ENV_DETAILS_DIR']}",
+        "FUNCTIONAL_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "HELMFILE_NAME": "${trigger['parameters']['HELMFILE_NAME']}",
+        "HELMFILE_REPO": "${trigger['parameters']['HELMFILE_REPO']}",
+        "HELMFILE_VERSION": "${#stage(\"Get Latest Helmfile Version\")[\"context\"][\"INT_CHART_VERSION\"]}",
+        "HELM_TIMEOUT": "${trigger['parameters']['HELM_TIMEOUT']}",
+        "PATH_TO_HELMFILE": "${trigger['parameters']['PATH_TO_HELMFILE']}",
+        "PATH_TO_SITE_VALUES_FILE": "${trigger['parameters']['PATH_TO_SITE_VALUES_FILE']}",
+        "PATH_TO_SITE_VALUES_OVERRIDE_FILE": "${trigger['parameters']['PATH_TO_SITE_VALUES_OVERRIDE_FILE']}",
+        "QUARANTINE_ENV": "${trigger['parameters']['QUARANTINE_ENV']}",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+        "TAGS": "${trigger['parameters']['TAGS']}",
+        "WAIT_TIME": "${trigger['parameters']['WAIT_TIME']}"
+      },
+      "refId": "Initial Install (Clean Down, Pre-deployment and Install Testing)",
+      "requisiteStageRefIds": [
+        "Get Latest Helmfile Version"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Get Latest Helmfile Version')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Upgrade (Install Testing)",
+      "pipeline": "UPGRADE_INSTALL_TEST_PIPELINE_ID",
+      "pipelineParameters": {
+        "ARMDOCKER_USER_SECRET": "${trigger['parameters']['ARMDOCKER_USER_SECRET']}",
+        "CI_DOCKER_IMAGE": "${trigger['parameters']['CI_DOCKER_IMAGE']}",
+        "CI_GERRIT_REFSPEC": "${trigger['parameters']['GERRIT_REFSPEC']}",
+        "ENV_LABEL": "${trigger['parameters']['ENV_LABEL_UPGRADE']}",
+        "DOCKER_REGISTRY": "${trigger['parameters']['DOCKER_REGISTRY']}",
+        "DOCKER_REGISTRY_CREDENTIALS": "${trigger['parameters']['DOCKER_REGISTRY_CREDENTIALS']}",
+        "ENV_DETAILS_DIR": "${trigger['parameters']['ENV_DETAILS_DIR']}",
+        "FUNCTIONAL_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "HELMFILE_NAME": "${trigger['parameters']['HELMFILE_NAME']}",
+        "HELMFILE_REPO": "${trigger['parameters']['HELMFILE_REPO']}",
+        "HELMFILE_VERSION": "${#stage(\"Get Latest Helmfile Version\")[\"context\"][\"INT_CHART_VERSION\"]}",
+        "HELM_TIMEOUT": "${trigger['parameters']['HELM_TIMEOUT']}",
+        "PATH_TO_SITE_VALUES_FILE": "${trigger['parameters']['PATH_TO_SITE_VALUES_FILE']}",
+        "PATH_TO_SITE_VALUES_OVERRIDE_FILE": "${trigger['parameters']['PATH_TO_SITE_VALUES_OVERRIDE_FILE']}",
+        "QUARANTINE_ENV": "${trigger['parameters']['QUARANTINE_ENV']}",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+        "TAGS": "${trigger['parameters']['TAGS']}",
+        "WAIT_TIME": "${trigger['parameters']['WAIT_TIME']}"
+      },
+      "refId": "Upgrade (Install Testing)",
+      "requisiteStageRefIds": [
+        "Get Latest Helmfile Version"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Get Latest Helmfile Version')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Initial Install using DIT (Clean Down, Pre-deployment and Install Testing)",
+      "pipeline": "INITIAL_INSTALL_USING_DIT_TEST_PIPELINE_ID",
+      "pipelineParameters": {
+        "ARMDOCKER_USER_SECRET": "${trigger['parameters']['ARMDOCKER_USER_SECRET']}",
+        "CI_DOCKER_IMAGE": "${trigger['parameters']['CI_DOCKER_IMAGE']}",
+        "CI_GERRIT_REFSPEC": "${trigger['parameters']['GERRIT_REFSPEC']}",
+        "ENV_LABEL": "${trigger['parameters']['ENV_LABEL_INSTALL']}",
+        "FLOW_URL_TAG": "Ticketmaster CI Iniitial Install using DIT Test Flow",
+        "FUNCTIONAL_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "HELMFILE_NAME": "${trigger['parameters']['HELMFILE_NAME']}",
+        "HELMFILE_REPO": "${trigger['parameters']['HELMFILE_REPO']}",
+        "HELMFILE_VERSION": "${#stage(\"Get Latest Helmfile Version\")[\"context\"][\"INT_CHART_VERSION\"]}",
+        "HELM_TIMEOUT": "${trigger['parameters']['HELM_TIMEOUT']}",
+        "PATH_TO_SITE_VALUES_FILE": "${trigger['parameters']['PATH_TO_SITE_VALUES_FILE']}",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+        "TAGS": "${trigger['parameters']['TAGS']}",
+        "WAIT_TIME": "${trigger['parameters']['WAIT_TIME']}"
+      },
+      "refId": "Initial Install using DIT (Clean Down, Pre-deployment and Install Testing)",
+      "requisiteStageRefIds": [
+        "Get Latest Helmfile Version"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Get Latest Helmfile Version')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Helm Chart Tests",
+      "pipeline": "HELM_CHART_TESTS_PIPELINE_ID",
+      "pipelineParameters": {
+        "ARMDOCKER_USER_SECRET": "${trigger['parameters']['ARMDOCKER_USER_SECRET']}",
+        "CI_DOCKER_IMAGE": "${trigger['parameters']['CI_DOCKER_IMAGE']}",
+        "CI_REFSPEC": "${trigger['parameters']['GERRIT_REFSPEC']}",
+        "GERRIT_PATCHSET_REVISION": "${trigger['parameters']['GERRIT_PATCHSET_REVISION']}",
+        "FUNCTIONAL_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}"
+      },
+      "refId": "Helm Chart Tests",
+      "requisiteStageRefIds": [
+        "Get Latest Helmfile Version"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Get Latest Helmfile Version')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    }
+  ],
+  "tags": [
+    {
+      "name": "GERRIT_GAMMA",
+      "value": "SPINNAKER_PIPELINE_NAME"
+    }
+  ]
+}

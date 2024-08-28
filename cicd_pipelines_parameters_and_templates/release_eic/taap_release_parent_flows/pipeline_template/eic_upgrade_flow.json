@@ -1,0 +1,724 @@
+{
+  "appConfig": {},
+  "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten. Template name: eic_traditional_release_e2e_flow.json in repo https://gerrit-gamma.gic.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources,branches",
+  "keepWaitingPipelines": false,
+  "limitConcurrent": false,
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "name": "SPINNAKER_PIPELINE_NAME",
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+    "ui": true
+  },
+  "notifications": [
+    {
+      "address": "NOTIFICATION_ADDRESS",
+      "level": "pipeline",
+      "message": {
+        "pipeline.failed": {
+          "text": "The pipeline has failed."
+        }
+      },
+      "type": "email",
+      "when": [
+        "pipeline.failed"
+      ]
+    }
+  ],
+  "parameterConfig": [
+    {
+      "default": "",
+      "description": "Please leave this field blank if you want to Reserve a test environment from the pool. The test environment to use for the flow.",
+      "hasOptions": false,
+      "label": "",
+      "name": "ENV_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "false",
+      "description": "Option to use real CSAR. If false then dummy CSAR will be used",
+      "hasOptions": false,
+      "label": "",
+      "name": "USE_REAL_CSAR",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "List of tags for applications that have to be deployed. If this is left blank, the values will be taken from DIT for Upgrade stage.",
+      "hasOptions": false,
+      "label": "",
+      "name": "TAGS",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "armdocker.rnd.ericsson.se",
+      "description": "",
+      "hasOptions": false,
+      "label": "",
+      "name": "DOCKER_REGISTRY",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "None",
+      "description": "",
+      "hasOptions": false,
+      "label": "",
+      "name": "DOCKER_REGISTRY_CREDENTIALS",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "0.0.0",
+      "description": "Version of the Integration Chart which will be used during Install / Upgrade",
+      "hasOptions": false,
+      "label": "",
+      "name": "INT_CHART_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "armdocker.rnd.ericsson.se/proj-eric-oss-drop/eric-oss-deployment-manager",
+      "description": "Deployment Manager Repository.",
+      "hasOptions": false,
+      "label": "",
+      "name": "DEPLOYMENT_MANAGER_REPO",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "default",
+      "description": "Deployment Manager version.",
+      "hasOptions": false,
+      "label": "",
+      "name": "DEPLOYMENT_MANAGER_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "refs/tags/live-release",
+      "description": "K6 version",
+      "hasOptions": false,
+      "label": "",
+      "name": "K6_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "true",
+      "description": "When set to true uses the site values generated from the Deployment manager prepare command for the deployment.",
+      "hasOptions": false,
+      "label": "",
+      "name": "USE_DM_PREPARE",
+      "options": [
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "Release_Staging",
+      "description": "RSR Tag is used to identify the environment by Report Center Registration Stage for Release stage",
+      "hasOptions": false,
+      "label": "",
+      "name": "RSR_TAG",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "true",
+      "description": "When set to true, enables the DDP auto upload",
+      "hasOptions": true,
+      "label": "",
+      "name": "DDP_AUTO_UPLOAD",
+      "options": [
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "PARTIAL",
+      "description": "The Type of cleanup that needs to be done. FULL will cleanup the deployment helm releases, crd helm releases, crd components, clusterroles, cluster rolebindings, namespaces (deployment and crd). Where as PARTIAL will only cleanup the deployment namespace. FULL cleanup option should NOT be used in such cases where single cluster is hosting multiple deployments.",
+      "hasOptions": true,
+      "label": "",
+      "name": "CLEANUP_TYPE",
+      "options": [
+        {
+          "value": "FULL"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "true",
+      "description": "When set to true, ENM integration tests will be run",
+      "hasOptions": true,
+      "label": "",
+      "name": "RUN_ENM_INTEGRATION_TEST",
+      "options": [
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "eic_site_values_versioned",
+      "description": "Name of the bucket that is storing the site values that is stored in object store. Defaults to eic_site_values_template. The Parameter is used for From State install/upgrade",
+      "hasOptions": false,
+      "label": "",
+      "name": "SITE_VALUE_FILE_BUCKET_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "eic_site_values_override",
+      "description": "Name of the bucket that is storing the overwrite site values that is stored in object store. Defaults to eic_site_values_override.",
+      "hasOptions": false,
+      "label": "",
+      "name": "SITE_VALUE_OVERRIDE_BUCKET_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "The path to to state site values file, setting this param overrides the value taken from DIT",
+      "hasOptions": false,
+      "label": "",
+      "name": "TO_STATE_SITE_VALUE_FILE",
+      "pinned": true,
+      "required": false
+    }
+  ],
+  "schema": "1",
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "failPipeline": true,
+      "name": "CSAR Build",
+      "pipeline": "7a7c372b-a633-4c03-a4fe-ee5f08c433bd",
+      "pipelineParameters": {
+        "INT_CHART_VERSION": "${#stage(\"Get Latest Helmfile Version\")[\"context\"][\"INT_CHART_VERSION\"]}"
+      },
+      "refId": "CSAR Build",
+      "requisiteStageRefIds": [
+        "Get Latest Helmfile Version"
+      ],
+      "stageEnabled": {
+        "expression": "parameters['USE_REAL_CSAR']",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "Get-Latest-ChartOrHelmfile",
+      "master": "oss-aispinn-fem5s11-eiffel052",
+      "name": "Get Latest Helmfile Version",
+      "parameters": {
+        "FUNCTIONAL_USER_SECRET": "reluser-user-creds",
+        "INT_CHART_NAME": "eric-eiae-helmfile",
+        "INT_CHART_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm",
+        "INT_CHART_VERSION": "${parameters.INT_CHART_VERSION}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Get Latest Helmfile Version",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "job": "RPT-RC_Reserve-Environment",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Reserve Environment",
+      "parameters": {
+        "ENV_LABEL": "Taap_RELEASE_TYPE",
+        "FLOW_URL": "https://spinnaker.rnd.gic.ericsson.se/#/applications/eic-release-e2e-cicd/executions/details/${trigger[\"executionId\"]}",
+        "FLOW_URL_TAG": "TaaP RELEASE_TYPE"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Reserve Environment",
+      "requisiteStageRefIds": [
+        "CSAR Build"
+      ],
+      "stageEnabled": {
+        "expression": "parameters['ENV_NAME'] == ''",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failOnFailedExpressions": false,
+      "failPipeline": false,
+      "name": "Set Test Environment",
+      "refId": "Set Test Environment",
+      "requisiteStageRefIds": [
+        "Reserve Environment"
+      ],
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "RESOURCE_NAME",
+          "value": "${(parameters['ENV_NAME'] == '') ? (#stage('Reserve Environment')['context']['RESOURCE_NAME']):(parameters['ENV_NAME'])}"
+        }
+      ]
+    },
+    {
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "job": "RPT-RC_Update-Test-Environment-Status",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Direct Reservation of Environment",
+      "parameters": {
+        "ENV_NAME": "${#stage('Set Test Environment')['context']['RESOURCE_NAME']}",
+        "status": "Reserved"
+      },
+      "refId": "Direct Reservation of Environment",
+      "requisiteStageRefIds": [
+        "Set Test Environment"
+      ],
+      "stageEnabled": {
+        "expression": "parameters['ENV_NAME'] != '' and #stage('Set Test Environment')['status'] == 'SUCCEEDED'",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "job": "RPT-RC_Unreserve-Environment",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Unreserve Environment",
+      "parameters": {
+        "ENV_NAME": "${#stage('Set Test Environment')['context']['RESOURCE_NAME']}"
+      },
+      "propertyFile": "",
+      "refId": "Unreserve Environment",
+      "requisiteStageRefIds": [
+        "Post Flow Checks"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Post Flow Checks')['status'] == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "job": "Staging-Report-Register",
+      "master": "oss-fem4s11-eiffel216",
+      "name": "Report Center Registration",
+      "parameters": {
+        "EXEC_ID": "${execution.id}"
+      },
+      "refId": "Report Center Registration",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Update Upgrade Baseline",
+      "pipeline": "cc89af18-2f3c-4a6b-b27e-c37856c2a08a",
+      "pipelineParameters": {
+        "BASELINE_VERSION_KEY": "UPGRADE_BASELINE_INT_CHART_VERSION",
+        "ENVIRONMENT_NAME": "${RESOURCE_NAME}",
+        "VERSION_FOR_COMPARISON": "${#stage(\"Get Latest Helmfile Version\")[\"context\"][\"INT_CHART_VERSION\"]}"
+      },
+      "refId": "Update Upgrade Baseline",
+      "requisiteStageRefIds": [
+        "Upgrade & Assert_Staging"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Upgrade & Assert_Staging')['status'] == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failOnFailedExpressions": true,
+      "failPipeline": false,
+      "name": "Set Docker Registry Details",
+      "refId": "Set Docker Registry Details",
+      "requisiteStageRefIds": [
+        "Evaluate Variables"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Evaluate Variables')['status'] == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "DOCKER_REGISTRY",
+          "value": "${(parameters[\"USE_REAL_CSAR\"] == \"true\") ? #stage(\"Get Environment Details\")[\"context\"][\"DOCKER_REGISTRY\"] : parameters['DOCKER_REGISTRY']}"
+        },
+        {
+          "key": "DOCKER_REGISTRY_CREDENTIALS",
+          "value": "${(parameters[\"USE_REAL_CSAR\"] == \"true\") ? #stage(\"Get Environment Details\")[\"context\"][\"DOCKER_REGISTRY_CREDENTIALS\"] : parameters['DOCKER_REGISTRY_CREDENTIALS']}"
+        }
+      ]
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "name": "Get Environment Details",
+      "pipeline": "0d236ab2-bce0-4d4a-807d-0ccb638d4ce7",
+      "pipelineParameters": {
+        "ENVIRONMENT_NAME": "${#stage('Set Test Environment')['context']['RESOURCE_NAME']}"
+      },
+      "refId": "Get Environment Details",
+      "requisiteStageRefIds": [
+        "Direct Reservation of Environment"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Set Test Environment')['status'] == 'SUCCEEDED' and (#stage('Reserve Environment')['status'] == 'SUCCEEDED' or #stage('Direct Reservation of Environment')['status'] == 'SUCCEEDED')",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "failOnFailedExpressions": true,
+      "name": "Evaluate Variables",
+      "refId": "Evaluate Variables",
+      "requisiteStageRefIds": [
+        "Get Environment Details"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Get Environment Details')['status'] == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "TO_STATE_SITE_VALUES_OVERRIDE_FILE",
+          "value": "${(#stage(\"Get Environment Details\")[\"context\"]['TO_STATE_SITE_VALUES_OVERRIDE_FILE']== None)? 'NONE':#stage(\"Get Environment Details\")[\"context\"]['TO_STATE_SITE_VALUES_OVERRIDE_FILE']}"
+        },
+        {
+          "key": "FROM_STATE_SITE_VALUES_OVERRIDE_FILE",
+          "value": "${(#stage(\"Get Environment Details\")[\"context\"]['FROM_STATE_SITE_VALUES_OVERRIDE_FILE']== None)? 'NONE':#stage(\"Get Environment Details\")[\"context\"]['FROM_STATE_SITE_VALUES_OVERRIDE_FILE']}"
+        },
+        {
+          "key": "TO_STATE_SITE_VALUES_FILE",
+          "value": "${parameters['TO_STATE_SITE_VALUE_FILE'] != '' ? parameters['TO_STATE_SITE_VALUE_FILE'] : (parameters['INT_CHART_VERSION'] == '0.0.0' ? 'site-values-latest.yaml':#stage(\"Get Environment Details\")[\"context\"]['TO_STATE_SITE_VALUES_FILE'])}"
+        },
+        {
+          "key": "SKIP_TESTS",
+          "value": "${(#stage(\"Get Environment Details\")[\"context\"]['SKIP_TESTS']== None)?  \"\":#stage(\"Get Environment Details\")[\"context\"]['SKIP_TESTS']}"
+        },
+        {
+          "key": "RUN_TESTS",
+          "value": "${(#stage(\"Get Environment Details\")[\"context\"]['RUN_TESTS']== None)? \"\":#stage(\"Get Environment Details\")[\"context\"]['RUN_TESTS']}"
+        },
+        {
+          "key": "ECM_HOSTNAME",
+          "value": "${(#stage(\"Get Environment Details\")[\"context\"]['ECM_HOST_REPLACE']== None)? \"\":#stage(\"Get Environment Details\")[\"context\"]['ECM_HOST_REPLACE']}"
+        },
+        {
+          "key": "ENM_HOSTNAME",
+          "value": "${(#stage(\"Get Environment Details\")[\"context\"]['ENM_HOST_REPLACE']== None)? \"\":#stage(\"Get Environment Details\")[\"context\"]['ENM_HOST_REPLACE']}"
+        },
+        {
+            "key": "TAGS",
+            "value": "${(parameters['TAGS'] == '') ? #stage(\"Get Environment Details\")[\"context\"]['TAGS'] : parameters['TAGS']}"
+        }
+      ]
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "name": "Initial Install to Release From State",
+      "pipeline": "903cef19-f589-4286-bb50-45ab52f92de0",
+      "pipelineParameters": {
+        "ADC_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"ADC_HOST_REPLACE\"]}",
+        "APPMGR_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"APPMGR_HOST_REPLACE\"]}",
+        "BDR_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"BDR_HOST_REPLACE\"]}",
+        "CLEANUP_TYPE": "${parameters['CLEANUP_TYPE']}",
+        "CONFIG_FILES": "${#stage(\"Get Environment Details\")[\"context\"][\"FROM_CONFIG_FILES\"]}",
+        "DDP_AUTO_UPLOAD": "${parameters['DDP_AUTO_UPLOAD']}",
+        "DEPLOYMENT_MANAGER_REPO": "${parameters['DEPLOYMENT_MANAGER_REPO']}",
+        "DEPLOYMENT_MANAGER_VERSION": "${#stage(\"Get Environment Details\")[\"context\"][\"DM_FROM_STATE\"]}",
+        "DEPLOYMENT_NAME": "${#stage('Set Test Environment')['context']['RESOURCE_NAME']}",
+        "DOCKER_REGISTRY": "${DOCKER_REGISTRY}",
+        "DOCKER_REGISTRY_CREDENTIALS": "${DOCKER_REGISTRY_CREDENTIALS}",
+        "ECM_HOSTNAME": "${ECM_HOSTNAME}",
+        "EIC_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"EIC_HOST_REPLACE\"]}",
+        "ENM_HOSTNAME": "${ENM_HOSTNAME}",
+        "GAS_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"GAS_HOST_REPLACE\"]}",
+        "IAM_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"IAM_HOST_REPLACE\"]}",
+        "INT_CHART_VERSION": "${#stage(\"Get Environment Details\")[\"context\"][\"FROM_STATE\"]}",
+        "K6_TESTWARE_VERSION": "${#stage(\"Get Environment Details\")[\"context\"][\"K6_TESTWARE_VERSION\"]}",
+        "KF_BO_HOSTNAME": "${#stage('Get Environment Details')['context']['KAFKA_BOOTSTRAP_HOST_REPLACE']}",
+        "KUBECONFIG_FILE": "${#stage(\"Get Environment Details\")[\"context\"][\"KUBE_CONFIG\"]}",
+        "KUBE_CONFIG_FILE_CREDENTIAL_ID": "${#stage(\"Get Environment Details\")[\"context\"][\"KUBE_CONFIG_FILE_CREDENTIAL_ID\"]}",
+        "NAMESPACE": "${#stage(\"Get Environment Details\")[\"context\"][\"NAMESPACE\"]}",
+        "RUN_ENM_INTEGRATION_TEST": "${parameters['RUN_ENM_INTEGRATION_TEST']}",
+        "RUN_TESTS": "${RUN_TESTS}",
+        "SITE_VALUES_FILE_NAME": "${#stage(\"Get Environment Details\")[\"context\"][\"FROM_STATE_SITE_VALUES_FILE\"]}",
+        "SITE_VALUES_OVERRIDE_FILE_NAME": "${FROM_STATE_SITE_VALUES_OVERRIDE_FILE}",
+        "SITE_VALUE_FILE_BUCKET_NAME": "${parameters['SITE_VALUE_FILE_BUCKET_NAME']}",
+        "SITE_VALUE_OVERRIDE_BUCKET_NAME": "${parameters['SITE_VALUE_OVERRIDE_BUCKET_NAME']}",
+        "SKIP_TESTS": "${#stage(\"Get Environment Details\")[\"context\"][\"FROM_SKIP_TESTS\"]}",
+        "TAGS": "${#stage(\"Get Environment Details\")[\"context\"][\"FROM_STATE_TAGS\"]}",
+        "TH_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"TH_HOST_REPLACE\"]}",
+        "USE_CERTM": "RELEASE_CERTM_VALUE_FROM_STATE",
+        "USE_DM_PREPARE": "${parameters['USE_DM_PREPARE']}",
+        "USE_REAL_CSAR": "${parameters['USE_REAL_CSAR']}"
+      },
+      "refId": "Initial Install to Release From State",
+      "requisiteStageRefIds": [
+        "Set Docker Registry Details"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Set Docker Registry Details')['status'] == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "name": "Update Version in RPT and DIT Post II to Release From State",
+      "pipeline": "c2ef3a0e-65be-45a1-91ac-d8661170dd30",
+      "pipelineParameters": {
+        "ENVIRONMENT_NAME": "${#stage('Set Test Environment')['context']['RESOURCE_NAME']}",
+        "INT_CHART_VERSION": "${#stage(\"Get Environment Details\")[\"context\"][\"FROM_STATE\"]}"
+      },
+      "refId": "Update Version in RPT and DIT Post II to Release From State",
+      "requisiteStageRefIds": [
+        "Initial Install to Release From State"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Initial Install to Release From State')['status'] == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "name": "Upgrade & Assert_Staging",
+      "pipeline": "e6c06ca6-1798-48ae-bc07-6406460db4a2",
+      "pipelineParameters": {
+        "ADC_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"ADC_HOST_REPLACE\"]}",
+        "APPMGR_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"APPMGR_HOST_REPLACE\"]}",
+        "BDR_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"BDR_HOST_REPLACE\"]}",
+        "CONFIG_FILES": "${#stage(\"Get Environment Details\")[\"context\"][\"CONFIG_FILES\"]}",
+        "DDP_AUTO_UPLOAD": "${parameters['DDP_AUTO_UPLOAD']}",
+        "DEPLOYMENT_MANAGER_REPO": "${parameters['DEPLOYMENT_MANAGER_REPO']}",
+        "DEPLOYMENT_MANAGER_VERSION": "${parameters['DEPLOYMENT_MANAGER_VERSION']}",
+        "DEPLOYMENT_NAME": "${#stage('Set Test Environment')['context']['RESOURCE_NAME']}",
+        "DOCKER_REGISTRY": "${DOCKER_REGISTRY}",
+        "DOCKER_REGISTRY_CREDENTIALS": "${DOCKER_REGISTRY_CREDENTIALS}",
+        "ECM_HOSTNAME": "${ECM_HOSTNAME}",
+        "EIC_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"EIC_HOST_REPLACE\"]}",
+        "ENM_HOSTNAME": "${ENM_HOSTNAME}",
+        "GAS_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"GAS_HOST_REPLACE\"]}",
+        "IAM_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"IAM_HOST_REPLACE\"]}",
+        "INT_CHART_VERSION": "${#stage(\"Get Latest Helmfile Version\")[\"context\"][\"INT_CHART_VERSION\"]}",
+        "K6_TESTWARE_VERSION": "${parameters['K6_VERSION']}",
+        "KF_BO_HOSTNAME": "${#stage('Get Environment Details')['context']['KAFKA_BOOTSTRAP_HOST_REPLACE']}",
+        "KUBECONFIG_FILE": "${#stage(\"Get Environment Details\")[\"context\"][\"KUBE_CONFIG\"]}",
+        "KUBE_CONFIG_FILE_CREDENTIAL_ID": "${#stage(\"Get Environment Details\")[\"context\"][\"KUBE_CONFIG_FILE_CREDENTIAL_ID\"]}",
+        "NAMESPACE": "${#stage(\"Get Environment Details\")[\"context\"][\"NAMESPACE\"]}",
+        "RUN_ENM_INTEGRATION_TEST": "${parameters['RUN_ENM_INTEGRATION_TEST']}",
+        "RUN_TESTS": "${RUN_TESTS}",
+        "SITE_VALUES_FILE_NAME": "${TO_STATE_SITE_VALUES_FILE}",
+        "SITE_VALUES_OVERRIDE_FILE_NAME": "${TO_STATE_SITE_VALUES_OVERRIDE_FILE}",
+        "SITE_VALUE_FILE_BUCKET_NAME": "${(#stage(\"Evaluate Variables\")[\"context\"]['TO_STATE_SITE_VALUES_FILE'] == 'site-values-latest.yaml')? 'eic_site_values_template':'eic_site_values_versioned'}",
+        "SITE_VALUE_OVERRIDE_BUCKET_NAME": "${parameters['SITE_VALUE_OVERRIDE_BUCKET_NAME']}",
+        "SKIP_TESTS": "${SKIP_TESTS}",
+        "TAGS": "${TAGS}",
+        "TH_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"TH_HOST_REPLACE\"]}",
+        "USE_CERTM": "RELEASE_CERTM_VALUE_TO_STATE",
+        "USE_DM_PREPARE": "${parameters['USE_DM_PREPARE']}",
+        "USE_REAL_CSAR": "${parameters['USE_REAL_CSAR']}"
+      },
+      "refId": "Upgrade & Assert_Staging",
+      "requisiteStageRefIds": [
+        "Update Version in RPT and DIT Post II to Release From State"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Update Version in RPT and DIT Post II to Release From State')['status'] == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "name": "Update Version in RPT and DIT Post UG",
+      "pipeline": "c2ef3a0e-65be-45a1-91ac-d8661170dd30",
+      "pipelineParameters": {
+        "ENVIRONMENT_NAME": "${#stage('Set Test Environment')['context']['RESOURCE_NAME']}",
+        "INT_CHART_VERSION": "${#stage(\"Get Latest Helmfile Version\")[\"context\"][\"INT_CHART_VERSION\"]}"
+      },
+      "refId": "Update Version in RPT and DIT Post UG",
+      "requisiteStageRefIds": [
+        "Upgrade & Assert_Staging"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Upgrade & Assert_Staging')['status'] == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "name": "Post Flow Checks",
+      "preconditions": [
+        {
+          "context": {
+            "expression": "#stage('Get Environment Details')['status'] == \"SUCCEEDED\" or #stage('Get Environment Details')['status'] == \"SKIPPED\"",
+            "failureMessage": "Failed to get Environment Details"
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "#stage('Upgrade & Assert_Staging')['status'] == \"SUCCEEDED\" or #stage('Upgrade & Assert_Staging')['status'] == \"SKIPPED\"",
+            "failureMessage": "Release to Latest Upgrade Failed"
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "#stage('Initial Install to Release From State')['status'] == \"SUCCEEDED\" or #stage('Initial Install to Release From State')['status'] == \"SKIPPED\"",
+            "failureMessage": "Environment failed Initial Install to from state."
+          },
+          "failPipeline": true,
+          "type": "expression"
+        }
+      ],
+      "refId": "Post Flow Checks",
+      "requisiteStageRefIds": [
+        "Update Version in RPT and DIT Post UG"
+      ],
+      "type": "checkPreconditions"
+    },
+    {
+      "name": "End Flow",
+      "preconditions": [
+        {
+          "context": {
+            "expression": "#stage('Post Flow Checks')['status'] == \"SUCCEEDED\" or #stage('Post Flow Checks')['status'] == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        }
+      ],
+      "refId": "End Flow",
+      "requisiteStageRefIds": [
+        "Unreserve Environment"
+      ],
+      "type": "checkPreconditions"
+    }
+  ],
+  "triggers": []
+}

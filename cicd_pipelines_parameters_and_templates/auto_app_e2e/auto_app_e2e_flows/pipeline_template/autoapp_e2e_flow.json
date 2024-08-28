@@ -1,0 +1,157 @@
+{
+    "appConfig": {},
+    "application": "SPINNAKER_APPLICATION_NAME",
+    "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten. Template name: e2e_product_pipeline.json in repo https://gerrit.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources",
+    "disabled": false,
+    "name": "SPINNAKER_PIPELINE_NAME",
+    "keepWaitingPipelines": true,
+    "limitConcurrent": false,
+    "maxConcurrentExecutions": 5,
+    "locked": {
+      "allowUnlockUi": true,
+      "description": "",
+      "ui": true
+    },
+    "notifications": [
+      {
+        "address": "NOTIFICATION_ADDRESS",
+        "level": "pipeline",
+        "message": {
+          "pipeline.complete": {
+            "text": "The SPINNAKER_PIPELINE_NAME pipeline is complete."
+          },
+          "pipeline.failed": {
+            "text": "The SPINNAKER_PIPELINE_NAME pipeline has failed."
+          },
+          "pipeline.starting": {
+            "text": "The SPINNAKER_PIPELINE_NAME pipeline is Starting."
+          }
+        },
+        "type": "email",
+        "when": [
+          "pipeline.complete",
+          "pipeline.failed",
+          "pipeline.starting"
+        ]
+      },
+      {
+        "address": "FAILURE_EMAIL_ADDRESS",
+        "level": "pipeline",
+        "message": {
+          "pipeline.failed": {
+            "text": "The SPINNAKER_PIPELINE_NAME has failed."
+          }
+        },
+        "type": "email",
+        "when": [
+          "pipeline.failed"
+        ]
+      }
+    ],
+    "parameterConfig": [
+      {
+        "default": "ci/csar_template",
+        "description": "This is the path of the folder which will contain the input template files for the CSAR build",
+        "hasOptions": false,
+        "name": "INPUT_FOLDER_LOCATION",
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "ssh://gerrit-gamma.gic.ericsson.se:29418/OSS/com.ericsson.oss.apps/AUTO_APP_NAME",
+        "description": "SSH URL to the repo that will contain the input template files for the CSAR build.",
+        "hasOptions": false,
+        "name": "SSH_REPO_URL",
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "true",
+        "description": "When set to 'true', the release pipeline will be kicked off upon successful execution of the PSO pipeline.",
+        "hasOptions": false,
+        "name": "KICK_OFF_RELEASE",
+        "pinned": true,
+        "required": true
+      }
+    ],
+    "schema": "1",
+    "spelEvaluator": "v4",
+    "stages": [
+      {
+        "continuePipeline": false,
+        "failPipeline": true,
+        "job": "AUTOAPP-AUTO_APP_SHORT_NAME-Integration-Testing",
+        "master": "oss-fem5s11-eiffel216",
+        "name": "AUTO_APP_APP_STAGING_PIPELINE_NAME",
+        "parameters": {
+          "CHART_VERSION": "${trigger.properties['CHART_VERSION']}",
+          "DOCKER_REPO": "proj-eric-oss-drop",
+          "GERRIT_REFSPEC": "refs/tags/${trigger.properties['CHART_VERSION']}",
+          "HELM_REPO": "proj-eric-oss-released-helm-local"
+        },
+        "refId": "AUTO_APP_APP_STAGING_PIPELINE_NAME",
+        "requisiteStageRefIds": [],
+        "type": "jenkins",
+        "stageEnabled": {
+          "expression": "${RUN_INTEGRATION_TESTS}",
+          "type": "expression"
+        }
+      },
+      {
+        "application": "SPINNAKER_APPLICATION_NAME",
+        "failPipeline": true,
+        "name": "AUTO_APP_PRODUCT_STAGING_PIPELINE_NAME",
+        "pipeline": "AUTO_APP_PRODUCT_STAGING_PIPELINE_ID",
+        "pipelineParameters": {
+          "CHART_NAME": "${trigger.properties['CHART_NAME']}",
+          "CHART_REPO": "${trigger.properties['CHART_REPO']}",
+          "CHART_VERSION": "${trigger.properties['CHART_VERSION']}",
+          "ENVIRONMENT_NAME": "ENVIRONMENT_SUBSTITUTE_NAME",
+          "INPUT_FOLDER_LOCATION": "${parameters['INPUT_FOLDER_LOCATION']}",
+          "SKIP_CSAR_RELEASE": "false",
+          "SSH_REPO_URL": "${parameters['SSH_REPO_URL']}"
+        },
+        "refId": "AUTO_APP_PRODUCT_STAGING_PIPELINE_NAME",
+        "requisiteStageRefIds": [
+          "AUTO_APP_APP_STAGING_PIPELINE_NAME"
+        ],
+        "type": "pipeline",
+        "failOnFailedExpressions": true,
+        "stageEnabled": {
+          "expression": "${#stage('AUTO_APP_APP_STAGING_PIPELINE_NAME')['status'] == 'SUCCEEDED' or  #stage('AUTO_APP_APP_STAGING_PIPELINE_NAME')['status'] == 'SKIPPED'}",
+          "type": "expression"
+        },
+        "waitForCompletion": true
+      },
+      {
+        "application": "SPINNAKER_APPLICATION_NAME",
+        "failPipeline": true,
+        "name": "AUTO_APP_RELEASE_PIPELINE_NAME",
+        "pipeline": "AUTO_APP_RELEASE_PIPELINE_ID",
+        "pipelineParameters": {
+          "CHART_NAME": "${trigger.properties['CHART_NAME']}",
+          "CHART_REPO": "${trigger.properties['CHART_REPO']}",
+          "CHART_VERSION": "${trigger.properties['CHART_VERSION']}"
+        },
+        "refId": "AUTO_APP_RELEASE_PIPELINE_NAME",
+        "requisiteStageRefIds": [
+          "AUTO_APP_PRODUCT_STAGING_PIPELINE_NAME"
+        ],
+        "type": "pipeline",
+        "waitForCompletion": true,
+        "stageEnabled": {
+          "expression": "${parameters['KICK_OFF_RELEASE'].contains('true')} and '${#stage('AUTO_APP_PRODUCT_STAGING_PIPELINE_NAME')['status']}' == 'SUCCEEDED'",
+          "type": "expression"
+        }
+      }
+    ],
+    "triggers": [
+      {
+        "enabled": true,
+        "job": "TRIGGER_FLOW_NAME",
+        "master": "TRIGGER_FLOW_MASTER",
+        "propertyFile": "artifact.properties",
+        "type": "jenkins"
+      }
+    ]
+  }

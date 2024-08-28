@@ -1,0 +1,2 @@
+SPINNAKER_APPLICATION_NAME,SPINNAKER_PIPELINE_NAME
+eic-release-e2e-cicd,TEST_PIPELINE-eic-connected-release-external-pre-operation-flow

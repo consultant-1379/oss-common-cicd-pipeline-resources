@@ -1,0 +1,410 @@
+{
+  "appConfig": {},
+  "application": "base-platform-staging",
+  "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwrittenTemplate name: base_platform_functional_testing.json (base_platform/standalone_flows/) in repo https://gerrit.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources",
+  "keepWaitingPipelines": false,
+  "limitConcurrent": false,
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "Template name: base_platform_functional_testing.json (under base_platform/standalone_flows/) in repo https://gerrit.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources",
+    "ui": true
+  },
+  "name": "Base_Platform_Functional_Testing",
+  "parameterConfig": [
+    {
+      "default": "",
+      "description": "",
+      "hasOptions": false,
+      "label": "KUBE_CONFIG",
+      "name": "KUBE_CONFIG",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "",
+      "hasOptions": false,
+      "label": "NAMESPACE",
+      "name": "NAMESPACE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "",
+      "hasOptions": false,
+      "label": "IAM_HOSTNAME",
+      "name": "IAM_HOSTNAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "",
+      "hasOptions": false,
+      "label": "GAS_HOSTNAME",
+      "name": "GAS_HOSTNAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "",
+      "hasOptions": false,
+      "label": "BDR_HOSTNAME",
+      "name": "BDR_HOSTNAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "",
+      "hasOptions": false,
+      "label": "RESOURCE_NAME",
+      "name": "RESOURCE_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "App chart name under test",
+      "hasOptions": false,
+      "label": "APP_NAME",
+      "name": "APP_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "App chart version under test",
+      "hasOptions": false,
+      "label": "APP_VERSION",
+      "name": "APP_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Matching EIC Helmfile version storing the new app chart and version",
+      "hasOptions": false,
+      "label": "PRODUCT_VERSION",
+      "name": "PRODUCT_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "evo_docker_engine_gic_IDUN",
+      "description": "Label to choose which Jenkins agent to execute Jenkinsfiles against",
+      "hasOptions": false,
+      "label": "AGENT_LABEL",
+      "name": "AGENT_LABEL",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "",
+      "hasOptions": false,
+      "label": "EIC_HOSTNAME",
+      "name": "EIC_HOSTNAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "gas-user",
+      "description": "The value for the GAS user username",
+      "hasOptions": false,
+      "label": "",
+      "name": "GAS_USER_USERNAME",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "Ericsson123!",
+      "description": "The value for the GAS user password",
+      "hasOptions": false,
+      "label": "",
+      "name": "GAS_USER_PASSWORD",
+      "pinned": true,
+      "required": true
+    }
+  ],
+  "schema": "1",
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "job": "Base-Platform-IDUN_GUI_tests",
+      "markUnstableAsSuccessful": false,
+      "master": "oss-fem8s11-eiffel052",
+      "name": "GUI Tests",
+      "parameters": {
+        "ADMIN_PWD": "${parameters['GAS_USER_PASSWORD']}",
+        "ADMIN_USER": "${parameters['GAS_USER_USERNAME']}",
+        "GAS_URL": "https://${parameters[\"GAS_HOSTNAME\"]}",
+        "KC_BROKER_URL": "https://${parameters[\"IAM_HOSTNAME\"]}",
+        "KC_IDENTITY_IAM_URL": "https://${parameters[\"IAM_HOSTNAME\"]}"
+      },
+      "refId": "GUI Tests",
+      "requisiteStageRefIds": [
+        "Install License Keys"
+      ],
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "job": "Base-Platform-IDUN_K6_Test_Job",
+      "markUnstableAsSuccessful": false,
+      "master": "oss-fem8s11-eiffel052",
+      "name": "K6 Tests",
+      "parameters": {
+        "BDR_HOST": "${parameters[\"BDR_HOSTNAME\"]}",
+        "GAS_URL": "${parameters[\"GAS_HOSTNAME\"]}",
+        "GAS_USER_PASSWORD": "${parameters['GAS_USER_PASSWORD']}",
+        "GAS_USER_USERNAME": "${parameters['GAS_USER_USERNAME']}",
+        "IAM_URL": "${parameters[\"IAM_HOSTNAME\"]}",
+        "KUBECONFIG_FILE": "${parameters[\"KUBE_CONFIG\"]}",
+        "NAMESPACE": "${parameters[\"NAMESPACE\"]}"
+      },
+      "refId": "K6 Tests",
+      "requisiteStageRefIds": [
+        "GUI Tests"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage(\"GUI Tests\")[\"status\"]}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "job": "BasePlatform_K6_Functional_Testing",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "New K6 Tests",
+      "parameters": {
+        "AGENT_LABEL": "${parameters[\"AGENT_LABEL\"]}",
+        "BDR_HOST": "${parameters[\"BDR_HOSTNAME\"]}",
+        "GAS_URL": "${parameters[\"GAS_HOSTNAME\"]}",
+        "GAS_USER_PASSWORD": "${parameters['GAS_USER_PASSWORD']}",
+        "GAS_USER_USERNAME": "${parameters['GAS_USER_USERNAME']}",
+        "IAM_URL": "${parameters[\"IAM_HOSTNAME\"]}",
+        "KUBECONFIG_FILE": "${parameters[\"KUBE_CONFIG\"]}",
+        "NAMESPACE": "${parameters[\"NAMESPACE\"]}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "New K6 Tests",
+      "requisiteStageRefIds": [
+        "K6 Tests"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('K6 Tests')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "job": "BasePlatform_K6_Tests_License_Expired",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Test License Expired",
+      "parameters": {
+        "AGENT_LABEL": "${parameters[\"AGENT_LABEL\"]}",
+        "BDR_HOST": "${parameters[\"BDR_HOSTNAME\"]}",
+        "GAS_URL": "${parameters[\"GAS_HOSTNAME\"]}",
+        "GAS_USER_PASSWORD": "${parameters['GAS_USER_PASSWORD']}",
+        "GAS_USER_USERNAME": "${parameters['GAS_USER_USERNAME']}",
+        "IAM_URL": "${parameters[\"IAM_HOSTNAME\"]}",
+        "KUBECONFIG_FILE": "${parameters[\"KUBE_CONFIG\"]}",
+        "NAMESPACE": "${parameters[\"NAMESPACE\"]}",
+        "SEF_URL": "${parameters[\"EIC_HOSTNAME\"]}"
+      },
+      "refId": "Test License Expired",
+      "requisiteStageRefIds": [
+        "SEF Tests"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('New K6 Tests')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "BasePlatform_K6_Tests_License_Removed",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Test License Removed",
+      "parameters": {
+        "AGENT_LABEL": "${parameters[\"AGENT_LABEL\"]}",
+        "BDR_HOST": "${parameters[\"BDR_HOSTNAME\"]}",
+        "GAS_URL": "${parameters[\"GAS_HOSTNAME\"]}",
+        "GAS_USER_PASSWORD": "${parameters['GAS_USER_PASSWORD']}",
+        "GAS_USER_USERNAME": "${parameters['GAS_USER_USERNAME']}",
+        "IAM_URL": "${parameters[\"IAM_HOSTNAME\"]}",
+        "KUBECONFIG_FILE": "${parameters[\"KUBE_CONFIG\"]}",
+        "NAMESPACE": "${parameters[\"NAMESPACE\"]}",
+        "SEF_URL": "${parameters[\"EIC_HOSTNAME\"]}"
+      },
+      "refId": "Test License Removed",
+      "requisiteStageRefIds": [
+        "Test License Expired"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Test License Expired')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "BasePlatform_K6_SEF_Testing",
+      "markUnstableAsSuccessful": false,
+      "master": "oss-fem8s11-eiffel052",
+      "name": "SEF Tests",
+      "parameters": {
+        "AGENT_LABEL": "${parameters[\"AGENT_LABEL\"]}",
+        "BDR_HOST": "${parameters[\"BDR_HOSTNAME\"]}",
+        "GAS_URL": "${parameters[\"GAS_HOSTNAME\"]}",
+        "GAS_USER_PASSWORD": "${parameters['GAS_USER_PASSWORD']}",
+        "GAS_USER_USERNAME": "${parameters['GAS_USER_USERNAME']}",
+        "IAM_URL": "${parameters[\"IAM_HOSTNAME\"]}",
+        "KUBECONFIG_FILE": "${parameters[\"KUBE_CONFIG\"]}",
+        "NAMESPACE": "${parameters[\"NAMESPACE\"]}",
+        "SEF_URL": "${parameters[\"EIC_HOSTNAME\"]}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "SEF Tests",
+      "requisiteStageRefIds": [
+        "New K6 Tests"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('New K6 Tests')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "failOnFailedExpressions": true,
+      "name": "Evaluate Variables",
+      "refId": "Evaluate Variables",
+      "requisiteStageRefIds": [],
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "DELETE_LICENCE_KEYS",
+          "value": "${(trigger.parentExecution.stages.?[name == 'Pre Upgrade Testing'].isEmpty()) ? false : trigger.parentExecution.stages.?[name == 'Pre Upgrade Testing'][0].status == 'RUNNING'}"
+        }
+      ]
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "NeLS-simulator-installation",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Install License Keys",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "ossapps100-arm-docker-auth-config",
+        "FUNCTIONAL_USER_CREDENTIALS": "cloudman-user-creds",
+        "KUBECONFIG_FILE": "${parameters['KUBE_CONFIG']}",
+        "LICENSE_KEYS": "true",
+        "NAMESPACE": "${parameters['NAMESPACE']}"
+      },
+      "refId": "Install License Keys",
+      "requisiteStageRefIds": [
+        "Evaluate Variables"
+      ],
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "NeLS-simulator-installation",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Delete License Keys",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "ossapps100-arm-docker-auth-config",
+        "FUNCTIONAL_USER_CREDENTIALS": "cloudman-user-creds",
+        "KUBECONFIG_FILE": "${parameters['KUBE_CONFIG']}",
+        "LICENSE_KEYS": "false",
+        "NAMESPACE": "${parameters['NAMESPACE']}"
+      },
+      "propertyFile": "",
+      "refId": "Delete License Keys",
+      "requisiteStageRefIds": [
+        "Test License Removed"
+      ],
+      "stageEnabled": {
+        "expression": "'${#stage('Test License Removed')['status']}' == 'SUCCEEDED' and '${DELETE_LICENCE_KEYS}' == 'true'",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    }
+  ],
+  "triggers": []
+}

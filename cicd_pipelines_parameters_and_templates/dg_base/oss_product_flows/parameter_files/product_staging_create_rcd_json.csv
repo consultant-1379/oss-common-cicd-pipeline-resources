@@ -1,0 +1,2 @@
+SPINNAKER_APPLICATION_NAME,SPINNAKER_PIPELINE_NAME,NOTIFICATION_ADDRESS
+common-e2e-cicd,Product-Staging-create-rcd-json,PDLDUNPROD@pdl.internal.ericsson.com

@@ -1,0 +1,100 @@
+{
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten. Template name: e2e_aas_pipeline.json in repo https://gerrit.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources,branches",
+  "disabled": false,
+  "name": "SPINNAKER_PIPELINE_NAME",
+  "limitConcurrent": false,
+  "spelEvaluator": "v4",
+  "parameterConfig": [
+    {
+      "default": "${T(java.time.LocalDateTime).now().until(T(java.time.LocalDateTime).parse(T(java.time.LocalDateTime).now().toLocalDate().toString() + \"TEXECUTION_TIME\"),T(java.time.temporal.ChronoUnit).valueOf(\"SECONDS\"))}",
+      "description": "Wait in seconds for the next aaS pipleine run today, this time will be used when this pipeline is triggered before 9pm Irish time.",
+      "hasOptions": false,
+      "label": "",
+      "name": "WAIT_TIME_TODAY",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "${T(java.time.LocalDateTime).now().until(T(java.time.LocalDateTime).parse(T(java.time.LocalDateTime).now().toLocalDate().toString() + \"TEXECUTION_TIME\"),T(java.time.temporal.ChronoUnit).valueOf(\"SECONDS\")) + 86400} ",
+      "description": "Wait in seconds for the next aaS pipleine run today, this time will be used when this pipeline is triggered after 9pm Irish time.",
+      "hasOptions": false,
+      "label": "",
+      "name": "WAIT_TIME_TOMORROW",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    }
+  ],
+  "stages": [
+    {
+      "failOnFailedExpressions": true,
+      "name": "Evaluate Variables",
+      "refId": "Evaluate Variables",
+      "requisiteStageRefIds": [],
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "WAIT_TIME",
+          "value": "${(parameters[\"WAIT_TIME_TODAY\"] > 0)? parameters[\"WAIT_TIME_TODAY\"] : parameters[\"WAIT_TIME_TOMORROW\"]}"
+        }
+      ]
+    },
+    {
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "name": "Wait_For_aaS_Pipeline_Execution_Do_Not_Skip",
+      "refId": "Wait_For_aaS_Pipeline_Execution_Do_Not_Skip",
+      "requisiteStageRefIds": [
+        "Evaluate Variables"
+      ],
+      "type": "wait",
+      "waitTime": "${WAIT_TIME}"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "idunaas_get_latest_helmfile",
+      "master": "oss-aeonic-fem2s11",
+      "name": "get-helmfile-version",
+      "parameters": {
+        "FUNCTIONAL_USER_SECRET": "a89af7a3-f9f4-4aa9-af99-762a8cafbceb"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "get-helmfile-version",
+      "requisiteStageRefIds": [
+        "Wait_For_aaS_Pipeline_Execution_Do_Not_Skip"
+      ],
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "job": "IDUNaaS_Pipeline_Polling_Job",
+      "master": "oss-aeonic-fem2s11",
+      "name": "aaS_Staging",
+      "parameters": {
+        "CHART_NAME": "eric-oss",
+        "CHART_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm",
+        "CHART_VERSION": "${#stage(\"get-helmfile-version\")[\"context\"][\"INT_CHART_VERSION\"]}"
+      },
+      "refId": "aaS_Staging",
+      "requisiteStageRefIds": [
+        "get-helmfile-version"
+      ],
+      "type": "jenkins"
+    }
+  ],
+  "triggers": []
+}

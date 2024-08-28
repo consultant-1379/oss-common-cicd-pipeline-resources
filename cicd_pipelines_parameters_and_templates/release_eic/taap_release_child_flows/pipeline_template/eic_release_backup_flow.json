@@ -1,0 +1,346 @@
+{
+  "appConfig": {},
+  "keepWaitingPipelines": false,
+  "limitConcurrent": false,
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "name": "SPINNAKER_PIPELINE_NAME",
+  "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten. Template name: eic_release_backup_flow.json in repo https://gerrit-gamma.gic.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources,branches",
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+    "ui": true
+  },
+  "notifications": [
+    {
+      "address": "NOTIFICATION_ADDRESS",
+      "level": "pipeline",
+      "message": {
+        "pipeline.failed": {
+          "text": "The pipeline has failed."
+        }
+      },
+      "type": "email",
+      "when": [
+        "pipeline.failed"
+      ]
+    }
+  ],
+  "parameterConfig": [
+    {
+      "default": "",
+      "description": "The version of Deployment Manager needed",
+      "hasOptions": false,
+      "label": "",
+      "name": "DEPLOYMENT_MANAGER_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Namespace of environment",
+      "hasOptions": false,
+      "label": "",
+      "name": "NAMESPACE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Kubernetes configuration file to specify which environment to install on (Datafile in OST)",
+      "hasOptions": false,
+      "label": "",
+      "name": "KUBECONFIG_FILE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Hostname for VNFM",
+      "hasOptions": false,
+      "label": "",
+      "name": "VNFM_HOSTNAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Credentials for SFTP",
+      "hasOptions": false,
+      "label": "",
+      "name": "SFTP_CREDENTIALS_ID",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Server path of SFTP",
+      "hasOptions": false,
+      "label": "",
+      "name": "SFTP_SERVER_PATH",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "The version of EIC chart version needed to be displayed in the EIC release dashboard",
+      "hasOptions": false,
+      "label": "",
+      "name": "INT_CHART_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Name of the deployment",
+      "hasOptions": false,
+      "label": "",
+      "name": "DEPLOYMENT_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "GAS hostname",
+      "hasOptions": false,
+      "label": "",
+      "name": "GAS_HOSTNAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    }
+  ],
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failOnFailedExpressions": false,
+      "failPipeline": false,
+      "name": "Set Backup Filename",
+      "refId": "Set Backup Filename",
+      "requisiteStageRefIds": [],
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "BACKUP_DIRECTORY",
+          "value": "EIC-${parameters['NAMESPACE']}-${parameters['INT_CHART_VERSION']}"
+        }
+      ]
+    },
+    {
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "OSS-Integration-HealthCheck-Using-DM",
+      "master": "oss-aispinn-fem5s11-eiffel052",
+      "name": "Pre Backup Health Check",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "reluser-creds-docker",
+        "ENV_FILES_BUCKET_NAME": "${parameters['DEPLOYMENT_NAME']}_files",
+        "FUNCTIONAL_USER_SECRET": "reluser-user-creds",
+        "KUBECONFIG_FILE": "${parameters['KUBECONFIG_FILE']}",
+        "NAMESPACE": "${parameters['NAMESPACE']}"
+      },
+      "refId": "Pre Backup Health Check",
+      "requisiteStageRefIds": [
+        "Set Backup Filename"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Set Backup Filename')['status'] == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "Compare_Deployment_Manager_Version_for_BUR",
+      "master": "oss-aispinn-fem5s11-eiffel052",
+      "name": "Set Backup Scope for BUR",
+      "parameters": {
+        "DEPLOYMENT_MANAGER_VERSION": "${parameters['DEPLOYMENT_MANAGER_VERSION']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Set Backup Scope for BUR",
+      "requisiteStageRefIds": [
+        "Pre Backup Health Check"
+      ],
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "EO_BUR_Run_Backup",
+      "master": "oss-aispinn-fem5s11-eiffel052",
+      "name": "Backup",
+      "parameters": {
+        "ACTION": "create",
+        "BACKUP_DIRECTORY": "${BACKUP_DIRECTORY}",
+        "BACKUP_SCOPE": "${(#stage('Set Backup Scope for BUR').context.BACKUP_SCOPE == 'PLATFORM') ? 'PLATFORM': ''}",
+        "CHART_VERSION": "${parameters['INT_CHART_VERSION']}",
+        "CLEANUP_SFTP": "no",
+        "CLUSTER_KUBECONFIG": "${parameters['KUBECONFIG_FILE']}",
+        "DEPLOYMENT_NAME": "${parameters['DEPLOYMENT_NAME']}",
+        "EO_CHART_VERSION": "${parameters['DEPLOYMENT_MANAGER_VERSION']}",
+        "EO_VNFM_HOSTNAME": "${parameters['VNFM_HOSTNAME']}",
+        "FUNCTIONAL_USER_SECRET": "cloudman-user-creds",
+        "HOST_URL": "https://${parameters['GAS_HOSTNAME']}",
+        "NAMESPACE": "${parameters['NAMESPACE']}",
+        "SFTP_CREDENTIALS_ID": "${parameters['SFTP_CREDENTIALS_ID']}",
+        "SFTP_SERVER_PATH": "${parameters['SFTP_SERVER_PATH']}"
+      },
+      "refId": "Backup",
+      "requisiteStageRefIds": [
+        "Set Backup Scope for BUR"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Set Backup Scope for BUR')['status'] == 'SUCCEEDED'",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "OSS-Integration-HealthCheck-Using-DM",
+      "master": "oss-aispinn-fem5s11-eiffel052",
+      "name": "Post Backup Health Check",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "reluser-creds-docker",
+        "ENV_FILES_BUCKET_NAME": "${parameters['DEPLOYMENT_NAME']}_files",
+        "FUNCTIONAL_USER_SECRET": "reluser-user-creds",
+        "KUBECONFIG_FILE": "${parameters['KUBECONFIG_FILE']}",
+        "NAMESPACE": "${parameters['NAMESPACE']}"
+      },
+      "refId": "Post Backup Health Check",
+      "requisiteStageRefIds": [
+        "Backup"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Backup')['status'] == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Post Flow Checks",
+      "preconditions": [
+        {
+          "context": {
+            "expression": "#stage('Backup')['status'] == 'SUCCEEDED' or #stage('Backup')['status'] == 'SKIPPED'",
+            "failureMessage": "Backup failed"
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "#stage('Set Backup Filename')['status'] == 'SUCCEEDED' or #stage('Set Backup Filename')['status'] == 'SKIPPED'",
+            "failureMessage": "Set Backup Filename failed"
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "#stage('Set Backup Scope for BUR')['status'] == 'SUCCEEDED' or #stage('Set Backup Scope for BUR')['status'] == 'SKIPPED'",
+            "failureMessage": "Set Backup Scope for BUR failed"
+          },
+          "failPipeline": true,
+          "type": "expression"
+        }
+      ],
+      "refId": "Post Flow Checks",
+      "requisiteStageRefIds": [
+        "Post Backup Health Check"
+      ],
+      "type": "checkPreconditions"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "RPT-RC_Quarantine-Environment",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Quarantine Environment",
+      "parameters": {
+        "ENV_NAME": "${parameters['DEPLOYMENT_NAME']}"
+      },
+      "refId": "Quarantine Environment",
+      "requisiteStageRefIds": [
+        "Post Flow Checks"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Post Flow Checks')['status'] != \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "name": "End Flow",
+      "preconditions": [
+        {
+          "context": {
+            "stageName": "Post Flow Checks",
+            "stageStatus": "SUCCEEDED"
+          },
+          "failPipeline": true,
+          "type": "stageStatus"
+        }
+      ],
+      "refId": "End Flow",
+      "requisiteStageRefIds": [
+        "Quarantine Environment"
+      ],
+      "type": "checkPreconditions"
+    }
+  ],
+  "triggers": []
+}

@@ -1,0 +1,2 @@
+SPINNAKER_APPLICATION_NAME,SPINNAKER_PIPELINE_NAME,NOTIFICATION_ADDRESS
+eic-release-e2e-cicd,eic-long-loop-flow,PDLIDUNREL@pdl.internal.ericsson.com

@@ -1,0 +1,451 @@
+{
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "name": "SPINNAKER_PIPELINE_NAME",
+  "appConfig": {},
+  "description": "This spinnaker flow can be used to create a new Base Platform Baseline wither to master or a branch of the repo.",
+  "keepWaitingPipelines": false,
+  "limitConcurrent": false,
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "This pipeline is maintained by Spinnaker as a code, any changes made through the UI will be overwritten. Please see https://gerrit-gamma.gic.ericsson.se/plugins/gitiles/OSS/com.ericsson.oss.aeonic/oss-integration-ci/+/refs/heads/master/docs/flows/Base-Platform-Baseline-Generation.md for details",
+    "ui": true
+  },
+  "parameterConfig": [
+    {
+      "default": "",
+      "description": "Comma-separated dependency helm chart name list. E.g.: eric-pm-server, eric-data-document-database-pg",
+      "hasOptions": false,
+      "label": "Helm Chart Name",
+      "name": "CHART_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Comma-separated dependency helm chart version list. E.g.: 1.0.0+66, 2.3.0+57",
+      "hasOptions": false,
+      "label": "Helm Chart Version",
+      "name": "CHART_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "",
+      "hasOptions": false,
+      "label": "Helm Chart Repo",
+      "name": "CHART_REPO",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "prepare",
+      "description": "prepare :: Prepare Helmfile and uploads to the snapshot/internal repo. publish :: Checks in the updates to git and upload to the drop repo",
+      "hasOptions": false,
+      "label": "Build Type",
+      "name": "GERRIT_PREPARE_OR_PUBLISH",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "evo_docker_engine",
+      "description": "",
+      "hasOptions": false,
+      "label": "Jenkins Node to build from",
+      "name": "JENKINS_AGENT",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "false",
+      "description": "Default is 'false', if set to true, version is allowed to step backwards one step only (e.g. 7.1.0-1 -> 7.0.0-1). If set to false, any version step backwards is allowed (E.g. 7.1.0-1 -> 5.1.3-7).",
+      "hasOptions": false,
+      "label": "Version Check Downgrade",
+      "name": "VERSION_CHECK_DOWNGRADE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "false",
+      "description": "Default is 'false', if set to true, downgrade of dependency is allowed.",
+      "hasOptions": false,
+      "label": "Allow Downgrade of Dependency",
+      "name": "ALLOW_DOWNGRADE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "MINOR",
+      "description": "Possible values: MAJOR, MINOR, PATCH. Step the version in metadata.yaml when dependency change received. Default is PATCH.",
+      "hasOptions": false,
+      "label": "Version Step Stratagy",
+      "name": "VERSION_STEP_STRATEGY_MANUAL",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "master",
+      "description": "This is only used when building EP releases for Base. Used to specify what branch to build the baseline on for EP",
+      "hasOptions": false,
+      "label": "EP Branch To Build the Helmfile From",
+      "name": "EP_BRANCH",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "latest",
+      "description": "This is only used when building EP releases for Base. Used to specify what released version of the basline should be used for EP build.",
+      "hasOptions": false,
+      "label": "Base Platform Baseline Version to build from",
+      "name": "BASE_PLATFORM_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "The message on the commit associated to the review under test",
+      "hasOptions": false,
+      "label": "Git Commit Message",
+      "name": "GIT_COMMIT_SUMMARY",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "",
+      "description": "URL to the git review under test",
+      "hasOptions": false,
+      "label": "Git Change URL",
+      "name": "GERRIT_CHANGE_URL",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    }
+  ],
+  "schema": "1",
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "application": "common-cicd",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Add Base Platform Baseline Entry",
+      "pipeline": "ca55d2c2-d912-4222-92ce-8e5e8cd0e748",
+      "pipelineParameters": {
+        "CHART_NAME": "${trigger['parameters']['CHART_NAME']}",
+        "CHART_VERSION": "${trigger['parameters']['CHART_VERSION']}",
+        "GERRIT_CHANGE_URL": "${COMMIT_REVIEW_URL}",
+        "GIT_COMMIT_SUMMARY": "${COMMIT_MESSAGE}",
+        "II_INT_CHART_NAME": "${BASE_PLATFORM_BASELINE_NAME}",
+        "II_INT_CHART_REPO": "${BASE_PLATFORM_BASELINE_REPO}",
+        "II_INT_CHART_VERSION": "${BASE_PLATFORM_BASELINE_VERSION}"
+      },
+      "refId": "Add Base Platform Baseline Entry",
+      "requisiteStageRefIds": [
+        "Check Preconditions"
+      ],
+      "stageEnabled": {
+        "expression": "\"${trigger['parameters']['GERRIT_PREPARE_OR_PUBLISH']}\" == 'publish'",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "OSS-Integration-Set-Get-Base-Platform-Baseline-App-Versions",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Get Base Platform Baseline Details",
+      "parameters": {
+        "AGENT_LABEL": "${trigger['parameters']['JENKINS_AGENT']}",
+        "ARMDOCKER_USER_SECRET": "ossapps100-arm-docker-auth-config",
+        "FUNCTIONAL_USER_SECRET": "ossapps100-user-credentials",
+        "HELMFILE_NAME": "${BASE_PLATFORM_BASELINE_NAME}",
+        "HELMFILE_REPO": "${BASE_PLATFORM_BASELINE_REPO}",
+        "HELMFILE_VERSION": "${BASE_PLATFORM_BASELINE_VERSION}",
+        "PATH_TO_HELMFILE": "base-platform-baseline",
+        "SPINNAKER_PIPELINE_ID": "${execution['id']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Get Base Platform Baseline Details",
+      "requisiteStageRefIds": [
+        "Check Preconditions"
+      ],
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "OSS-Integration-Base-Platform-Baseline-Management",
+      "master": "oss-aispinn-fem5s11-eiffel052",
+      "name": "Build Base Platform Baseline",
+      "parameters": {
+        "AGENT_LABEL": "${trigger['parameters']['JENKINS_AGENT']}",
+        "ALLOW_DOWNGRADE": "${trigger['parameters']['ALLOW_DOWNGRADE']}",
+        "ARMDOCKER_USER_SECRET": "ciloopman-docker-auth-config",
+        "SPINNAKER_PIPELINE_ID": "${execution['id']}",
+        "CHART_NAME": "${trigger['parameters']['CHART_NAME']}",
+        "CHART_REPO": "${trigger['parameters']['CHART_REPO']}",
+        "CHART_VERSION": "${trigger['parameters']['CHART_VERSION']}",
+        "FUNCTIONAL_USER_TOKEN": "eo-helm-repo-api-token",
+        "GERRIT_BRANCH": "${trigger['parameters']['EP_BRANCH']}",
+        "GERRIT_PREPARE_OR_PUBLISH": "${trigger['parameters']['GERRIT_PREPARE_OR_PUBLISH']}",
+        "GERRIT_PROJECT": "OSS/com.ericsson.oss.aeonic/oss-base-baseline",
+        "GERRIT_USER_SECRET": "ciloopman-user-creds",
+        "GIT_REPO_URL": "https://gerrit-gamma.gic.ericsson.se/OSS/com.ericsson.oss.aeonic/oss-base-baseline",
+        "HELMFILE_PATH": "helmfile/base-platform-baseline",
+        "HELM_DROP_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm",
+        "HELM_INTERNAL_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-ci-internal-helm",
+        "VERSION_CHECK_DOWNGRADE": "${trigger['parameters']['VERSION_CHECK_DOWNGRADE']}",
+        "VERSION_STEP_STRATEGY_MANUAL": "${trigger['parameters']['VERSION_STEP_STRATEGY_MANUAL']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Build Base Platform Baseline",
+      "requisiteStageRefIds": [],
+      "stageEnabled": {
+        "expression": "\"${trigger['parameters']['EP_BRANCH']}\" == \"master\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "CI-Test-Fetch-Build-Upload-Using-ADP-Inca",
+      "master": "oss-fem7s11-eiffel216",
+      "name": "Build EP Base Platform Baseline",
+      "parameters": {
+        "ALLOW_DOWNGRADE": "true",
+        "ARMDOCKER_USER_SECRET": "ciloopman-docker-auth-config",
+        "CHART_NAME": "${#stage(\"Set New Baseline\")[\"context\"][\"BASE_PLATFORM_BASELINE_CHART_NAME\"]}",
+        "CHART_PATH": "helmfile/base-platform-baseline",
+        "CHART_REPO": "${#stage(\"Set New Baseline\")[\"context\"][\"BASE_PLATFORM_BASELINE_CHART_REPO\"]}",
+        "CHART_VERSION": "${#stage(\"Set New Baseline\")[\"context\"][\"BASE_PLATFORM_BASELINE_CHART_VERSION\"]}",
+        "CHECK_PUBLISHED": "false",
+        "COMMIT_MESSAGE_FORMAT_MANUAL": "%ORIGINAL_TITLE (%CHART_VERSION)",
+        "GERRIT_PREPARE_OR_PUBLISH": "${trigger['parameters']['GERRIT_PREPARE_OR_PUBLISH']}",
+        "GERRIT_USER_SECRET": "ciloopman-user-creds",
+        "GIT_REPO_URL": "https://gerrit-gamma.gic.ericsson.se/OSS/com.ericsson.oss.aeonic/oss-base-baseline",
+        "HELM_DROP_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm",
+        "HELM_INTERNAL_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-ci-internal-helm",
+        "HELM_REPO_CREDENTIALS_ID": "ciloopman_helm_repository_creds",
+        "SLAVE_LABEL": "${trigger['parameters']['JENKINS_AGENT']}",
+        "STATE_VALUES_FILE": ".bob/tmp_repo/ci/site-values/site-values.yaml",
+        "VCS_BRANCH": "${trigger['parameters']['EP_BRANCH']}",
+        "VERSION_STEP_STRATEGY_DEPENDENCY": "${trigger['parameters']['VERSION_STEP_STRATEGY_MANUAL']}",
+        "VERSION_STEP_STRATEGY_MANUAL": "${trigger['parameters']['VERSION_STEP_STRATEGY_MANUAL']}",
+        "WAIT_SUBMITTABLE_BEFORE_PUBLISH": "false",
+        "SPINNAKER_PIPELINE_ID": "${execution['id']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Build EP Base Platform Baseline",
+      "requisiteStageRefIds": [
+        "Set New Baseline"
+      ],
+      "stageEnabled": {
+        "expression": "\"${trigger['parameters']['EP_BRANCH']}\" != \"master\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failOnFailedExpressions": false,
+      "failPipeline": false,
+      "name": "Evaluate Variables INCA Variables",
+      "refId": "Evaluate Variables INCA Variables",
+      "requisiteStageRefIds": [
+        "Build EP Base Platform Baseline"
+      ],
+      "stageEnabled": {
+        "expression": "\"${trigger['parameters']['EP_BRANCH']}\" == \"master1\" and \"${#stage('Build EP Base Platform Baseline')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "BASE_PLATFORM_BASELINE_NAME",
+          "value": "${#stage(\"Build EP Base Platform Baseline\")[\"context\"][\"INT_CHART_NAME\"]}"
+        },
+        {
+          "key": "BASE_PLATFORM_BASELINE_VERSION",
+          "value": "${#stage(\"Build EP Base Platform Baseline\")[\"context\"][\"INT_CHART_VERSION\"]}"
+        },
+        {
+          "key": "BASE_PLATFORM_BASELINE_REPO",
+          "value": "${#stage(\"Build EP Base Platform Baseline\")[\"context\"][\"INT_CHART_REPO\"]}"
+        },
+        {
+          "key": "COMMIT_REVIEW_URL",
+          "value": "${trigger['parameters']['GERRIT_CHANGE_URL']}"
+        },
+        {
+          "key": "COMMIT_MESSAGE",
+          "value": "${trigger['parameters']['GIT_COMMIT_SUMMARY']}"
+        }
+      ]
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failOnFailedExpressions": false,
+      "failPipeline": false,
+      "name": "Evaluate Variables Base Platform Variables",
+      "refId": "Evaluate Variables Base Platform Variables",
+      "requisiteStageRefIds": [
+        "Build Base Platform Baseline"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Build Base Platform Baseline')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "BASE_PLATFORM_BASELINE_NAME",
+          "value": "${#stage(\"Build Base Platform Baseline\")[\"context\"][\"BASE_PLATFORM_BASELINE_NAME\"]}"
+        },
+        {
+          "key": "BASE_PLATFORM_BASELINE_REPO",
+          "value": "${#stage(\"Build Base Platform Baseline\")[\"context\"][\"BASE_PLATFORM_BASELINE_REPO\"]}"
+        },
+        {
+          "key": "BASE_PLATFORM_BASELINE_VERSION",
+          "value": "${#stage(\"Build Base Platform Baseline\")[\"context\"][\"BASE_PLATFORM_BASELINE_VERSION\"]}"
+        },
+        {
+          "key": "COMMIT_REVIEW_URL",
+          "value": "${trigger['parameters']['GERRIT_CHANGE_URL']}"
+        },
+        {
+          "key": "COMMIT_MESSAGE",
+          "value": "${trigger['parameters']['GIT_COMMIT_SUMMARY']}"
+        }
+      ]
+    },
+    {
+      "name": "Check Preconditions",
+      "preconditions": [
+        {
+          "context": {
+            "expression": "\"${#stage('Evaluate Variables INCA Variables')['status']}\" == \"SUCCEEDED\" or \"${#stage('Evaluate Variables INCA Variables')['status']}\" == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Evaluate Variables Base Platform Variables')['status']}\" == \"SUCCEEDED\" or \"${#stage('Evaluate Variables Base Platform Variables')['status']}\" == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        }
+      ],
+      "refId": "Check Preconditions",
+      "requisiteStageRefIds": [
+        "Evaluate Variables INCA Variables",
+        "Evaluate Variables Base Platform Variables"
+      ],
+      "type": "checkPreconditions"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "OSS-Integration-Set-Get-Base-Platform-Baseline-App-Versions",
+      "master": "oss-fem7s11-eiffel216",
+      "name": "Set New Baseline",
+      "parameters": {
+        "AGENT_LABEL": "evo_docker_engine",
+        "ARMDOCKER_USER_SECRET": "ciloopman-docker-auth-config",
+        "CHART_NAME": "${parameters['CHART_NAME']}",
+        "CHART_REPO": "${parameters['CHART_REPO']}",
+        "CHART_VERSION": "${parameters['CHART_VERSION']}",
+        "CI_DOCKER_IMAGE": "armdocker.rnd.ericsson.se/proj-eric-oss-drop/eric-oss-ci-scripts:default",
+        "FUNCTIONAL_USER_SECRET": "ciloopman-user-creds",
+        "GERRIT_REFSPEC": "refs/heads/master",
+        "HELMFILE_NAME": "base-platform-baseline",
+        "HELMFILE_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm-local/",
+        "HELMFILE_VERSION": "${parameters['BASE_PLATFORM_VERSION']}",
+        "PATH_TO_HELMFILE": "base-platform-baseline",
+        "SPINNAKER_PIPELINE_ID": "${execution['id']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Set New Baseline",
+      "requisiteStageRefIds": [],
+      "stageEnabled": {
+        "expression": "\"${trigger['parameters']['EP_BRANCH']}\" != \"master\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    }
+  ],
+  "tags": [
+    {
+      "name": "BASE_PLATFORM",
+      "value": "Base-Platform-Baseline-Generation"
+    }
+  ],
+  "triggers": []
+}

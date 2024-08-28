@@ -1,0 +1,718 @@
+{
+  "appConfig": {},
+  "disabled": false,
+  "keepWaitingPipelines": false,
+  "limitConcurrent": false,
+  "application": "base-platform-staging",
+  "name": "base-platform-staging-daily-tls-flow",
+  "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten.",
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "Template name: base-platform-staging-daily-tls-flow.json (base_platform/standalone_flows) in repo OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources",
+    "ui": true
+  },
+  "notifications": [
+    {
+      "address": "pdleowanop@pdl.internal.ericsson.com",
+      "level": "pipeline",
+      "message": {
+        "pipeline.failed": {
+          "text": "The pipeline has failed."
+        }
+      },
+      "type": "email",
+      "when": [
+        "pipeline.failed"
+      ]
+    }
+  ],
+  "parameterConfig": [
+    {
+      "default": "eric-eiae-helmfile",
+      "description": "Name of the integration chart which will be used for the Initial install",
+      "hasOptions": false,
+      "label": "",
+      "name": "INT_CHART_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "0.0.0",
+      "description": "Version of the Integration Chart which will be used for the Initial Install",
+      "hasOptions": false,
+      "label": "",
+      "name": "INT_CHART_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm-local",
+      "description": "Repo of the Integration Chart which will be used for the Initial Install",
+      "hasOptions": false,
+      "label": "",
+      "name": "INT_CHART_REPO",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "sep sef",
+      "description": "Site values tags which has to be set to true during deployment",
+      "hasOptions": false,
+      "label": "",
+      "name": "TAGS",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "site-values/idun/ci/template/site-values-latest.yaml",
+      "description": "The Path where all the necessary site values are located for the install/upgrade",
+      "hasOptions": false,
+      "label": "",
+      "name": "PATH_TO_SITE_VALUES_FILE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "site-values/idun/ci/override/override-site-values-base-platform-tls-disabled-iam-replica-1.yaml",
+      "description": "Path within the Repo to the location of the site values override file. Content of this file will override the content for the site values set in the FULL_PATH_TO_SITE_VALUES_FILE paramater.",
+      "hasOptions": false,
+      "label": "",
+      "name": "PATH_TO_SITE_VALUES_OVERRIDE_FILE_TLS_DISABLED",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "site-values/idun/ci/override/override-site-values-base-platform-tls-enabled-iam-replica-1.yaml",
+      "description": "Path within the Repo to the location of the site values override file. Content of this file will override the content for the site values set in the FULL_PATH_TO_SITE_VALUES_FILE paramater.",
+      "hasOptions": false,
+      "label": "",
+      "name": "PATH_TO_SITE_VALUES_OVERRIDE_FILE_TLS_ENABLED",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "false",
+      "description": "Set this parameter to true if you wish for the environment to be quarantined if the deployment flow false",
+      "hasOptions": false,
+      "label": "",
+      "name": "QUARANTINE_ENV",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "oss-common-ci/ci-infrastructure/pooling/resources",
+      "description": "This is the directory within the Repo specified within the Gather-Env-Details Jenkins job where to find the pooling environment details",
+      "hasOptions": false,
+      "label": "",
+      "name": "ENV_DETAILS_DIR",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "base-staging",
+      "description": "This is the label to search for that is attached to the environments in the Lockable Resource Plugin on Jenkins",
+      "hasOptions": false,
+      "label": "",
+      "name": "ENV_LABEL",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "Base Platform Staging TLS Flow",
+      "description": "Flow URL Tag is used when locking the environment to add a tag to describe what has locked the environment for easier tracking",
+      "hasOptions": false,
+      "label": "",
+      "name": "FLOW_URL_TAG",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "240",
+      "description": "This is the time to wait for an Environment to become available. After the time expires the job will fail out",
+      "hasOptions": false,
+      "label": "",
+      "name": "WAIT_TIME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "evo_docker_engine_gic_IDUN",
+      "description": "Label to choose which Jenkins slave to execute Jenkinsfiles against",
+      "hasOptions": false,
+      "label": "",
+      "name": "SLAVE_LABEL",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "ossapps100-user-creds",
+      "description": "Functional user for logging into armdocker",
+      "hasOptions": false,
+      "label": "",
+      "name": "FUNCTIONAL_USER_SECRET",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "2000",
+      "description": "Timeout for helmfile deploy",
+      "hasOptions": false,
+      "label": "",
+      "name": "HELM_TIMEOUT",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "false",
+      "description": "",
+      "hasOptions": true,
+      "label": "",
+      "name": "SKIP_CHART_RELEASE",
+      "options": [
+        {
+          "value": "true"
+        },
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "true",
+      "description": "",
+      "hasOptions": true,
+      "label": "",
+      "name": "DEPLOY_WITH_SERVICE_MESH",
+      "options": [
+        {
+          "value": "true"
+        },
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "true",
+      "description": "Set to true to use the Deploymet Manager function \"prepare\" to generate the site values file",
+      "hasOptions": false,
+      "label": "",
+      "name": "USE_DM_PREPARE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "PLATFORM",
+      "description": "Backup scope",
+      "hasOptions": false,
+      "label": "",
+      "name": "BACKUP_SCOPE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "true",
+      "description": "Set to true to use \"--use-certm\" flag during deployment",
+      "hasOptions": true,
+      "label": "USE_CERTM_FOR_STATE",
+      "name": "USE_CERTM_FOR_STATE",
+      "options": [
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "gas-user",
+      "description": "The value for the GAS user username",
+      "hasOptions": false,
+      "label": "",
+      "name": "GAS_USER_USERNAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "Ericsson123!",
+      "description": "The value for the GAS user password",
+      "hasOptions": false,
+      "label": "",
+      "name": "GAS_USER_PASSWORD",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    }
+  ],
+  "schema": "1",
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "OSS-Integration-Get-Latest-ChartOrHelmfile",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Get Latest Helmfile Version",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "ossapps100-arm-docker-auth-config",
+        "FUNCTIONAL_USER_SECRET": "ossapps100-user-credentials",
+        "INT_CHART_NAME": "${parameters['INT_CHART_NAME']}",
+        "INT_CHART_REPO": "${parameters['INT_CHART_REPO']}",
+        "INT_CHART_VERSION": "${parameters['INT_CHART_VERSION']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Get Latest Helmfile Version",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "application": "base-platform-e2e-cicd",
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "BP-Reserve_Namespace",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Reserve Namespace",
+      "parameters": {
+        "ENV_LABEL": "${parameters['ENV_LABEL']}",
+        "FLOW_URL": "https://spinnaker.rnd.gic.ericsson.se/#/applications/${execution['application']}/executions/details/${execution.id}",
+        "FLOW_URL_TAG": "${parameters['FLOW_URL_TAG']}",
+        "WAIT_TIME": "${parameters['WAIT_TIME']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Reserve Namespace",
+      "requisiteStageRefIds": [
+        "Get Latest Helmfile Version"
+      ],
+      "stageTimeoutMs": 28800000,
+      "type": "jenkins",
+      "waitForCompletion": true
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "OSS-Integration-Gather-Env-Details",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Get Env Details",
+      "parameters": {
+        "ENV_DETAILS_DIR": "${parameters['ENV_DETAILS_DIR']}",
+        "ENV_NAME": "${#stage(\"Reserve Namespace\")[\"context\"][\"RESOURCE_NAME\"]}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Get Env Details",
+      "requisiteStageRefIds": [
+        "Reserve Namespace"
+      ],
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failOnFailedExpressions": true,
+      "failPipeline": false,
+      "name": "Define Hostnames",
+      "refId": "Define Hostnames",
+      "requisiteStageRefIds": [
+        "Get Env Details"
+      ],
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "PATH_TO_CERTIFICATES_FILES",
+          "value": "${#stage(\"Get Env Details\")[\"context\"][\"PATH_TO_CERTIFICATES_FILES\"]}"
+        },
+        {
+          "key": "IAM_HOSTNAME",
+          "value": "${#stage(\"Get Env Details\")[\"context\"][\"IAM_HOST_REPLACE\"]}"
+        },
+        {
+          "key": "GAS_HOSTNAME",
+          "value": "${#stage(\"Get Env Details\")[\"context\"][\"GAS_HOST_REPLACE\"]}"
+        },
+        {
+          "key": "BDR_HOSTNAME",
+          "value": "${ #stage(\"Get Env Details\")[\"context\"][\"BDR_HOST_REPLACE\"] }"
+        },
+        {
+          "key": "SFTP_NAMESPACE",
+          "value": "${ #stage(\"Get Env Details\")[\"context\"][\"SFTP_NAMESPACE\"] }"
+        }
+      ]
+    },
+    {
+      "application": "common-e2e-cicd",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Install with TLS Disabled",
+      "pipeline": "4ec4b5df-b15b-4b90-afaf-4bf96ccf1a7c",
+      "pipelineParameters": {
+        "ARMDOCKER_USER_SECRET": "ossapps100-arm-docker-auth-config",
+        "DEPLOY_ALL_CRDS": "true",
+        "ENV_CONFIG_FILE": "${trigger.parameters['ENV_DETAILS_DIR']}/${#stage(\"Reserve Namespace\")[\"context\"][\"RESOURCE_NAME\"]}.conf",
+        "ENV_NAME": "${#stage(\"Reserve Namespace\")[\"context\"][\"RESOURCE_NAME\"]}",
+        "FULL_PATH_TO_SITE_VALUES_FILE": "${parameters['PATH_TO_SITE_VALUES_FILE']}",
+        "FUNCTIONAL_USER_SECRET": "${parameters['FUNCTIONAL_USER_SECRET']}",
+        "GAS_USER_PASSWORD": "${trigger['parameters']['GAS_USER_PASSWORD']}",
+        "GAS_USER_USERNAME": "${trigger['parameters']['GAS_USER_USERNAME']}",
+        "HELM_TIMEOUT": "${parameters['HELM_TIMEOUT']}",
+        "INT_CHART_NAME": "eric-eiae-helmfile",
+        "INT_CHART_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm-local",
+        "INT_CHART_VERSION": "${#stage(\"Get Latest Helmfile Version\")[\"context\"][\"INT_CHART_VERSION\"]}",
+        "KUBE_CONFIG": "${#stage(\"Get Env Details\")[\"context\"][\"KUBE_CONFIG\"]}",
+        "NAMESPACE": "${#stage(\"Get Env Details\")[\"context\"][\"NAMESPACE\"]}",
+        "PATH_TO_CERTIFICATES_FILES": "oss-common-ci/${PATH_TO_CERTIFICATES_FILES}",
+        "PATH_TO_SITE_VALUES_FILE": "${parameters['PATH_TO_SITE_VALUES_FILE']}",
+        "PATH_TO_SITE_VALUES_OVERRIDE_FILE": "${parameters['PATH_TO_SITE_VALUES_OVERRIDE_FILE_TLS_DISABLED']}",
+        "TAGS": "${parameters['TAGS']}",
+        "UNRESERVE_ENVIRONMENT": "false",
+        "USE_CERTM": "${parameters['USE_CERTM_FOR_STATE']}",
+        "USE_DM_PREPARE": "${parameters['USE_DM_PREPARE']}"
+      },
+      "refId": "Install with TLS Disabled",
+      "requisiteStageRefIds": [
+        "Define Hostnames"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Get Env Details')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "EO_BUR_Run_Backup",
+      "master": "oss-aispinn-fem5s11-eiffel052",
+      "name": "Run Backup",
+      "parameters": {
+        "ACTION": "create",
+        "AGENT_LABEL": "evo_docker_engine_gic",
+        "BACKUP_DIRECTORY": "bp-backup",
+        "BACKUP_SCOPE": "${parameters['BACKUP_SCOPE']}",
+        "CLUSTER_KUBECONFIG": "${#stage(\"Get Env Details\")[\"context\"][\"KUBE_CONFIG\"]}",
+        "DEBUG_MODE": "yes",
+        "EO_CHART_VERSION": "latest",
+        "FULL_PATH_TO_SITE_VALUES_FILE": "site-values/eo_helmfile_site_values.yaml",
+        "HOST_URL": "https://${GAS_HOSTNAME}",
+        "NAMESPACE": "${#stage(\"Get Env Details\")[\"context\"][\"NAMESPACE\"]}",
+        "SFTP_NAMESPACE": "${SFTP_NAMESPACE}",
+        "SFTP_SERVER_PATH": "bur-sftp-svc.${SFTP_NAMESPACE}:22/eso/",
+        "USER_PASSWORD": "${trigger['parameters']['GAS_USER_PASSWORD']}",
+        "USER_USERNAME": "${trigger['parameters']['GAS_USER_USERNAME']}"
+      },
+      "refId": "Run Backup",
+      "requisiteStageRefIds": [
+        "Install with TLS Disabled"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Install with TLS Disabled')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "Downscale-SEF-Replicas",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Downscale SEF Replicas",
+      "parameters": {
+        "KUBECONFIG_FILE": "${#stage(\"Get Env Details\")[\"context\"][\"KUBE_CONFIG\"]}",
+        "NAMESPACE": "${#stage(\"Get Env Details\")[\"context\"][\"NAMESPACE\"]}"
+      },
+      "refId": "Downscale SEF Replicas",
+      "requisiteStageRefIds": [
+        "Run Backup"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Run Backup')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failOnFailedExpressions": false,
+      "failPipeline": false,
+      "job": "OSS-Integration-Helmfile-Deploy",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Upgrade using Helmfile",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "ossapps100-arm-docker-auth-config",
+        "CRD_NAMESPACE": "eric-crd-ns",
+        "DDP_AUTO_UPLOAD": "${DDP_AUTO_UPLOAD}",
+        "DEPLOYMENT_TYPE": "upgrade",
+        "DEPLOY_ALL_CRDS": "true",
+        "ENV_CONFIG_FILE": "${trigger.parameters['ENV_DETAILS_DIR']}/${#stage(\"Reserve Namespace\")[\"context\"][\"RESOURCE_NAME\"]}.conf",
+        "FULL_PATH_TO_SITE_VALUES_FILE": "${parameters['PATH_TO_SITE_VALUES_FILE']}",
+        "FUNCTIONAL_USER_SECRET": "ossapps100-user-creds",
+        "HELM_TIMEOUT": "${parameters['HELM_TIMEOUT']}",
+        "INT_CHART_NAME": "eric-eiae-helmfile",
+        "INT_CHART_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm-local",
+        "INT_CHART_VERSION": "${#stage(\"Get Latest Helmfile Version\")[\"context\"][\"INT_CHART_VERSION\"]}",
+        "KUBECONFIG_FILE": "${#stage(\"Get Env Details\")[\"context\"][\"KUBE_CONFIG\"]}",
+        "NAMESPACE": "${#stage(\"Get Env Details\")[\"context\"][\"NAMESPACE\"]}",
+        "PATH_TO_CERTIFICATES_FILES": "oss-common-ci/${#stage('Get Env Details')['context']['PATH_TO_CERTIFICATES_FILES']}",
+        "PATH_TO_SITE_VALUES_OVERRIDE_FILE": "${parameters['PATH_TO_SITE_VALUES_OVERRIDE_FILE_TLS_ENABLED']}",
+        "TAGS": "${parameters['TAGS']}",
+        "USE_CERTM": "${parameters['USE_CERTM_FOR_STATE']}",
+        "USE_DM_PREPARE": "true",
+        "USE_SKIP_UPGRADE_FOR_UNCHANGED_RELEASES": "true"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Upgrade with TLS Enabled",
+      "requisiteStageRefIds": [
+        "Downscale SEF Replicas"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Downscale SEF Replicas')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "EO_BUR_Run_Backup",
+      "master": "oss-aispinn-fem5s11-eiffel052",
+      "name": "Run Restore",
+      "parameters": {
+        "ACTION": "restore",
+        "AGENT_LABEL": "evo_docker_engine_gic",
+        "BACKUP_DIRECTORY": "bp-backup",
+        "BACKUP_SCOPE": "${parameters['BACKUP_SCOPE']}",
+        "CLUSTER_KUBECONFIG": "${#stage(\"Get Env Details\")[\"context\"][\"KUBE_CONFIG\"]}",
+        "DEBUG_MODE": "yes",
+        "EO_CHART_VERSION": "latest",
+        "FULL_PATH_TO_SITE_VALUES_FILE": "site-values/eo_helmfile_site_values.yaml",
+        "HOST_URL": "https://${GAS_HOSTNAME}",
+        "NAMESPACE": "${#stage(\"Get Env Details\")[\"context\"][\"NAMESPACE\"]}",
+        "SFTP_NAMESPACE": "${SFTP_NAMESPACE}",
+        "SFTP_SERVER_PATH": "bur-sftp-svc.${SFTP_NAMESPACE}:22/eso/",
+        "USER_PASSWORD": "${trigger['parameters']['GAS_USER_PASSWORD']}",
+        "USER_USERNAME": "${trigger['parameters']['GAS_USER_USERNAME']}"
+      },
+      "refId": "Run Restore",
+      "requisiteStageRefIds": [
+        "Upgrade with TLS Enabled"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Upgrade with TLS Enabled')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "Collect_K8S_logs",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Log Collection on Failure",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "ossapps100-arm-docker-auth-config",
+        "KUBECONFIG_FILE": "${#stage(\"Get Env Details\")[\"context\"][\"KUBE_CONFIG\"]}",
+        "NAMESPACE": "${#stage(\"Get Env Details\")[\"context\"][\"NAMESPACE\"]}"
+      },
+      "refId": "Log Collection on Failure",
+      "requisiteStageRefIds": [
+        "Run Restore"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Run Restore')['status']}\" != \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "application": "common-e2e-cicd",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Redeploy Namespace",
+      "parameters": {},
+      "pipeline": "4ec4b5df-b15b-4b90-afaf-4bf96ccf1a7c",
+      "pipelineParameters": {
+        "ARMDOCKER_USER_SECRET": "ossapps100-arm-docker-auth-config",
+        "DEPLOY_ALL_CRDS": "true",
+        "ENV_CONFIG_FILE": "${trigger.parameters['ENV_DETAILS_DIR']}/${#stage(\"Reserve Namespace\")[\"context\"][\"RESOURCE_NAME\"]}.conf",
+        "ENV_NAME": "${#stage(\"Reserve Namespace\")[\"context\"][\"RESOURCE_NAME\"]}",
+        "FULL_PATH_TO_SITE_VALUES_FILE": "${parameters['PATH_TO_SITE_VALUES_FILE']}",
+        "FUNCTIONAL_USER_SECRET": "${parameters['FUNCTIONAL_USER_SECRET']}",
+        "GAS_USER_PASSWORD": "${trigger['parameters']['GAS_USER_PASSWORD']}",
+        "GAS_USER_USERNAME": "${trigger['parameters']['GAS_USER_USERNAME']}",
+        "HELM_TIMEOUT": "${parameters['HELM_TIMEOUT']}",
+        "INT_CHART_NAME": "eric-eiae-helmfile",
+        "INT_CHART_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm-local",
+        "INT_CHART_VERSION": "${#stage(\"Get Latest Helmfile Version\")[\"context\"][\"INT_CHART_VERSION\"]}",
+        "KUBE_CONFIG": "${#stage(\"Get Env Details\")[\"context\"][\"KUBE_CONFIG\"]}",
+        "NAMESPACE": "${#stage(\"Get Env Details\")[\"context\"][\"NAMESPACE\"]}",
+        "PATH_TO_CERTIFICATES_FILES": "oss-common-ci/${PATH_TO_CERTIFICATES_FILES}",
+        "PATH_TO_SITE_VALUES_FILE": "${parameters['PATH_TO_SITE_VALUES_FILE']}",
+        "PATH_TO_SITE_VALUES_OVERRIDE_FILE": "${parameters['PATH_TO_SITE_VALUES_OVERRIDE_FILE_TLS_ENABLED']}",
+        "RESOURCE_NAME": "${#stage(\"Get Env Details\")[\"context\"][\"RESOURCE_NAME\"]}",
+        "TAGS": "${parameters['TAGS']}",
+        "UNRESERVE_ENVIRONMENT": "true",
+        "USE_CERTM": "${parameters['USE_CERTM_FOR_STATE']}",
+        "USE_DM_PREPARE": "${parameters['USE_DM_PREPARE']}"
+      },
+      "refId": "Redeploy Namespace",
+      "requisiteStageRefIds": [
+        "Log Collection on Failure",
+        "Run Restore"
+      ],
+      "type": "pipeline",
+      "waitForCompletion": false
+    },
+    {
+      "name": "Flow Completed",
+      "preconditions": [
+        {
+          "context": {
+            "expression": "\"${#stage('Upgrade with TLS Enabled')['status']}\" == \"SUCCEEDED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Install with TLS Disabled')['status']}\" == \"SUCCEEDED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Run Backup')['status']}\" == \"SUCCEEDED\" or \"${#stage('Run Backup')['status']}\" == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Run Restore')['status']}\" == \"SUCCEEDED\" or \"${#stage('Run Restore')['status']}\" == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        }
+      ],
+      "refId": "Flow Completed",
+      "requisiteStageRefIds": [
+        "Redeploy Namespace"
+      ],
+      "type": "checkPreconditions"
+    }
+  ],
+  "triggers": [
+    {
+      "cronExpression": "0 0 */6 * * ?",
+      "enabled": true,
+      "id": "d0a730da-a39f-4a47-a495-df4dc340ca13",
+      "type": "cron"
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+SPINNAKER_APPLICATION_NAME,SPINNAKER_PIPELINE_NAME,NOTIFICATION_ADDRESS
+eiap-release-e2e-cicd,eiap-traditional-release-install-flow,james.mackenzie@ericsson.com

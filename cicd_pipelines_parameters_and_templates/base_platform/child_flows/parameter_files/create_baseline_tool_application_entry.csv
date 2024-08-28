@@ -1,0 +1,8 @@
+SPINNAKER_APPLICATION_NAME,APP_SHORT_NAME_UPPERCASE,APPLICATION_STAGING_PIPELINE_ID
+base-platform-common-base-e2e-cicd,COMMON_BASE,3fc58679-e9c4-43fb-8724-92d2d758ddef
+base-platform-cloud-native-base-e2e-cicd,CLOUD_NATIVE_BASE,9937ea86-a604-49ac-8862-b9a91d0e7fe9
+base-platform-service-mesh-e2e-cicd,CLOUD_NATIVE_SERVICE_MESH,3f95b96f-530c-4e2e-a095-91a2b2cf9b5d
+base-platform-sep-e2e-cicd,SEP,5f5bb197-c7ba-4208-af57-0d31aede6c68
+base-platform-sef-e2e-cicd,SEF,af5e1e73-7bcf-4110-be6c-31e97407cdeb
+base-platform-cnbase-config-e2e-cicd,CNBASE_CONFIG,ae8f805c-beda-42b7-a485-f6ce43e04d66
+base-platform-cncs-config-e2e-cicd,CNCS_CONFIG,499acb3b-d8c2-436e-ad2f-389977e83f60

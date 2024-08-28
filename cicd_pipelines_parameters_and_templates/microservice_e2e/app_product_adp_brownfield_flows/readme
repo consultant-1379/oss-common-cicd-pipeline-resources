@@ -1,0 +1,11 @@
+This template generates an e2e microservice flow for ADP microservices taken into IDUN brownfield applications.
+Brownfield applications are the applications that existed prior to EIAP.
+These flows do not have an automatic trigger but are called by the ADP e2e cicd flows once ADP staging is complete
+Example: https://spinnaker.rnd.gic.ericsson.se/#/projects/oss_e2e_cicd/applications/uds-e2e-cicd/executions?pipeline=eric-oss-data-wide-column-database-cd-E2E-Flow
+
+These microservices can be taken into the following products:
+  IDUN
+  EO
+
+List of Applications:
+  UDS

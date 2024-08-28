@@ -1,0 +1,70 @@
+{
+    "appConfig": {},
+    "application": "SPINNAKER_APPLICATION_NAME",
+    "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten. Template name: product_staging_create_rcd_json.json in repo https://gerrit.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources",
+    "disabled": false,
+    "name": "SPINNAKER_PIPELINE_NAME",
+    "keepWaitingPipelines": false,
+    "limitConcurrent": false,
+    "locked": {
+        "allowUnlockUi": true,
+        "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+        "ui": true
+      },
+    "notifications": [
+      {
+        "address": "NOTIFICATION_ADDRESS",
+        "level": "pipeline",
+        "message": {
+          "pipeline.failed": {
+            "text": "The product staging create pipeline has failed"
+          }
+        },
+        "type": "email",
+        "when": [
+          "pipeline.failed"
+        ]
+      }
+    ],
+    "spelEvaluator": "v4",
+    "stages": [
+      {
+        "method": "GET",
+        "name": "Get last successful run from PED",
+        "refId": "Get last successful run from PED",
+        "requisiteStageRefIds": [],
+        "statusUrlResolution": "getMethod",
+        "type": "webhook",
+        "url": "https://ped.ews.gic.ericsson.se/api/v1/pipeline-executions?sortField=start&sortOrder=ascending&q=status:%22SUCCEEDED%22%20AND%20spinnakerPipelineName:%22product-staging%22%20AND%20start:%2B${new java.text.SimpleDateFormat('dd.MM.yyyy').format(new java.util.Date())}&indexes=[0,1]"
+      },
+      {
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": true,
+        "failPipeline": false,
+        "job": "CICD-UTILS-Create-Rcd-Json",
+        "master": "oss-fem5s11-eiffel216",
+        "name": "Create-Rcd-Json",
+        "parameters": {
+          "PRODUCT_NAME": "EIC",
+          "PRODUCT_SET": "${#stage('Get last successful run from PED')['context']['webhook']['body'][0]['productVersion']}",
+          "SPINNAKER_PIPELINE_ID": "${#stage('Get last successful run from PED')['context']['webhook']['body'][0]['executionId']}"
+        },
+        "refId": "CICD-UTILS-Create-Rcd-Json",
+        "requisiteStageRefIds": [
+          "Get last successful run from PED"
+        ],
+        "stageEnabled": {
+          "expression": "${#stage('Get last successful run from PED')['status'] == 'SUCCEEDED' && #stage('Get last successful run from PED')['context']['webhook']['body'] != null && #stage('Get last successful run from PED')['context']['webhook']['body'].size() > 0}",
+          "type": "expression"
+        },
+        "type": "jenkins"
+      }
+    ],
+    "triggers": [
+      {
+        "cronExpression": "0 0 17 1/1 * ? *",
+        "enabled": true,
+        "type": "cron"
+      }
+    ]
+  }

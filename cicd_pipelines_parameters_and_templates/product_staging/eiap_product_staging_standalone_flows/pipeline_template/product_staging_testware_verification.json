@@ -1,0 +1,554 @@
+{
+    "appConfig": {},
+    "application": "SPINNAKER_APPLICATION_NAME",
+    "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten. Template name: product_staging_testware_verification.json in repo https://gerrit.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources",
+    "disabled": false,
+    "name": "SPINNAKER_PIPELINE_NAME",
+    "keepWaitingPipelines": false,
+    "limitConcurrent": false,
+    "locked": {
+        "allowUnlockUi": true,
+        "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+        "ui": true
+      },
+    "notifications": [
+      {
+        "address": "NOTIFICATION_ADDRESS",
+        "level": "pipeline",
+        "message": {
+          "pipeline.failed": {
+            "text": "The product staging testware verification pipeline has failed"
+          }
+        },
+        "type": "email",
+        "when": [
+          "pipeline.failed"
+        ]
+      }
+    ],
+    "parameterConfig": [
+      {
+        "default": "",
+        "description": "New TW version to be tested via a gerrit ref spec",
+        "hasOptions": false,
+        "label": "TW_GERRIT_REFSPEC",
+        "name": "TW_GERRIT_REFSPEC",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": true,
+        "required": false
+      },
+      {
+        "default": "adc th dmm eas appmgr ch os pmh ml sef tieh",
+        "description": "Applications that should be switch on during deployment",
+        "hasOptions": false,
+        "label": "TAGS",
+        "name": "TAGS",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": false,
+        "required": true
+      },
+      {
+        "default": "false",
+        "description": "Set this parameter to true if you wish for the environment to be quarantined if the deployment flow false",
+        "hasOptions": false,
+        "label": "",
+        "name": "QUARANTINE_ENV",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": false,
+        "required": true
+      },
+      {
+        "default": "Product_Staging",
+        "description": "RCR Tag is used to identify the environment by Report Center Registration Stage",
+        "hasOptions": false,
+        "label": "",
+        "name": "RCR_TAG",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": false,
+        "required": true
+      },
+      {
+        "default": "eo-integration-ci/honeypots/pooling/environments",
+        "description": "This is the directory within the Repo specified within the Gather-Env-Details Jenkins job where to find the pooling environment details",
+        "hasOptions": false,
+        "label": "",
+        "name": "ENV_DETAILS_DIR",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": false,
+        "required": true
+      },
+      {
+        "default": "PSO_helmfile_flow",
+        "description": "This is the label to search for that is attached to the environments in the Lockable Resource Plugin on Jenkins",
+        "hasOptions": false,
+        "label": "",
+        "name": "ENV_LABEL",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": false,
+        "required": true
+      },
+      {
+        "default": "Product  Staging",
+        "description": "Flow URL Tag is used when locking the environment to add a tag to describe what has locked the environment for easier tracking",
+        "hasOptions": false,
+        "label": "",
+        "name": "FLOW_URL_TAG",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": false,
+        "required": true
+      },
+      {
+        "default": "120",
+        "description": "This is the time to wait for an Environment to become available. After the time expires the job will fail out",
+        "hasOptions": false,
+        "label": "",
+        "name": "WAIT_TIME",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": false,
+        "required": true
+      },
+      {
+        "default": "evo_docker_engine_gic_IDUN_PSO",
+        "description": "Label to choose which Jenkins slave to execute Jenkinsfiles against",
+        "hasOptions": false,
+        "label": "",
+        "name": "SLAVE_LABEL",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": false,
+        "required": true
+      },
+      {
+        "default": "ossapps100-user-creds",
+        "description": "Functional user for logging into armdocker",
+        "hasOptions": false,
+        "label": "",
+        "name": "FUNCTIONAL_USER_SECRET",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "PSO_Standby",
+        "description": "Name of the pool containing 'Standby' test environments.",
+        "hasOptions": false,
+        "label": "",
+        "name": "STANDBY_POOL_NAME",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": false,
+        "required": false
+      },
+      {
+        "default": "PSO_helmfile_flow",
+        "description": "Name of the pool containing current environment being used in the Product Staging pipeline.",
+        "hasOptions": false,
+        "label": "",
+        "name": "PSO_FLOW_POOL_NAME",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": false,
+        "required": false
+      }
+    ],
+    "spelEvaluator": "v4",
+    "stages": [
+      {
+        "application": "product-e2e-cicd",
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": true,
+        "failPipeline": false,
+        "name": "Reserve Environment",
+        "pipeline": "0fbc3d73-7b81-4d26-9d30-f05fc56ffa49",
+        "pipelineParameters": {
+          "ENV_DETAILS_DIR": "${trigger['parameters']['ENV_DETAILS_DIR']}",
+          "ENV_LABEL": "${trigger['parameters']['ENV_LABEL']}",
+          "FLOW_URL_TAG": "${trigger['parameters']['FLOW_URL_TAG']}",
+          "SPINNAKER_FLOW_ID": "${execution['id']}",
+          "WAIT_TIME": "${trigger['parameters']['WAIT_TIME']}"
+        },
+        "refId": "Reserve Environment",
+        "requisiteStageRefIds": [],
+        "type": "pipeline",
+        "waitForCompletion": true
+      },
+      {
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": true,
+        "failPipeline": false,
+        "job": "Staging-Report-Register",
+        "master": "oss-fem4s11-eiffel216",
+        "name": "Report Center Registration",
+        "parameters": {
+          "EXEC_ID": "${execution.id}"
+        },
+        "refId": "Report Center Registration",
+        "requisiteStageRefIds": [],
+        "type": "jenkins"
+      },
+      {
+        "application": "banba",
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": true,
+        "failPipeline": false,
+        "name": "Start & Assert K6 Continuous Tests",
+        "pipeline": "05bae15e-417d-408a-95dc-4dfec1850b5a",
+        "pipelineParameters": {
+          "ADC_HOSTNAME": "${#stage(\"Reserve Environment\")[\"context\"][\"EO_ADC_HOSTNAME\"]}",
+          "AE_SKIP_TESTS": "oss-common-base-test",
+          "APP_MGR_HOSTNAME": "${#stage(\"Reserve Environment\")[\"context\"][\"EO_APPMGR_HOSTNAME\"]}",
+          "BDR_HOSTNAME": "${#stage(\"Reserve Environment\")[\"context\"][\"EO_BDR_HOSTNAME\"]}",
+          "CONFIG_FILES": ["main_single_iteration.json", "main_eic_app_manager_load.json", "main_eic_configuration_handling_load.json", "main_eic_ui_portal_load.json"],
+          "DEPLOYMENT_NAME": "${#stage(\"Reserve Environment\")[\"context\"][\"RESOURCE_NAME\"]}",
+          "ECM_HOSTNAME": "stsvp1aeocm09-175.stsoss.sero.gic.ericsson.se",
+          "ENM_HOSTNAME": "${#stage(\"Reserve Environment\")[\"context\"][\"ENM_HOSTNAME\"]}",
+          "GAS_HOSTNAME": "${#stage(\"Reserve Environment\")[\"context\"][\"EO_GAS_HOSTNAME\"]}",
+          "EIC_HOSTNAME": "${#stage(\"Reserve Environment\")[\"context\"][\"EO_EIC_HOSTNAME\"]}",
+          "GERRIT_REFSPEC": "${trigger['parameters']['TW_GERRIT_REFSPEC']}",
+          "IAM_HOSTNAME": "${#stage(\"Reserve Environment\")[\"context\"][\"IAM_HOSTNAME\"]}",
+          "KAFKA_HOSTNAME": "${#stage(\"Reserve Environment\")[\"context\"][\"EO_KAFKA_BOOTSTRAP_HOSTNAME\"]}",
+          "KUBE_CONFIG": "${#stage(\"Reserve Environment\")[\"context\"][\"KUBE_CONFIG\"]}",
+          "NAMESPACE": "${#stage(\"Reserve Environment\")[\"context\"][\"NAMESPACE\"]}",
+          "RUN_CHARACTERISTICS": "true",
+          "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+          "TH_HOSTNAME": "${#stage(\"Reserve Environment\")[\"context\"][\"EO_TH_HOSTNAME\"]}"
+        },
+        "refId": "Start & Assert K6 Continuous Tests",
+        "requisiteStageRefIds": [
+          "Reserve Environment"
+        ],
+        "stageEnabled": {
+          "expression": "\"${#stage('Reserve Environment')['status']}\" == \"SUCCEEDED\"",
+          "type": "expression"
+        },
+        "type": "pipeline",
+        "waitForCompletion": true
+      },
+      {
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": true,
+        "failOnFailedExpressions": false,
+        "failPipeline": false,
+        "name": "Post TW Gate",
+        "preconditions": [
+          {
+            "context": {
+              "expression": "\"${#stage('Reserve Environment')['status']}\" == \"SUCCEEDED\" or \"${#stage('Reserve Environment')['status']}\" == \"SKIPPED\""
+            },
+            "failPipeline": true,
+            "type": "expression"
+          },
+          {
+            "context": {
+              "expression": "\"${#stage('Start & Assert K6 Continuous Tests')['status']}\" == \"SUCCEEDED\" or \"${#stage('Start & Assert K6 Continuous Tests')['status']}\" == \"SKIPPED\""
+            },
+            "failPipeline": true,
+            "type": "expression"
+          }
+        ],
+        "refId": "Post TW Gate",
+        "requisiteStageRefIds": [
+          "Start & Assert K6 Continuous Tests"
+        ],
+        "type": "checkPreconditions"
+      },
+      {
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": true,
+        "failPipeline": false,
+        "job": "RPT-RC_Quarantine-Environment",
+        "master": "oss-fem5s11-eiffel216",
+        "name": "Quarantine Environment",
+        "parameters": {
+          "ENV_NAME": "${#stage(\"Reserve Environment\")[\"context\"][\"RESOURCE_NAME\"]}"
+        },
+        "refId": "Quarantine Environment",
+        "requisiteStageRefIds": [
+          "Post TW Gate"
+        ],
+        "stageEnabled": {
+          "expression": "${trigger['parameters']['QUARANTINE_ENV'].contains('true')} and \"${#stage('Post TW Gate')['status']}\" != \"SUCCEEDED\" and \"${#stage('Reserve Environment')['status']}\" == \"SUCCEEDED\"",
+          "type": "expression"
+        },
+        "type": "jenkins"
+      },
+      {
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": true,
+        "failPipeline": false,
+        "job": "RPT-RC_Update_Freshest_Standby_Environment_To_Available_And_Swap_Pool",
+        "master": "oss-fem5s11-eiffel216",
+        "name": "Move Freshest Standby Environment into PSO Pool",
+        "parameters": {
+          "POOL_CONTAINING_STANDBY_ENV": "${parameters[\"STANDBY_POOL_NAME\"]}",
+          "POOL_TO_SWAP_FRESHEST_ENV_TO": "${parameters[\"PSO_FLOW_POOL_NAME\"]}",
+          "SPINNAKER_PIPELINE_ID": "${execution['id']}"
+        },
+        "refId": "Move Freshest Standby Environment into PSO Pool",
+        "requisiteStageRefIds": [
+          "Post TW Gate"
+        ],
+        "stageEnabled": {
+          "expression": "\"${#stage('Reserve Environment')['status']}\" == \"SUCCEEDED\" and \"${#stage('Post TW Gate')['status']}\" == \"FAILED_CONTINUE\" and \"${trigger['parameters']['QUARANTINE_ENV']}\" == \"false\"",
+          "type": "expression"
+        },
+        "type": "jenkins"
+      },
+      {
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": true,
+        "failPipeline": false,
+        "job": "Get-K8S-logs",
+        "master": "oss-aispinn-fem5s11-eiffel052",
+        "name": "Collect Kubernetes Cluster logs",
+        "parameters": {
+          "KUBECONFIG_FILE": "${#stage(\"Reserve Environment\")[\"context\"][\"KUBE_CONFIG\"]}",
+          "NAMESPACE": "${#stage(\"Reserve Environment\")[\"context\"][\"NAMESPACE\"]}",
+          "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}"
+        },
+        "refId": "Collect Kubernetes Cluster logs",
+        "requisiteStageRefIds": [
+          "Post TW Gate"
+        ],
+        "stageEnabled": {
+          "expression": "\"${#stage('Reserve Environment')['status']}\" == \"SUCCEEDED\" and \"${#stage('Post TW Gate')['status']}\" == \"FAILED_CONTINUE\"",
+          "type": "expression"
+        },
+        "type": "jenkins"
+      },
+      {
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": true,
+        "failPipeline": false,
+        "job": "RPT-RC_Unreserve-Environment",
+        "master": "oss-fem5s11-eiffel216",
+        "name": "Unreserve Environment",
+        "parameters": {
+          "ENV_NAME": "${#stage(\"Reserve Environment\")[\"context\"][\"RESOURCE_NAME\"]}"
+        },
+        "propertyFile": "",
+        "refId": "Unreserve Environment",
+        "requisiteStageRefIds": [
+          "Quarantine Environment",
+          "Move Freshest Standby Environment into PSO Pool"
+        ],
+        "stageEnabled": {
+          "expression": "'${#stage('Quarantine Environment')['status']}' == 'SKIPPED' and '${#stage('Move Freshest Standby Environment into PSO Pool')['status']}' == 'SKIPPED' and '${#stage('Reserve Environment')['status']}' == 'SUCCEEDED'",
+          "type": "expression"
+        },
+        "type": "jenkins"
+      },
+      {
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": true,
+        "failPipeline": false,
+        "job": "RPT-RC_Swap_Test_Environment_Pool",
+        "master": "oss-fem5s11-eiffel216",
+        "name": "Move Failed Environment to Standby Pool",
+        "parameters": {
+          "ENV_NAME": "${#stage(\"Reserve Environment\")[\"context\"][\"RESOURCE_NAME\"]}",
+          "POOL_TO_SWAP_ENVIRONMENT_FROM": "${parameters[\"PSO_FLOW_POOL_NAME\"]}",
+          "POOL_TO_SWAP_ENVIRONMENT_TO": "${parameters[\"STANDBY_POOL_NAME\"]}",
+          "SPINNAKER_PIPELINE_ID": "${execution['id']}"
+        },
+        "refId": "Move Failed Environment to Standby Pool",
+        "requisiteStageRefIds": [
+          "Move Freshest Standby Environment into PSO Pool"
+        ],
+        "stageEnabled": {
+          "expression": "\"${#stage('Reserve Environment')['status']}\" == \"SUCCEEDED\" and \"${#stage('Move Freshest Standby Environment into PSO Pool')['status']}\" == \"SUCCEEDED\" and \"${trigger['parameters']['QUARANTINE_ENV']}\" == \"false\"",
+          "type": "expression"
+        },
+        "type": "jenkins"
+      },
+      {
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": true,
+        "failOnFailedExpressions": true,
+        "failPipeline": false,
+        "name": "Evaluate Environment Status",
+        "refId": "Evaluate Environment Status",
+        "requisiteStageRefIds": [
+          "Move Failed Environment to Standby Pool"
+        ],
+        "stageEnabled": {
+          "expression": "\"${#stage('Move Freshest Standby Environment into PSO Pool')['status']}\" == \"SUCCEEDED\" or \"${#stage('Move Freshest Standby Environment into PSO Pool')['status']}\" == \"FAILED_CONTINUE\" or \"${#stage('Move Failed Environment to Standby Pool')['status']}\" == \"SUCCEEDED\"",
+          "type": "expression"
+        },
+        "type": "evaluateVariables",
+        "variables": [
+          {
+            "key": "ENVIRONMENT_STATUS",
+            "value": "${(#stage('Move Freshest Standby Environment into PSO Pool')['status'] == \"SUCCEEDED\") ? \"Standby\" : \"Available\"}"
+          }
+        ]
+      },
+      {
+        "application": "product-e2e-cicd",
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": true,
+        "failPipeline": false,
+        "name": "Redeploy Moved Out Environment",
+        "pipeline": "3c1982f7-475e-47f0-a5eb-44186296651e",
+        "pipelineParameters": {
+          "ENVIRONMENT_STATUS": "${ENVIRONMENT_STATUS}",
+          "ENV_NAME": "${#stage(\"Reserve Environment\")[\"context\"][\"RESOURCE_NAME\"]}",
+          "FUNCTIONAL_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+          "SKIP_UPGRADE": "false",
+          "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+          "TAGS": "${trigger['parameters']['TAGS']}"
+        },
+        "refId": "Redeploy Moved Out Environment",
+        "requisiteStageRefIds": [
+          "Evaluate Environment Status",
+          "Collect Kubernetes Cluster logs",
+          "JenkinsPush Data to DDP"
+        ],
+        "stageEnabled": {
+          "expression": "\"${#stage('Evaluate Environment Status')['status']}\" == \"SUCCEEDED\"",
+          "type": "expression"
+        },
+        "type": "pipeline",
+        "waitForCompletion": false
+      },
+      {
+        "name": "Flow Completed",
+        "preconditions": [
+          {
+            "context": {
+              "expression": "\"${#stage('Start & Assert K6 Continuous Tests')['status']}\" == \"SUCCEEDED\" or \"${#stage('Start & Assert K6 Continuous Tests')['status']}\" == \"SKIPPED\""
+            },
+            "failPipeline": true,
+            "type": "expression"
+          },
+          {
+            "context": {
+              "expression": "\"${#stage('Quarantine Environment')['status']}\" == \"SUCCEEDED\" or \"${#stage('Quarantine Environment')['status']}\" == \"SKIPPED\""
+            },
+            "failPipeline": false,
+            "type": "expression"
+          },
+          {
+            "context": {
+              "expression": "\"${#stage('Unreserve Environment')['status']}\" == \"SUCCEEDED\" or \"${#stage('Unreserve Environment')['status']}\" == \"SKIPPED\""
+            },
+            "failPipeline": true,
+            "type": "expression"
+          },
+          {
+            "context": {
+              "expression": "\"${#stage('Post TW Gate')['status']}\" == \"SUCCEEDED\" or \"${#stage('Post TW Gate')['status']}\" == \"SKIPPED\""
+            },
+            "failPipeline": true,
+            "type": "expression"
+          },
+          {
+            "context": {
+              "expression": "\"${#stage('Move Freshest Standby Environment into PSO Pool')['status']}\" == \"SUCCEEDED\" or \"${#stage('Move Freshest Standby Environment into PSO Pool')['status']}\" == \"SKIPPED\""
+            },
+            "failPipeline": true,
+            "type": "expression"
+          },
+          {
+            "context": {
+              "expression": "\"${#stage('Move Failed Environment to Standby Pool')['status']}\" == \"SUCCEEDED\" or \"${#stage('Move Failed Environment to Standby Pool')['status']}\" == \"SKIPPED\""
+            },
+            "failPipeline": true,
+            "type": "expression"
+          },
+          {
+            "context": {
+              "expression": "\"${#stage('Evaluate Environment Status')['status']}\" == \"SUCCEEDED\" or \"${#stage('Evaluate Environment Status')['status']}\" == \"SKIPPED\""
+            },
+            "failPipeline": true,
+            "type": "expression"
+          },
+          {
+            "context": {
+              "expression": "\"${#stage('Redeploy Moved Out Environment')['status']}\" == \"SUCCEEDED\" or \"${#stage('Redeploy Moved Out Environment')['status']}\" == \"SKIPPED\" or \"${#stage('Redeploy Moved Out Environment')['status']}\" == \"RUNNING\" or \"${#stage('Redeploy Moved Out Environment')['status']}\" == \"FAILED_CONTINUE\""
+            },
+            "failPipeline": true,
+            "type": "expression"
+          }
+        ],
+        "refId": "Flow Completed",
+        "requisiteStageRefIds": [
+          "Quarantine Environment",
+          "Redeploy Moved Out Environment",
+          "Unreserve Environment"
+        ],
+        "type": "checkPreconditions"
+      },
+      {
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": true,
+        "failPipeline": false,
+        "isNew": true,
+        "job": "CICD-UTILS-DDP-Upload",
+        "master": "oss-fem7s11-eiffel216",
+        "name": "JenkinsPush Data to DDP",
+        "parameters": {
+          "DDC_POD_NAME": "eric-oss-ddc",
+          "KUBE_CONFIG": "${#stage(\"Reserve Environment\")[\"context\"][\"KUBE_CONFIG\"]}",
+          "NAMESPACE": "${#stage(\"Reserve Environment\")[\"context\"][\"NAMESPACE\"]}",
+          "SLAVE": "${trigger['parameters']['SLAVE_LABEL']}",
+          "SPINNAKER_PIPELINE_ID": "${execution['id']}"
+        },
+        "refId": "JenkinsPush Data to DDP",
+        "requisiteStageRefIds": [
+          "Post TW Gate"
+        ],
+        "stageEnabled": {
+          "expression": "\"${#stage('Reserve Environment')['status']}\" == \"SUCCEEDED\" and \"${#stage('Post TW Gate')['status']}\" == \"FAILED_CONTINUE\"",
+          "type": "expression"
+        },
+        "type": "jenkins"
+      }
+    ],
+    "triggers": []
+  }

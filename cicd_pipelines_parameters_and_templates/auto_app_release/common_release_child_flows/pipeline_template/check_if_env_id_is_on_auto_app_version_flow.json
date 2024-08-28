@@ -1,0 +1,85 @@
+{
+    "appConfig": {},
+    "keepWaitingPipelines": false,
+    "limitConcurrent": true,
+    "application": "SPINNAKER_APPLICATION_NAME",
+    "name": "SPINNAKER_PIPELINE_NAME",
+    "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten, Template name: check_if_env_id_on_auto_app_version_flow.json in repo https://gerrit.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources",
+    "locked": {
+        "allowUnlockUi": true,
+        "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+        "ui": true
+    },
+    "parameterConfig": [
+      {
+        "default": "",
+        "description": "The App Manager hostname of the test environment.",
+        "hasOptions": false,
+        "name": "APPMGR_HOSTNAME",
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "",
+        "description": "The chart name of the Auto App.",
+        "hasOptions": false,
+        "name": "AUTO_APP_CHART_NAME",
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "",
+        "description": "The chart version of the Auto App to be checked against.",
+        "hasOptions": false,
+        "name": "AUTO_APP_CHART_VERSION",
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "",
+        "description": "The name of the test environment.",
+        "hasOptions": false,
+        "name": "ENV_NAME",
+        "pinned": true,
+        "required": true
+      }
+    ],
+    "spelEvaluator": "v4",
+    "stages": [
+      {
+        "continuePipeline": false,
+        "failPipeline": true,
+        "job": "APP-MGR-PC-Check-Is-Env-On-Auto-App-Version",
+        "master": "oss-fem5s11-eiffel216",
+        "name": "Check If ENV Is On Auto App Version",
+        "parameters": {
+          "APPMGR_HOSTNAME": "${parameters['APPMGR_HOSTNAME']}",
+          "AUTO_APP_CHART_NAME": "${parameters['AUTO_APP_CHART_NAME']}",
+          "AUTO_APP_CHART_VERSION": "${parameters['AUTO_APP_CHART_VERSION']}",
+          "ENV_NAME": "${parameters['ENV_NAME']}"
+        },
+        "propertyFile": "artifact.properties",
+        "refId": "Check If ENV Is On Auto App Version",
+        "requisiteStageRefIds": [],
+        "type": "jenkins"
+      },
+      {
+        "name": "Evaluate Returned Flag",
+        "preconditions": [
+          {
+            "context": {
+              "expression": "\"${#stage('Check If ENV Is On Auto App Version')['context']['IS_ENV_ON_SPECIFIC_AUTO_APP_VERSION']}\" == \"True\""
+            },
+            "failPipeline": true,
+            "type": "expression"
+          }
+        ],
+        "refId": "Evaluate Returned Flag",
+        "requisiteStageRefIds": [
+          "Check If ENV Is On Auto App Version"
+        ],
+        "type": "checkPreconditions"
+      }
+    ],
+    "triggers": []
+  }

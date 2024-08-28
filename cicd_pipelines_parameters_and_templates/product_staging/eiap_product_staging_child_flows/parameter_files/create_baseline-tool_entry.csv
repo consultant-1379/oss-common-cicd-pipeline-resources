@@ -1,0 +1,2 @@
+SPINNAKER_APPLICATION_NAME,SPINNAKER_PIPELINE_NAME,NOTIFICATION_ADDRESS,BLT_URL,TB_TEAMS_EMAIL
+product-e2e-cicd,create-baseline-tool-entry,PDLDUNPROD@pdl.internal.ericsson.com,https://blt.ews.gic.ericsson.se/api/v1,5bb07923.ericsson.onmicrosoft.com@emea.teams.ms

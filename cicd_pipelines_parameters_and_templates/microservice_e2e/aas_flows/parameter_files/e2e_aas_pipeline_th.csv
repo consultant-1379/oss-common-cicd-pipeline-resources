@@ -1,0 +1,4 @@
+SPINNAKER_APPLICATION_NAME,SPINNAKER_PIPELINE_NAME,EXECUTION_TIME
+idun-aas-e2e-cicd,eric-th-data-document-database-pg-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-oss-common-topology-ui-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-oss-common-topology-svc-AAS-E2E-Flow,21:00:00

@@ -1,0 +1,191 @@
+{
+  "keepWaitingPipelines": false,
+  "limitConcurrent": true,
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "name": "SPINNAKER_PIPELINE_NAME",
+  "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten. Template name: eic_release_check_baseline_version_and_update_flow.json in repo https://gerrit-gamma.gic.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources,branches",
+  "notifications": [],
+  "parameterConfig": [
+    {
+      "default": "",
+      "description": "Version to compare against version in repo",
+      "hasOptions": false,
+      "label": "",
+      "name": "VERSION_FOR_COMPARISON",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Name of the environment being used in the pipeline",
+      "hasOptions": false,
+      "label": "",
+      "name": "ENVIRONMENT_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "The key of the baseline version that will be retrieved from the repo and, if necessary, updated",
+      "hasOptions": false,
+      "label": "",
+      "name": "BASELINE_VERSION_KEY",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    }
+  ],
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "BASE-VERS_Retrieve_Baseline_Version",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Retrieve Version from Repo",
+      "parameters": {
+        "KEY_TO_RETRIEVE_BASELINE_VERSION_OF": "${parameters['BASELINE_VERSION_KEY']}",
+        "VERSIONS_FILENAME": "versions"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Retrieve Version from Repo",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "BASE-VERS_Compare_Version_With_Baseline_Version",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Compare Versions",
+      "parameters": {
+        "BASELINE_VERSION_IN_REPO": "${(parameters['BASELINE_VERSION_KEY']== 'II_BASELINE_INT_CHART_VERSION')? #stage('Retrieve Version from Repo')['context']['II_BASELINE_INT_CHART_VERSION']:#stage('Retrieve Version from Repo')['context']['UPGRADE_BASELINE_INT_CHART_VERSION']}",
+        "VERSION_FOR_COMPARISON": "${trigger['parameters']['VERSION_FOR_COMPARISON']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Compare Versions",
+      "requisiteStageRefIds": [
+        "Retrieve Version from Repo"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Retrieve Version from Repo')['status'] == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "BASE-VERS_Update_Baseline_Version_In_Repository",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Update Version in Repo",
+      "parameters": {
+        "KEY_TO_UPDATE_BASELINE_VERSION_OF": "${parameters['BASELINE_VERSION_KEY']}",
+        "NEW_BASELINE_VERSION": "${trigger['parameters']['VERSION_FOR_COMPARISON']}",
+        "VERSIONS_FILENAME": "versions"
+      },
+      "refId": "Update Version in Repo",
+      "requisiteStageRefIds": [
+        "Compare Versions"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Compare Versions')['context']['RESULT_OF_COMPARISON'].contains('higher')",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Post Flow Checks",
+      "preconditions": [
+        {
+          "context": {
+            "expression": "#stage('Retrieve Version from Repo')['status'] == \"SUCCEEDED\" or #stage('Retrieve Version from Repo')['status'] == \"SKIPPED\"",
+            "failureMessage": "Failed to retrieve version from repo"
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "#stage('Compare Versions')['status'] == \"SUCCEEDED\" or #stage('Compare Versions')['status'] == \"SKIPPED\"",
+            "failureMessage": "Failed to compare versions"
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "#stage('Update Version in Repo')['status'] == \"SUCCEEDED\" or #stage('Update Version in Repo')['status'] == \"SKIPPED\"",
+            "failureMessage": "Failed to update version in repo"
+          },
+          "failPipeline": true,
+          "type": "expression"
+        }
+      ],
+      "refId": "Post Flow Checks",
+      "requisiteStageRefIds": [
+        "Update Version in Repo"
+      ],
+      "type": "checkPreconditions"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "RPT-RC_Quarantine-Environment",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Quarantine Environment",
+      "parameters": {
+        "ENV_NAME": "${parameters['ENVIRONMENT_NAME']}"
+      },
+      "refId": "Quarantine Environment",
+      "requisiteStageRefIds": [
+        "Post Flow Checks"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Post Flow Checks')['status'] != \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "name": "End Flow",
+      "preconditions": [
+        {
+          "context": {
+            "stageName": "Post Flow Checks",
+            "stageStatus": "SUCCEEDED"
+          },
+          "failPipeline": true,
+          "type": "stageStatus"
+        }
+      ],
+      "refId": "End Flow",
+      "requisiteStageRefIds": [
+        "Quarantine Environment"
+      ],
+      "type": "checkPreconditions"
+    }
+  ],
+  "triggers": []
+}

@@ -1,0 +1,363 @@
+{
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten. Template name: e2e_app_product_pipeline.json in repo https://gerrit.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources,branches",
+  "disabled": false,
+  "name": "SPINNAKER_PIPELINE_NAME",
+  "limitConcurrent": false,
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+    "ui": true
+  },
+  "parameterConfig": [
+    {
+      "default": "SUBMIT_TO_IDUN_STAGING_PARAMETER",
+      "description": "",
+      "hasOptions": true,
+      "label": "",
+      "name": "SUBMIT_TO_IDUN_STAGING",
+      "options": [
+        {
+          "value": "true"
+        },
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "SUBMIT_TO_EO_STAGING_PARAMETER",
+      "description": "",
+      "hasOptions": true,
+      "label": "",
+      "name": "SUBMIT_TO_EO_STAGING",
+      "options": [
+        {
+          "value": "true"
+        },
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "SKIP_PRE_TESTING_PARAMETER",
+      "description": "",
+      "hasOptions": true,
+      "label": "",
+      "name": "SKIP_PRE_TESTING",
+      "options": [
+        {
+          "value": "false"
+        },
+        {
+          "value": "true"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "USE_INT_CHART_PARAMETERS_PARAMETER",
+      "description": "If set to \"true \" it will take CHART parameters with \"INT_\" prefix from artifact.properties file",
+      "hasOptions": true,
+      "label": "",
+      "name": "USE_INT_CHART_PARAMETERS",
+      "options": [
+        {
+          "value": "false"
+        },
+        {
+          "value": "true"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "PRA_DROP_VERSION_CHECK",
+      "description": "If \"true\" only PRA versions of the chart can be released and allowed to be passed to the Product Staging for further testing",
+      "hasOptions": false,
+      "label": "",
+      "name": "PRA_DROP_VERSION_CONTROL",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    }
+  ],
+  "schema": "1",
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "failOnFailedExpressions": true,
+      "name": "Evaluate Chart Variables",
+      "refId": "Evaluate Chart Variables",
+      "requisiteStageRefIds": [],
+      "sendNotifications": true,
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "MICROSERVICE_CHART_NAME",
+          "value": "${(trigger.parameters[\"USE_INT_CHART_PARAMETERS\"] == \"true\")? trigger.properties['INT_CHART_NAME'] : trigger.properties['CHART_NAME']}"
+        },
+        {
+          "key": "MICROSERVICE_CHART_VERSION",
+          "value": "${(trigger.parameters[\"USE_INT_CHART_PARAMETERS\"] == \"true\")? trigger.properties['INT_CHART_VERSION'] : trigger.properties['CHART_VERSION']}"
+        },
+        {
+          "key": "MICROSERVICE_CHART_REPO",
+          "value": "${(trigger.parameters[\"USE_INT_CHART_PARAMETERS\"] == \"true\")? trigger.properties['INT_CHART_REPO'] : trigger.properties['CHART_REPO']}"
+        }
+      ]
+    },
+    {
+      "failOnFailedExpressions": true,
+      "name": "Evaluate Git Variables",
+      "refId": "Evaluate Git Variables",
+      "requisiteStageRefIds": [],
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "GIT_COMMIT_AUTHOR",
+          "value": "${trigger.properties['GIT_COMMIT_AUTHOR']?: '<Commit info missing in release job>'}"
+        },
+        {
+          "key": "GIT_COMMIT_AUTHOR_EMAIL",
+          "value": "${trigger.properties['GIT_COMMIT_AUTHOR_EMAIL']?: (trigger.properties['GIT_AUTHOR_EMAIL']?:'MICROSERVICE_TEAM_EMAILS')}"
+        },
+        {
+          "key": "GIT_COMMIT_SUMMARY",
+          "value": "${trigger.properties['GIT_COMMIT_SUMMARY']?: '<Commit info missing in release job>'}"
+        },
+        {
+          "key": "GERRIT_CHANGE_URL",
+          "value": "${trigger.properties['GERRIT_CHANGE_URL']?: '<Commit info missing in release job>'}"
+        }
+      ]
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "name": "APP_SHORT_NAME_UPPERCASE_Application_Staging",
+      "notifications": [
+        {
+          "address": "${GIT_COMMIT_AUTHOR_EMAIL}",
+          "cc": "MICROSERVICE_TEAM_EMAILS",
+          "level": "stage",
+          "message": {
+            "stage.failed": {
+              "text": "<h4 style='color:red'>PIPELINE FAILED</h4>\nA failure has occurred related to your content.<br>\nPlease view information associated with this failure in the\n<a href='https://ped.ews.gic.ericsson.se/#/pipeline-executions?search=${#root.executionId}&selectedColumns=status,stagingArea,timingInfo,microserviceName,microserviceVersion,applicationName,applicationVersion,productName,productVersion,testwareVersion,pipelineExecutionProperties,links,environmentInfo'>Pipeline Execution Dashboard (PED)</a><p><small>If you think there is a mistake in the mail notification list - please contact us via <a href='https://jira-oss.seli.wh.rnd.internal.ericsson.com/browse/IDUN-41975'>Jira Template</a></small></p>"
+            }
+          },
+          "type": "email",
+          "when": [
+            "stage.failed"
+          ]
+        },
+        {
+          "address": "${GIT_COMMIT_AUTHOR_EMAIL}",
+          "level": "stage",
+          "message": {
+            "stage.complete": {
+              "text": "Hi ${GIT_COMMIT_AUTHOR},\nThis stage has been <b>completed</b> successfully!\n\nYou can view information associated with this execution in the\n<a href='https://ped.ews.gic.ericsson.se/#/pipeline-executions?search=${#root.executionId}&selectedColumns=status,stagingArea,timingInfo,microserviceName,microserviceVersion,applicationName,applicationVersion,productName,productVersion,testwareVersion,pipelineExecutionProperties,links,environmentInfo'>Pipeline Execution Dashboard (PED)</a>"
+            },
+            "stage.starting": {
+              "text": "Hi ${GIT_COMMIT_AUTHOR},\nThis stage has been <b>started</b>.\n\nYou can view information associated with this execution in the\n<a href='https://ped.ews.gic.ericsson.se/#/pipeline-executions?search=${#root.executionId}&selectedColumns=status,stagingArea,timingInfo,microserviceName,microserviceVersion,applicationName,applicationVersion,productName,productVersion,testwareVersion,pipelineExecutionProperties,links,environmentInfo'>Pipeline Execution Dashboard (PED)</a>"
+            }
+          },
+          "type": "email",
+          "when": ["stage.starting", "stage.complete"]
+        }
+      ],
+      "pipeline": "APPLICATION_STAGING_PIPELINE_ID",
+      "pipelineParameters": {
+        "CHART_NAME": "${MICROSERVICE_CHART_NAME}",
+        "CHART_REPO": "${MICROSERVICE_CHART_REPO}",
+        "CHART_VERSION": "${MICROSERVICE_CHART_VERSION}",
+        "SKIP_CHART_RELEASE": "${SKIP_CHART_RELEASE ?: 'false'}",
+        "SKIP_PRE_TESTING": "${parameters['SKIP_PRE_TESTING']}",
+        "GERRIT_CHANGE_URL": "${GERRIT_CHANGE_URL}",
+        "GIT_COMMIT_SUMMARY": "${GIT_COMMIT_SUMMARY}"
+      },
+      "refId": "APP_SHORT_NAME_UPPERCASE_Application_Staging",
+      "requisiteStageRefIds": [
+        "Evaluate Git Variables",
+        "PRA_DROP_Version_Control"
+      ],
+      "sendNotifications": true,
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "application": "product-e2e-cicd",
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "name": "EIC_Product_Staging",
+      "notifications": [
+        {
+          "address": "${GIT_COMMIT_AUTHOR_EMAIL}",
+          "cc": "PDLDUNPROD@pdl.internal.ericsson.com,MICROSERVICE_TEAM_EMAILS",
+          "level": "stage",
+          "message": {
+            "stage.failed": {
+              "text": "<h4 style='color:red'>PIPELINE FAILED</h4>\n\nA failure has occurred related to your content.<br>\nPlease view information associated with this failure in the\n<a href='https://ped.ews.gic.ericsson.se/#/pipeline-executions?search=${#root.executionId}&selectedColumns=status,stagingArea,timingInfo,microserviceName,microserviceVersion,applicationName,applicationVersion,productName,productVersion,testwareVersion,pipelineExecutionProperties,links,environmentInfo'>Pipeline Execution Dashboard (PED)</a>\n\n<p><b>Do not restart it yourself!</b><br>\nPlease read before requesting a pipeline restart <a href='https://eteamspace.internal.ericsson.com/pages/viewpage.action?pageId=2183796796'>PSO | PS Re-trigger Requests</a><br>\nIf you need to restart that pipeline - please contact IDUN/Product Staging team: <span style='color:chocolate'>PDLDUNPROD@pdl.internal.ericsson.com</span></p><p><small>If you think there is a mistake in the mail notification list - please contact us via <a href='https://jira-oss.seli.wh.rnd.internal.ericsson.com/browse/IDUN-41975'>Jira Template</a></small></p>"
+            }
+          },
+          "type": "email",
+          "when": ["stage.failed"]
+        },
+        {
+          "address": "${GIT_COMMIT_AUTHOR_EMAIL}",
+          "level": "stage",
+          "message": {
+            "stage.complete": {
+              "text": "Hi ${GIT_COMMIT_AUTHOR},\nThis stage has been <b>completed</b> successfully!\n\nYou can view information associated with this execution in the\n<a href='https://ped.ews.gic.ericsson.se/#/pipeline-executions?search=${#root.executionId}&selectedColumns=status,stagingArea,timingInfo,microserviceName,microserviceVersion,applicationName,applicationVersion,productName,productVersion,testwareVersion,pipelineExecutionProperties,links,environmentInfo'>Pipeline Execution Dashboard (PED)</a>"
+            },
+            "stage.starting": {
+              "text": "Hi ${GIT_COMMIT_AUTHOR},\nThis stage has been <b>started</b>.\n\nYou can view information associated with this execution in the\n<a href='https://ped.ews.gic.ericsson.se/#/pipeline-executions?search=${#root.executionId}&selectedColumns=status,stagingArea,timingInfo,microserviceName,microserviceVersion,applicationName,applicationVersion,productName,productVersion,testwareVersion,pipelineExecutionProperties,links,environmentInfo'>Pipeline Execution Dashboard (PED)</a>"
+            }
+          },
+          "type": "email",
+          "when": ["stage.starting", "stage.complete"]
+        }
+      ],
+      "pipeline": "d8e85bad-3d55-433b-b7db-d3d3567e2553",
+      "pipelineParameters": {
+        "CHART_NAME": "${#stage(\"APP_SHORT_NAME_UPPERCASE_Application_Staging\")[\"context\"][\"INT_CHART_NAME\"]}",
+        "CHART_REPO": "${#stage(\"APP_SHORT_NAME_UPPERCASE_Application_Staging\")[\"context\"][\"INT_CHART_REPO\"]}",
+        "CHART_VERSION": "${#stage(\"APP_SHORT_NAME_UPPERCASE_Application_Staging\")[\"context\"][\"INT_CHART_VERSION\"]}",
+        "MICROSERVICE_CHART_NAME": "${MICROSERVICE_CHART_NAME}",
+        "MICROSERVICE_CHART_REPO": "${MICROSERVICE_CHART_REPO}",
+        "MICROSERVICE_CHART_VERSION": "${MICROSERVICE_CHART_VERSION}",
+        "GERRIT_CHANGE_URL": "${GERRIT_CHANGE_URL}",
+        "GIT_COMMIT_SUMMARY": "${GIT_COMMIT_SUMMARY}"
+      },
+      "refId": "EIC_Product_Staging",
+      "requisiteStageRefIds": [
+        "APP_SHORT_NAME_UPPERCASE_Application_Staging"
+      ],
+      "sendNotifications": true,
+      "stageEnabled": {
+        "expression": "\"${trigger['parameters']['SUBMIT_TO_IDUN_STAGING']}\" == \"true\" and \"${SKIP_CHART_RELEASE ?: 'false'}\" == \"false\"",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "application": "eoapp",
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "name": "EO_Product_Staging",
+      "notifications": [
+        {
+          "address": "${GIT_COMMIT_AUTHOR_EMAIL}",
+          "cc": "MICROSERVICE_TEAM_EMAILS",
+          "level": "stage",
+          "message": {
+            "stage.failed": {
+              "text": "This stage has been failed. Please investigate the failure"
+            }
+          },
+          "type": "email",
+          "when": [
+            "stage.failed"
+          ]
+        },
+        {
+          "address": "${GIT_COMMIT_AUTHOR_EMAIL}",
+          "level": "stage",
+          "message": {
+            "stage.complete": {
+              "text": "Hi ${GIT_COMMIT_AUTHOR},\nThis stage has been completed successfully. "
+            },
+            "stage.starting": {
+              "text": "Hi ${GIT_COMMIT_AUTHOR},\nThis stage has been started. "
+            }
+          },
+          "type": "email",
+          "when": ["stage.starting", "stage.complete"]
+        }
+      ],
+      "pipeline": "fe9cb49d-cb50-4966-bcf5-2c51dd381399",
+      "pipelineParameters": {
+        "CHART_NAME": "${#stage(\"APP_SHORT_NAME_UPPERCASE_Application_Staging\")[\"context\"][\"INT_CHART_NAME\"]}",
+        "CHART_REPO": "${#stage(\"APP_SHORT_NAME_UPPERCASE_Application_Staging\")[\"context\"][\"INT_CHART_REPO\"]}",
+        "CHART_VERSION": "${#stage(\"APP_SHORT_NAME_UPPERCASE_Application_Staging\")[\"context\"][\"INT_CHART_VERSION\"]}",
+        "MICROSERVICE_CHART_NAME": "${MICROSERVICE_CHART_NAME}",
+        "MICROSERVICE_CHART_REPO": "${MICROSERVICE_CHART_REPO}",
+        "MICROSERVICE_CHART_VERSION": "${MICROSERVICE_CHART_VERSION}"
+      },
+      "refId": "EO_Product_Staging",
+      "requisiteStageRefIds": [
+        "APP_SHORT_NAME_UPPERCASE_Application_Staging"
+      ],
+      "sendNotifications": true,
+      "stageEnabled": {
+        "expression": "\"${trigger['parameters']['SUBMIT_TO_EO_STAGING']}\" == \"true\" and \"${SKIP_CHART_RELEASE ?: 'false'}\" == \"false\"",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "application": "idun-aas-e2e-cicd",
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "isNew": true,
+      "name": "AAS_E2E_Flow",
+      "pipeline": "AAS_E2E_FLOW_PIPELINE_ID",
+      "refId": "AAS_E2E_Flow",
+      "requisiteStageRefIds": [
+        "EIC_Product_Staging"
+      ],
+    "stageEnabled": {
+      "expression": "${#stage(\"EIC_Product_Staging\")[\"status\"].toString() == \"SUCCEEDED\"}",
+      "type": "expression"
+    },
+      "type": "pipeline",
+      "waitForCompletion": false
+    },
+    {
+      "failOnFailedExpressions": true,
+      "name": "PRA_DROP_Version_Control",
+      "refId": "PRA_DROP_Version_Control",
+      "requisiteStageRefIds": [
+        "Evaluate Chart Variables"
+      ],
+      "stageEnabled": {
+        "expression": "\"${parameters['PRA_DROP_VERSION_CONTROL']}\" == \"true\"",
+        "type": "expression"
+      },
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "SKIP_CHART_RELEASE",
+          "value": "${ (MICROSERVICE_CHART_VERSION.contains(\"+\"))? \"false\" : \"true\" }"
+        }
+      ]
+    }
+  ],
+  "triggers": [
+    {
+      "enabled": true,
+      "job": "TRIGGER_JOB_NAME",
+      "master": "TRIGGER_FEM_CONTROLLER",
+      "propertyFile": "artifact.properties",
+      "type": "jenkins"
+    }
+  ]
+}

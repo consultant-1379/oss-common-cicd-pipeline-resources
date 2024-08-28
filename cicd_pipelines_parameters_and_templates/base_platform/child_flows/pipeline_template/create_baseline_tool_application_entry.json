@@ -1,0 +1,97 @@
+{
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten. Template name: create_baseline_tool_application_entry.json in repo https://gerrit.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources,branches",
+  "disabled": false,
+  "name": "APP_SHORT_NAME_UPPERCASE_create_baseline_tool_entry",
+  "keepWaitingPipelines": false,
+  "limitConcurrent": true,
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+    "ui": true
+  },
+  "notifications": [
+    {
+      "address": "5bb07923.ericsson.onmicrosoft.com@emea.teams.ms",
+      "level": "pipeline",
+      "type": "email",
+      "when": ["pipeline.failed"]
+    }
+  ],
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "failOnFailedExpressions": true,
+      "name": "Evaluate Parent Execution Variables",
+      "refId": "Evaluate Parent Execution Variables",
+      "requisiteStageRefIds": [],
+      "type": "evaluateVariables",
+      "stageEnabled": {
+        "expression": "trigger.parentExecution.stages.?[name == 'Fetch Build Upload Release'][0]['status']=='SUCCEEDED' and trigger.parentExecution.stages.?[name == 'Fetch Build Upload Release'][0]['context']['pipelineParameters']['GERRIT_PREPARE_OR_PUBLISH']=='publish'",
+        "type": "expression"
+      },
+      "variables": [
+        {
+          "key": "name",
+          "value": "${trigger.parentExecution.trigger.parameters.INT_CHART_NAME}"
+        },
+        {
+          "key": "version",
+          "value": "${trigger.parentExecution.stages.?[name == 'Fetch Build Upload Release'][0]['outputs']['INT_CHART_VERSION']}"
+        },
+        {
+          "key": "repo",
+          "value": "${trigger.parentExecution.stages.?[name == 'Fetch Build Upload Release'][0]['outputs']['INT_CHART_REPO']}"
+        },
+        {
+          "key": "changes_name",
+          "value": "${!trigger.parentExecution.trigger.parameters.CHART_NAME.matches('^$|None')? trigger.parentExecution.trigger.parameters.CHART_NAME: name}"
+        },
+        {
+          "key": "changes_version",
+          "value": "${!trigger.parentExecution.trigger.parameters.CHART_VERSION.matches('^$|None')? trigger.parentExecution.trigger.parameters.CHART_VERSION: version}"
+        },
+        {
+          "key": "ticket",
+          "value": "${trigger.parentExecution.trigger.parameters.GIT_COMMIT_SUMMARY}"
+        },
+        {
+          "key": "code_review",
+          "value": "${trigger.parentExecution.trigger.parameters.GERRIT_CHANGE_URL}"
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "name": "Create Baseline tool Entry",
+      "payload": {
+        "changes": {
+          "${changes_name}": "${changes_version}"
+        },
+        "codeReview": "${code_review}",
+        "name": "${name}",
+        "repo": "${repo}",
+        "ticket": "${ticket}",
+        "version": "${version}"
+      },
+      "refId": "Create Baseline tool Entry",
+      "requisiteStageRefIds": ["Evaluate Parent Execution Variables"],
+      "statusUrlResolution": "getMethod",
+      "type": "webhook",
+      "stageEnabled": {
+        "expression": "#stage('Evaluate Parent Execution Variables')['status'] == 'SUCCEEDED'",
+        "type": "expression"
+      },
+      "url": "https://blt.ews.gic.ericsson.se/api/v1/applications"
+    }
+  ],
+  "triggers": [
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "enabled": true,
+      "pipeline": "APPLICATION_STAGING_PIPELINE_ID",
+      "status": ["successful", "failed", "canceled"],
+      "type": "pipeline"
+    }
+  ]
+}

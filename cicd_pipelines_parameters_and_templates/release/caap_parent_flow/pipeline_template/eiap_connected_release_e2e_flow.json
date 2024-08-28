@@ -1,0 +1,635 @@
+{
+  "appConfig": {},
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "name": "SPINNAKER_PIPELINE_NAME",
+  "description": "Template name: eiap_connected_release_e2e_flow.json in repo https://gerrit-gamma.gic.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources,branches",
+  "keepWaitingPipelines": false,
+  "limitConcurrent": true,
+  "locked": {
+      "allowUnlockUi": true,
+      "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+      "ui": true
+    },
+  "parameterConfig": [
+    {
+      "default": "fem5dockerslave8",
+      "description": "Specify the internal Jenkins agent that you want the job to run on",
+      "hasOptions": false,
+      "name": "INTERNAL_AGENT_NAME",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CaaP",
+      "description": "Name of the Environment pool registered in RPT for using the Resreve functionality.",
+      "hasOptions": false,
+      "name": "INTERNAL_ENV_POOL",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Please leave this field blank if you want to Reserve a test environment from the pool. The test environment to use in the flow.",
+      "hasOptions": false,
+      "name": "INTERNAL_TEST_ENVIRONMENT",
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "oss-deploy",
+      "description": "Namespace to install the Chart.",
+      "hasOptions": false,
+      "name": "NAMESPACE_INTERNAL_TEST_ENV",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CICD_VM_in_Azure_Cloud_1",
+      "description": "Specify the external Jenkins agent that you want the job to run on (Customer Jenkins agent)",
+      "hasOptions": false,
+      "name": "CUSTOMER_AGENT_NAME",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "Azure_MANA",
+      "description": "Name of the test environment as registered in RPT.",
+      "hasOptions": false,
+      "name": "EXTERNAL_TEST_ENVIRONMENT",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "eiap-deploy",
+      "description": "Namespace to install the Chart.",
+      "hasOptions": false,
+      "name": "NAMESPACE_EXTERNAL_TEST_ENV",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "",
+      "hasOptions": false,
+      "name": "INT_CHART_VERSION",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "",
+      "hasOptions": false,
+      "name": "PREVIOUS_RELEASED_INT_CHART_VERSION",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "sshUserPrivateKey",
+      "description": "Jenkins secret credentials ID",
+      "hasOptions": false,
+      "name": "TYPE_OF_CREDENTIAL_FOR_SCP",
+      "options": [
+        {
+          "value": "sshUserPrivateKey"
+        },
+        {
+          "value": "UsernamePassword"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "Azure_CaaP_User",
+      "description": "Jenkins secret credentials ID",
+      "hasOptions": false,
+      "name": "FUNCTIONAL_SCP_USER_SECRET",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "20.47.113.40",
+      "description": "The hostname or the IP of the server on which the deployment manager will execute.",
+      "hasOptions": false,
+      "name": "DESTINATION_SERVER_HOSTNAME_OR_IP",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010181_1-",
+      "description": "Please append the R-state to the default value in the field.",
+      "hasOptions": false,
+      "name": "ERIC_OSS_ADC_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010182_1-",
+      "description": "Please append the R-state to the default value in the field.",
+      "hasOptions": false,
+      "name": "ERIC_OSS_ERICSSON_ADAPTATION_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010183_1-",
+      "description": "Please append the R-state to the default value in the field.",
+      "hasOptions": false,
+      "name": "ERIC_OSS_APP_MGR_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010184_1-",
+      "description": "Please append the R-state to the default value in the field.",
+      "hasOptions": false,
+      "name": "ERIC_OSS_CONFIG_HANDLING_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010185_1-",
+      "description": "Please append the R-state to the default value in the field.",
+      "hasOptions": false,
+      "name": "ERIC_TOPOLOGY_HANDLING_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010186_1-",
+      "description": "Please append the R-state to the default value in the field.",
+      "hasOptions": false,
+      "name": "ERIC_CLOUD_NATIVE_BASE_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010334_1-",
+      "description": "Please append the R-state to the default value in the field.",
+      "hasOptions": false,
+      "name": "ERIC_CNBASE_OSS_CONFIG_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010333_1-",
+      "description": "Please append the R-state to the default value in the field.",
+      "hasOptions": false,
+      "name": "ERIC_CNCS_OSS_CONFIG_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010187_1-",
+      "description": "Please append the R-state to the default value in the field.",
+      "hasOptions": false,
+      "name": "ERIC_OSS_DMM_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010188_1-",
+      "description": "Please append the R-state to the default value in the field.",
+      "hasOptions": false,
+      "name": "ERIC_OSS_COMMON_BASE_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010246_1-",
+      "description": "Please append the R-state to the default value in the field.",
+      "hasOptions": false,
+      "name": "ERIC_CLOUD_NATIVE_SERVICE_MESH_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010192-",
+      "description": "Please append the R-state to the default value in the field.",
+      "hasOptions": false,
+      "name": "EIAE_DEPLOYMENT_HELM_RELEASE_PACKAGE_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010193-",
+      "description": "Please append the R-state to the default value in the field.",
+      "hasOptions": false,
+      "name": "OSS_DEPLOYMENT_MANAGER_RELEASE_PACKAGE_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010222_1-",
+      "description": "Please append the R-state to the default value in the field.",
+      "hasOptions": false,
+      "name": "ERIC_OSS_ORAN_SUPPORT_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010224_1-",
+      "description": "Please append the R-state to the default value in the field.",
+      "hasOptions": false,
+      "name": "ERIC_OSS_TASK_AUTOMATION_AE_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "armdocker.rnd.ericsson.se/proj-eric-oss-drop/eric-oss-deployment-manager",
+      "description": "Deployment Manager Repository (for internal Upgrade only).",
+      "hasOptions": false,
+      "label": "",
+      "name": "DEPLOYMENT_MANAGER_REPO",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "latest",
+      "description": "The version of Deployment Manager to use.",
+      "hasOptions": false,
+      "name": "OSS_DEPLOYMENT_MANAGER_VERSION",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "",
+      "hasOptions": true,
+      "name": "IS_DM_RELEASED",
+      "options": [
+        {
+          "value": "True"
+        },
+        {
+          "value": "False"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "eiap-deploy",
+      "description": "",
+      "hasOptions": false,
+      "name": "KUBECONFIG_EXTERNAL_ENVIRONMENT",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "/tmp",
+      "description": "Package location on the destination server",
+      "hasOptions": false,
+      "name": "DESTINATION_SERVER_PACKAGE_LOCATION",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "upgrade",
+      "description": "Is a upgrade or install required.",
+      "hasOptions": false,
+      "name": "DEPLOYMENT_TYPE",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Namespace which was used to deploy the CRD.",
+      "hasOptions": false,
+      "name": "CRD_NAMESPACE",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Set 'true' to skip the SW Upload Stage. Set 'false' to execute the SW Upload to SWGW.",
+      "hasOptions": true,
+      "label": "",
+      "name": "SKIP_SW_UPLOAD",
+      "options": [
+        {
+          "value": "true"
+        },
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "true",
+      "description": "When set to true, enables the DDP auto upload",
+      "hasOptions": true,
+      "label": "",
+      "name": "DDP_AUTO_UPLOAD",
+      "options": [
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Path on server where the working directory is available. E.g. /mnt. The working directory 'swgw_download_dir' will automatically be created.",
+      "hasOptions": false,
+      "label": "",
+      "name": "CSAR_DOWNLOAD_LOCATION_PATH",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "refs/tags/live-release",
+      "description": "The version of the K6 testware to be used.",
+      "hasOptions": false,
+      "label": "",
+      "name": "K6_TESTWARE_VERSION",
+      "pinned": true,
+      "required": true
+    }
+  ],
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "RPT-RC_Reserve-Environment",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Reserve Environment",
+      "parameters": {
+        "ENV_LABEL": "${trigger['parameters']['INTERNAL_ENV_POOL']}",
+        "FLOW_URL": "https://spinnaker.rnd.gic.ericsson.se/#/applications/${execution['application']}/executions/details/${execution['id']}",
+        "FLOW_URL_TAG": "Caap E2E"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Reserve Environment",
+      "requisiteStageRefIds": [],
+      "stageEnabled": {
+        "expression": "${parameters['DEPLOYMENT_TYPE'] == 'upgrade'} and ${ parameters['INTERNAL_TEST_ENVIRONMENT'] == '' }",
+        "type": "expression"
+      },
+      "type": "jenkins",
+      "waitForCompletion": true
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failOnFailedExpressions": true,
+      "failPipeline": true,
+      "name": "Set Test Environment",
+      "refId": "Set Test Environment",
+      "requisiteStageRefIds": [
+        "Reserve Environment"
+      ],
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "RESOURCE_NAME",
+          "value": "${(parameters['INTERNAL_TEST_ENVIRONMENT'] == '') ? (#stage('Reserve Environment')['context']['RESOURCE_NAME']):(parameters['INTERNAL_TEST_ENVIRONMENT'])}"
+        }
+      ]
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "RPT-RC_Update-Test-Environment-Status",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Direct Reservation of Test Environment",
+      "parameters": {
+        "ENV_NAME": "${#stage('Set Test Environment')['context']['RESOURCE_NAME']}",
+        "status": "Reserved"
+      },
+      "refId": "Direct Reservation of Test Environment",
+      "requisiteStageRefIds": [
+        "Set Test Environment"
+      ],
+      "stageEnabled": {
+        "expression": "'${parameters['DEPLOYMENT_TYPE']}' == 'upgrade' and '${#stage('Set Test Environment')['status']}' == 'SUCCEEDED' and '${parameters['INTERNAL_TEST_ENVIRONMENT']}' != ''",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "application": "eiap-release-e2e-cicd",
+      "continuePipeline": false,
+      "failPipeline": true,
+      "name": "Internal Upgrade Flow",
+      "pipeline": "e8ffc0aa-7b88-4aa3-a6d9-65d85b14cad9",
+      "pipelineParameters": {
+        "DDP_AUTO_UPLOAD": "${parameters['DDP_AUTO_UPLOAD']}",
+        "DEPLOYMENT_MANAGER_REPO": "${parameters['DEPLOYMENT_MANAGER_REPO']}",
+        "DEPLOYMENT_MANAGER_VERSION": "${parameters['OSS_DEPLOYMENT_MANAGER_VERSION']}",
+        "INT_CHART_VERSION": "${parameters['INT_CHART_VERSION']}",
+        "JENKINS_AGENT": "${parameters['INTERNAL_AGENT_NAME']}",
+        "K6_TESTWARE_VERSION": "${parameters['K6_TESTWARE_VERSION']}",
+        "NAMESPACE": "${parameters['NAMESPACE_INTERNAL_TEST_ENV']}",
+        "TEST_ENVIRONMENT": "${#stage('Set Test Environment')['context']['RESOURCE_NAME']}"
+      },
+      "refId": "Internal Upgrade Flow",
+      "requisiteStageRefIds": [
+        "Direct Reservation of Test Environment"
+      ],
+      "stageEnabled": {
+        "expression": "'${parameters['DEPLOYMENT_TYPE']}' == 'upgrade' and ('${#stage('Reserve Environment')['status']}' == 'SUCCEEDED' or '${#stage('Direct Reservation of Test Environment')['status']}' == 'SUCCEEDED')",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "instructions": "Are all the CSARs available for the upgrade operation.",
+      "judgmentInputs": [],
+      "name": "Manual Checkpoint 1",
+      "notifications": [],
+      "propagateAuthenticationContext": true,
+      "refId": "Manual Checkpoint 1",
+      "requisiteStageRefIds": [
+        "Upload to SWGW"
+      ],
+      "stageEnabled": {
+        "expression": "${#stage('Internal Upgrade Flow')['status'] == 'SUCCEEDED'}",
+        "type": "expression"
+      },
+      "stageTimeoutMs": 86400000,
+      "type": "manualJudgment",
+      "waitForCompletion": true
+    },
+    {
+      "application": "eiap-release-e2e-cicd",
+      "continuePipeline": false,
+      "failPipeline": true,
+      "name": "Upload to SWGW",
+      "pipeline": "e419c371-dd86-42dd-9231-2e01b6d187fd",
+      "pipelineParameters": {
+        "IS_DM_RELEASED": "${parameters['IS_DM_RELEASED']}",
+        "LATEST_RELEASE_INT_CHART_VERSION": "${parameters['INT_CHART_VERSION']}",
+        "OSS_DEPLOYMENT_MANAGER_VERSION": "${parameters['OSS_DEPLOYMENT_MANAGER_VERSION']}",
+        "PREVIOUS_RELEASE_INT_CHART_VERSION": "${parameters['PREVIOUS_RELEASED_INT_CHART_VERSION']}"
+      },
+      "refId": "Upload to SWGW",
+      "requisiteStageRefIds": [
+        "Internal Upgrade Flow"
+      ],
+      "stageEnabled": {
+        "expression": "${#stage('Internal Upgrade Flow')['status'] == 'SUCCEEDED'} and '${parameters['SKIP_SW_UPLOAD']}' == 'false'",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "oss-idun-release-cicd_Unpack_And_Push_Images",
+      "master": "oss-aispinn-fem5s11-eiffel052",
+      "name": "Unpack and Push Images",
+      "parameters": {
+        "CSAR_DOWNLOAD_LOCATION_PATH": "${parameters['CSAR_DOWNLOAD_LOCATION_PATH']}",
+        "DESTINATION_SERVER_PACKAGE_LOCATION": "${parameters['DESTINATION_SERVER_PACKAGE_LOCATION']}",
+        "EIAE_DEPLOYMENT_HELM_RELEASE_PACKAGE_PRODUCT_NO": "${parameters['EIAE_DEPLOYMENT_HELM_RELEASE_PACKAGE_PRODUCT_NO']}",
+        "ERIC_CLOUD_NATIVE_BASE_PRODUCT_NO": "${parameters['ERIC_CLOUD_NATIVE_BASE_PRODUCT_NO']}",
+        "ERIC_CLOUD_NATIVE_SERVICE_MESH_PRODUCT_NO": "${parameters['ERIC_CLOUD_NATIVE_SERVICE_MESH_PRODUCT_NO']}",
+        "ERIC_CNBASE_OSS_CONFIG_PRODUCT_NO": "${parameters['ERIC_CNBASE_OSS_CONFIG_PRODUCT_NO']}",
+        "ERIC_CNCS_OSS_CONFIG_PRODUCT_NO": "${parameters['ERIC_CNCS_OSS_CONFIG_PRODUCT_NO']}",
+        "ERIC_OSS_ADC_PRODUCT_NO": "${parameters['ERIC_OSS_ADC_PRODUCT_NO']}",
+        "ERIC_OSS_APP_MGR_PRODUCT_NO": "${parameters['ERIC_OSS_APP_MGR_PRODUCT_NO']}",
+        "ERIC_OSS_COMMON_BASE_PRODUCT_NO": "${parameters['ERIC_OSS_COMMON_BASE_PRODUCT_NO']}",
+        "ERIC_OSS_CONFIG_HANDLING_PRODUCT_NO": "${parameters['ERIC_OSS_CONFIG_HANDLING_PRODUCT_NO']}",
+        "ERIC_OSS_DMM_PRODUCT_NO": "${parameters['ERIC_OSS_DMM_PRODUCT_NO']}",
+        "ERIC_OSS_ERICSSON_ADAPTATION_PRODUCT_NO": "${parameters['ERIC_OSS_ERICSSON_ADAPTATION_PRODUCT_NO']}",
+        "ERIC_OSS_ORAN_SUPPORT_PRODUCT_NO": "${parameters['ERIC_OSS_ORAN_SUPPORT_PRODUCT_NO']}",
+        "ERIC_OSS_TASK_AUTOMATION_AE_PRODUCT_NO": "${parameters['ERIC_OSS_TASK_AUTOMATION_AE_PRODUCT_NO']}",
+        "ERIC_TOPOLOGY_HANDLING_PRODUCT_NO": "${parameters['ERIC_TOPOLOGY_HANDLING_PRODUCT_NO']}",
+        "KUBECONFIG_FILE": "${parameters['KUBECONFIG_EXTERNAL_ENVIRONMENT']}",
+        "NAMESPACE": "${parameters['NAMESPACE_EXTERNAL_TEST_ENV']}",
+        "OSS_DEPLOYMENT_MANAGER_RELEASE_PACKAGE_PRODUCT_NO": "${parameters['OSS_DEPLOYMENT_MANAGER_RELEASE_PACKAGE_PRODUCT_NO']}",
+        "OSS_DEPLOYMENT_MANAGER_VERSION": "${parameters['OSS_DEPLOYMENT_MANAGER_VERSION']}",
+        "SLAVE_LABEL": "${parameters['CUSTOMER_AGENT_NAME']}"
+      },
+      "refId": "Unpack and Push Images",
+      "requisiteStageRefIds": [
+        "Manual Checkpoint 1"
+      ],
+      "stageEnabled": {
+        "expression": "${#stage('Manual Checkpoint 1')['status'] == 'SUCCEEDED'}",
+        "type": "expression"
+      },
+      "type": "jenkins",
+      "waitForCompletion": true
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "instructions": "Are all the images present in the Docker registry",
+      "judgmentInputs": [],
+      "name": "Manual Checkpoint 2",
+      "notifications": [],
+      "refId": "Manual Checkpoint 2",
+      "requisiteStageRefIds": [
+        "Unpack and Push Images"
+      ],
+      "stageEnabled": {
+        "expression": "${#stage('Unpack and Push Images')['status'] == 'SUCCEEDED'}",
+        "type": "expression"
+      },
+      "type": "manualJudgment",
+      "waitForCompletion": true
+    },
+    {
+      "application": "eiap-release-e2e-cicd",
+      "continuePipeline": false,
+      "failPipeline": true,
+      "name": "External Upgrade Flow",
+      "pipeline": "0b592fb3-2d61-436c-b2df-f615787138c3",
+      "pipelineParameters": {
+        "CRD_NAMESPACE": "${parameters['CRD_NAMESPACE']}",
+        "CSAR_DOWNLOAD_LOCATION_PATH": "${parameters['CSAR_DOWNLOAD_LOCATION_PATH']}",
+        "CUSTOMER_AGENT_NAME": "${parameters['CUSTOMER_AGENT_NAME']}",
+        "DESTINATION_SERVER_HOSTNAME_OR_IP": "${parameters['DESTINATION_SERVER_HOSTNAME_OR_IP']}",
+        "DESTINATION_SERVER_PACKAGE_LOCATION": "${parameters['DESTINATION_SERVER_PACKAGE_LOCATION']}",
+        "EIAE_DEPLOYMENT_HELM_RELEASE_PACKAGE_PRODUCT_NO": "${parameters['EIAE_DEPLOYMENT_HELM_RELEASE_PACKAGE_PRODUCT_NO']}",
+        "ERIC_CLOUD_NATIVE_BASE_PRODUCT_NO": "${parameters['ERIC_CLOUD_NATIVE_BASE_PRODUCT_NO']}",
+        "ERIC_CLOUD_NATIVE_SERVICE_MESH_PRODUCT_NO": "${parameters['ERIC_CLOUD_NATIVE_SERVICE_MESH_PRODUCT_NO']}",
+        "ERIC_CNBASE_OSS_CONFIG_PRODUCT_NO": "${parameters['ERIC_CNBASE_OSS_CONFIG_PRODUCT_NO']}",
+        "ERIC_CNCS_OSS_CONFIG_PRODUCT_NO": "${parameters['ERIC_CNCS_OSS_CONFIG_PRODUCT_NO']}",
+        "ERIC_OSS_ADC_PRODUCT_NO": "${parameters['ERIC_OSS_ADC_PRODUCT_NO']}",
+        "ERIC_OSS_APP_MGR_PRODUCT_NO": "${parameters['ERIC_OSS_APP_MGR_PRODUCT_NO']}",
+        "ERIC_OSS_COMMON_BASE_PRODUCT_NO": "${parameters['ERIC_OSS_COMMON_BASE_PRODUCT_NO']}",
+        "ERIC_OSS_CONFIG_HANDLING_PRODUCT_NO": "${parameters['ERIC_OSS_CONFIG_HANDLING_PRODUCT_NO']}",
+        "ERIC_OSS_DMM_PRODUCT_NO": "${parameters['ERIC_OSS_DMM_PRODUCT_NO']}",
+        "ERIC_OSS_ERICSSON_ADAPTATION_PRODUCT_NO": "${parameters['ERIC_OSS_ERICSSON_ADAPTATION_PRODUCT_NO']}",
+        "ERIC_OSS_ORAN_SUPPORT_PRODUCT_NO": "${parameters['ERIC_OSS_ORAN_SUPPORT_PRODUCT_NO']}",
+        "ERIC_OSS_TASK_AUTOMATION_AE_PRODUCT_NO": "${parameters['ERIC_OSS_TASK_AUTOMATION_AE_PRODUCT_NO']}",
+        "ERIC_TOPOLOGY_HANDLING_PRODUCT_NO": "${parameters['ERIC_TOPOLOGY_HANDLING_PRODUCT_NO']}",
+        "FUNCTIONAL_SCP_USER_SECRET": "${parameters['FUNCTIONAL_SCP_USER_SECRET']}",
+        "INT_CHART_VERSION": "${parameters['INT_CHART_VERSION']}",
+        "NAMESPACE": "${parameters['NAMESPACE_EXTERNAL_TEST_ENV']}",
+        "OSS_DEPLOYMENT_MANAGER_RELEASE_PACKAGE_PRODUCT_NO": "${parameters['OSS_DEPLOYMENT_MANAGER_RELEASE_PACKAGE_PRODUCT_NO']}",
+        "OSS_DEPLOYMENT_MANAGER_VERSION": "${parameters['OSS_DEPLOYMENT_MANAGER_VERSION']}",
+        "TEST_ENVIRONMENT": "${parameters['EXTERNAL_TEST_ENVIRONMENT']}",
+        "TYPE_OF_CREDENTIAL_FOR_SCP": "${parameters['TYPE_OF_CREDENTIAL_FOR_SCP']}"
+      },
+      "refId": "External Upgrade Flow",
+      "requisiteStageRefIds": [
+      "Manual Checkpoint 2"
+      ],
+      "stageEnabled": {
+        "expression": "${#stage('Manual Checkpoint 2')['status'] == 'SUCCEEDED'}",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "RPT-RC_Unreserve-Environment",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Unreserve Environment",
+      "parameters": {
+        "ENV_NAME": "${#stage('Set Test Environment')['context']['RESOURCE_NAME']}"
+      },
+      "refId": "Unreserve Environment",
+      "requisiteStageRefIds": [
+        "Internal Upgrade Flow"
+      ],
+      "stageEnabled": {
+        "expression": "${#stage('Internal Upgrade Flow')['status'] == 'SUCCEEDED'}",
+        "type": "expression"
+      },
+      "type": "jenkins",
+      "waitForCompletion": true
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "RPT-RC_Quarantine-Environment",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Quarantine Environment",
+      "parameters": {
+        "ENV_NAME": "${#stage('Set Test Environment')['context']['RESOURCE_NAME']}"
+      },
+      "refId": "Quarantine Environment",
+      "requisiteStageRefIds": [
+        "Unreserve Environment"
+      ],
+      "stageEnabled": {
+        "expression": "${#stage('Internal Upgrade Flow')['status'] != 'SUCCEEDED'}",
+        "type": "expression"
+      },
+      "type": "jenkins",
+      "waitForCompletion": true
+    }
+  ],
+  "triggers": []
+}

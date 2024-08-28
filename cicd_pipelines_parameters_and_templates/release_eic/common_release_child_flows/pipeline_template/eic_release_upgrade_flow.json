@@ -1,0 +1,951 @@
+{
+  "appConfig": {},
+  "keepWaitingPipelines": false,
+  "limitConcurrent": false,
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "name": "SPINNAKER_PIPELINE_NAME",
+  "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten. Template name: eic_release_upgrade_flow.json in repo https://gerrit-gamma.gic.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources,branches",
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+    "ui": true
+  },
+  "notifications": [
+    {
+      "address": "NOTIFICATION_ADDRESS",
+      "level": "pipeline",
+      "message": {
+        "pipeline.failed": {
+          "text": "The pipeline has failed."
+        }
+      },
+      "type": "email",
+      "when": [
+        "pipeline.failed"
+      ]
+    }
+  ],
+  "parameterConfig": [
+    {
+      "default": "",
+      "description": "Name of the deployment",
+      "hasOptions": false,
+      "label": "",
+      "name": "DEPLOYMENT_NAME",
+      "options": [],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "Release_Staging_Child_Flow",
+      "description": "RCF Tag is used to identify the environment by Report Center Registration Stage for Child flows",
+      "hasOptions": false,
+      "label": "",
+      "name": "RCF_TAG",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Namespace of environment",
+      "hasOptions": false,
+      "label": "",
+      "name": "NAMESPACE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Kubernetes configuration file to specify which environment to install on (Datafile in OST)",
+      "hasOptions": false,
+      "label": "",
+      "name": "KUBECONFIG_FILE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "The version of integration chart",
+      "hasOptions": false,
+      "label": "",
+      "name": "INT_CHART_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Option to use real CSAR. If false then dummy CSAR will be used",
+      "hasOptions": false,
+      "label": "",
+      "name": "USE_REAL_CSAR",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Hostname for GAS",
+      "hasOptions": false,
+      "label": "",
+      "name": "GAS_HOSTNAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Hostname for IAM",
+      "hasOptions": false,
+      "label": "",
+      "name": "IAM_HOSTNAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Hostname for ADC",
+      "hasOptions": false,
+      "label": "",
+      "name": "ADC_HOSTNAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Hostname for APPMGR",
+      "hasOptions": false,
+      "label": "",
+      "name": "APPMGR_HOSTNAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Hostname for Bulk Data Repository (BDR)",
+      "hasOptions": false,
+      "name": "BDR_HOSTNAME",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "EIC_HOSTNAME_DUMMY_VALUE",
+      "description": "Hostname for EIC",
+      "hasOptions": false,
+      "label": "",
+      "name": "EIC_HOSTNAME",
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "",
+      "description": "",
+      "hasOptions": false,
+      "label": "",
+      "name": "TAGS",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Hostname for TH",
+      "hasOptions": false,
+      "label": "",
+      "name": "TH_HOSTNAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Hostname for ENM",
+      "hasOptions": false,
+      "label": "",
+      "name": "ENM_HOSTNAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "",
+      "description": "Hostname for ECM",
+      "hasOptions": false,
+      "label": "",
+      "name": "ECM_HOSTNAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "",
+      "description": "Hostname for Kafka Bootstrap",
+      "hasOptions": false,
+      "name": "KF_BO_HOSTNAME",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Skips given test scenarios e.g. CANARY_UPGRADE_01, CANARY_UPGRADE_03",
+      "hasOptions": false,
+      "label": "",
+      "name": "SKIP_TESTS",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "",
+      "description": "Run given tests scenarios and nothing else e.g. CANARY_UPGRADE_01, CANARY_UPGRADE_03",
+      "hasOptions": false,
+      "label": "",
+      "name": "RUN_TESTS",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "",
+      "description": "By default these tests will run e.g., ['main_multiple_iterations.json', 'main_single_iteration.json', 'main_CU2.json'] Override it if needed",
+      "hasOptions": false,
+      "label": "",
+      "name": "CONFIG_FILES",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "evo_docker_engine_gic_IDUN",
+      "description": "",
+      "hasOptions": false,
+      "label": "",
+      "name": "SLAVE_LABEL",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "",
+      "hasOptions": false,
+      "label": "",
+      "name": "DOCKER_REGISTRY",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "",
+      "hasOptions": false,
+      "label": "",
+      "name": "DOCKER_REGISTRY_CREDENTIALS",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "armdocker.rnd.ericsson.se/proj-eric-oss-drop/eric-oss-deployment-manager",
+      "description": "Deployment Manager Repository.",
+      "hasOptions": false,
+      "label": "",
+      "name": "DEPLOYMENT_MANAGER_REPO",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "default",
+      "description": "Deployment Manager version.",
+      "hasOptions": false,
+      "label": "",
+      "name": "DEPLOYMENT_MANAGER_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "true",
+      "description": "When set to true uses the site values generated from the Deployment manager prepare command for the deployment.",
+      "hasOptions": true,
+      "label": "",
+      "name": "USE_DM_PREPARE",
+      "options": [
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "refs/tags/live-release",
+      "description": "The version of the K6 testware to be used.",
+      "hasOptions": false,
+      "label": "",
+      "name": "K6_TESTWARE_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "true",
+      "description": "When set to true, enables the DDP auto upload",
+      "hasOptions": true,
+      "label": "",
+      "name": "DDP_AUTO_UPLOAD",
+      "options": [
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "true",
+      "description": "When set to true, ENM integration tests will be run",
+      "hasOptions": true,
+      "label": "",
+      "name": "RUN_ENM_INTEGRATION_TEST",
+      "options": [
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "true",
+      "description": "Set to true to use the \"--use-certm\" tag during the deployment",
+      "hasOptions": true,
+      "label": "",
+      "name": "USE_CERTM",
+      "options": [
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "eic_site_values_template",
+      "description": "Name of the bucket that is storing the site values that is stored in object store. Defaults to eic_site_values_template.",
+      "hasOptions": false,
+      "label": "",
+      "name": "SITE_VALUE_FILE_BUCKET_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "site-values-latest.yaml",
+      "description": "Name of the site values template to use that is stored in object store, including the file extension",
+      "hasOptions": false,
+      "label": "",
+      "name": "SITE_VALUES_FILE_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "eic_site_values_override",
+      "description": "Name of the overwrite site values to use that is stored in object store. Defaults to eic_site_values_override",
+      "hasOptions": false,
+      "label": "",
+      "name": "SITE_VALUE_OVERRIDE_BUCKET_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Name of the overwrite site values to use that is stored in object store, including the file extension. Content will override the content for the site values set in the SITE_VALUES_FILE_NAME parameter.",
+      "hasOptions": false,
+      "label": "",
+      "name": "SITE_VALUES_OVERRIDE_FILE_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Kubernetes configuration file to specify which environment to install on (Jenkins  Credential ID)",
+      "hasOptions": false,
+      "label": "",
+      "name": "KUBE_CONFIG_FILE_CREDENTIAL_ID",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "true",
+      "description": "When set to true, enables the population of the App Manager database with dummy applications",
+      "hasOptions": true,
+      "label": "",
+      "name": "PRELOAD_APP_MANAGER",
+      "options": [
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    }
+  ],
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "Staging-Report-Register-Child-Flow",
+      "master": "oss-fem4s11-eiffel216",
+      "name": "Report Center Registration",
+      "parameters": {
+        "EXEC_ID": "${execution.id}"
+      },
+      "refId": "Report_Center_Registration",
+      "requisiteStageRefIds": [],
+      "type": "jenkins",
+      "waitForCompletion": true
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "CICD-UTILS-Retrieve-EIAE-Helmfile-Version",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Retrieve EIAE Helmfile Version",
+      "parameters": {
+        "CONFIG_MAP_NAME": "eric-installed-applications",
+        "ENV_FILES_BUCKET_NAME": "${parameters['DEPLOYMENT_NAME']}_files",
+        "FUNCTIONAL_USER_SECRET": "reluser-user-creds",
+        "KUBE_CONFIG": "${parameters['KUBECONFIG_FILE']}",
+        "NAMESPACE": "${parameters['NAMESPACE']}",
+        "SPINNAKER_PIPELINE_ID": "${execution['id']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Retrieve EIAE Helmfile Version",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "BASE-VERS_Compare_Version_With_Baseline_Version",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Compare From State With TLS Version",
+      "parameters": {
+        "BASELINE_VERSION_IN_REPO": "2.3519.0",
+        "VERSION_FOR_COMPARISON": "${#stage(\"Retrieve EIAE Helmfile Version\")[\"context\"][\"EIAE_HELMFILE_VERSION\"]}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Compare From State With TLS Version",
+      "requisiteStageRefIds": [
+        "Retrieve EIAE Helmfile Version"
+      ],
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "BASE-VERS_Compare_Version_With_Baseline_Version",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Compare To State With TLS Version",
+      "parameters": {
+        "BASELINE_VERSION_IN_REPO": "2.3519.0",
+        "VERSION_FOR_COMPARISON": "${parameters['INT_CHART_VERSION']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Compare To State With TLS Version",
+      "requisiteStageRefIds": [
+        "Compare From State With TLS Version"
+      ],
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "BASE-VERS_Compare_Version_With_Baseline_Version",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Compare From State With SEF Version",
+      "parameters": {
+        "BASELINE_VERSION_IN_REPO": "2.3222.0",
+        "VERSION_FOR_COMPARISON": "${#stage(\"Retrieve EIAE Helmfile Version\")[\"context\"][\"EIAE_HELMFILE_VERSION\"]}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Compare From State With SEF Version",
+      "requisiteStageRefIds": [
+        "Compare To State With TLS Version"
+      ],
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "OSS-Integration-HealthCheck-Using-DM",
+      "master": "oss-aispinn-fem5s11-eiffel052",
+      "name": "Pre Upgrade Health Check",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "reluser-creds-docker",
+        "ENV_FILES_BUCKET_NAME": "${parameters['DEPLOYMENT_NAME']}_files",
+        "FUNCTIONAL_USER_SECRET": "reluser-user-creds",
+        "KUBECONFIG_FILE": "${parameters['KUBECONFIG_FILE']}",
+        "NAMESPACE": "${parameters['NAMESPACE']}"
+      },
+      "refId": "Pre Upgrade Health Check",
+      "requisiteStageRefIds": [
+        "Compare From State With SEF Version"
+      ],
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "CICD-UTILS-TLS-Setup",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Pre Upgrade TLS Setup With SEF",
+      "parameters": {
+        "ENV_FILES_BUCKET_NAME": "${parameters['DEPLOYMENT_NAME']}_files",
+        "FUNCTIONAL_USER_SECRET": "reluser-user-creds",
+        "KUBE_CONFIG": "${parameters['KUBECONFIG_FILE']}",
+        "NAMESPACE": "${parameters['NAMESPACE']}",
+        "SPINNAKER_PIPELINE_ID": "${execution['id']}",
+        "STATEFUL_SET_REPLICAS_STR": "eric-sec-access-mgmt:1,eric-data-wide-column-database-cd-datacenter1-rack1:0",
+        "DEPLOYMENT_REPLICAS_STR": "eric-data-wide-column-database-cd-operator:0,eric-data-key-value-database-rd:0",
+        "DELETE_DEPLOYMENT_STR": "eric-cloud-native-kvdb-rd-operand"
+      },
+      "refId": "Pre Upgrade TLS Setup With SEF",
+      "requisiteStageRefIds": [
+        "Pre Upgrade Health Check"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Compare From State With TLS Version')['context']['RESULT_OF_COMPARISON'].contains('lower')  and !(#stage('Compare To State With TLS Version')['context']['RESULT_OF_COMPARISON'].contains('lower')) and !(#stage('Compare From State With SEF Version')['context']['RESULT_OF_COMPARISON'].contains('lower'))",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "CICD-UTILS-TLS-Setup",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Pre Upgrade TLS Setup Without SEF",
+      "parameters": {
+        "ENV_FILES_BUCKET_NAME": "${parameters['DEPLOYMENT_NAME']}_files",
+        "FUNCTIONAL_USER_SECRET": "reluser-user-creds",
+        "KUBE_CONFIG": "${parameters['KUBECONFIG_FILE']}",
+        "NAMESPACE": "${parameters['NAMESPACE']}",
+        "SPINNAKER_PIPELINE_ID": "${execution['id']}",
+        "STATEFUL_SET_REPLICAS_STR": "eric-sec-access-mgmt:1",
+        "DEPLOYMENT_REPLICAS_STR": "eric-data-key-value-database-rd:0",
+        "DELETE_DEPLOYMENT_STR": "eric-cloud-native-kvdb-rd-operand"
+      },
+      "refId": "Pre Upgrade TLS Setup Without SEF",
+      "requisiteStageRefIds": [
+        "Pre Upgrade Health Check"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Compare From State With TLS Version')['context']['RESULT_OF_COMPARISON'].contains('lower')  and !(#stage('Compare To State With TLS Version')['context']['RESULT_OF_COMPARISON'].contains('lower')) and #stage('Compare From State With SEF Version')['context']['RESULT_OF_COMPARISON'].contains('lower')",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": false,
+      "application": "common-e2e-cicd",
+      "failPipeline": true,
+      "name": "Pre-Deploy",
+      "pipeline": "88012023-7839-4eca-92f4-f87715ed77ad",
+      "pipelineParameters": {
+          "ARMDOCKER_USER_SECRET": "reluser-creds-docker",
+          "CRD_NAMESPACE": "eric-crd-ns",
+          "DEPLOYMENT_TYPE": "upgrade",
+          "ENV_FILES_BUCKET_NAME": "${parameters['DEPLOYMENT_NAME']}_files",
+          "EXECUTE_AM_PREDEPLOYMENT_STEP": "yes",
+          "KUBECONFIG_FILE": "${parameters['KUBECONFIG_FILE']}",
+          "NAMESPACE": "${parameters['NAMESPACE']}",
+          "SFTP_CREDENTIALS": "idun-bur-sftp-credentials",
+          "SLAVE_LABEL": "${parameters['SLAVE_LABEL']}",
+          "TESTWARE_API_URL": "http://api.prod-staging-report.ews.gic.ericsson.se/api",
+          "TESTWARE_DATABASE_URL": "postgresql://testware_user:testware@kroto018.rnd.gic.ericsson.se:30005/staging",
+          "TESTWARE_K6_TOOL_GUI_URL": "http://gui.prod-staging-report.ews.gic.ericsson.se/staging-reports"
+      },
+      "refId": "Pre-Deploy",
+      "requisiteStageRefIds": [
+        "Pre Upgrade TLS Setup With SEF",
+        "Pre Upgrade TLS Setup Without SEF"
+      ],
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "OSS-Integration-Helmfile-Deploy-Using-dit",
+      "master": "oss-aispinn-fem5s11-eiffel052",
+      "name": "Upgrade",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "reluser-creds-docker",
+        "DDP_AUTO_UPLOAD": "${parameters['DDP_AUTO_UPLOAD']}",
+        "DEPLOYMENT_MANAGER_DOCKER_IMAGE": "${parameters['DEPLOYMENT_MANAGER_REPO']}:${parameters['DEPLOYMENT_MANAGER_VERSION']}",
+        "DEPLOYMENT_NAME": "${parameters['DEPLOYMENT_NAME']}",
+        "DEPLOYMENT_TYPE": "upgrade",
+        "DOCKER_REGISTRY": "${parameters['DOCKER_REGISTRY']}",
+        "DOCKER_REGISTRY_CREDENTIALS": "${parameters['DOCKER_REGISTRY_CREDENTIALS']}",
+        "DOCKER_TIMEOUT": "600",
+        "DOWNLOAD_CSARS": "${parameters['USE_REAL_CSAR']}",
+        "FUNCTIONAL_USER_SECRET": "reluser-user-creds",
+        "HELM_TIMEOUT": "3600",
+        "TIMEOUT": "10800",
+        "INT_CHART_NAME": "eric-eiae-helmfile",
+        "INT_CHART_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm",
+        "INT_CHART_VERSION": "${parameters['INT_CHART_VERSION']}",
+        "SITE_VALUES_FILE_NAME": "${parameters['SITE_VALUES_FILE_NAME']}",
+        "SITE_VALUES_OVERRIDE_FILE_NAME": "${parameters['SITE_VALUES_OVERRIDE_FILE_NAME']}",
+        "SITE_VALUE_FILE_BUCKET_NAME": "${parameters['SITE_VALUE_FILE_BUCKET_NAME']}",
+        "SITE_VALUE_OVERRIDE_BUCKET_NAME": "${parameters['SITE_VALUE_OVERRIDE_BUCKET_NAME']}",
+        "SLAVE_LABEL": "${parameters['SLAVE_LABEL']}",
+        "TAGS": "${parameters['TAGS']}",
+        "USE_CERTM": "${parameters['USE_CERTM']}",
+        "USE_DM_PREPARE": "${parameters['USE_DM_PREPARE']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Upgrade",
+      "requisiteStageRefIds": [
+        "Pre-Deploy"
+      ],
+      "stageTimeoutMs": 18000000,
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "CICD-UTILS-TLS-Setup",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Post Upgrade TLS Setup",
+      "parameters": {
+        "ENV_FILES_BUCKET_NAME": "${parameters['DEPLOYMENT_NAME']}_files",
+        "FUNCTIONAL_USER_SECRET": "reluser-user-creds",
+        "KUBE_CONFIG": "${parameters['KUBECONFIG_FILE']}",
+        "NAMESPACE": "${parameters['NAMESPACE']}",
+        "SPINNAKER_PIPELINE_ID": "${execution['id']}",
+        "STATEFUL_SET_REPLICAS_STR": "eric-sec-access-mgmt:2",
+        "DEPLOYMENT_REPLICAS_STR": "",
+        "DELETE_DEPLOYMENT_STR": ""
+      },
+      "refId": "Post Upgrade TLS Setup",
+      "requisiteStageRefIds": [
+        "Upgrade"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Compare From State With TLS Version')['context']['RESULT_OF_COMPARISON'].contains('lower')  and !(#stage('Compare To State With TLS Version')['context']['RESULT_OF_COMPARISON'].contains('lower'))",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "OSS-Integration-HealthCheck-Using-DM",
+      "master": "oss-aispinn-fem5s11-eiffel052",
+      "name": "Post Upgrade Health Check",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "reluser-creds-docker",
+        "ENV_FILES_BUCKET_NAME": "${parameters['DEPLOYMENT_NAME']}_files",
+        "FUNCTIONAL_USER_SECRET": "reluser-user-creds",
+        "KUBECONFIG_FILE": "${parameters['KUBECONFIG_FILE']}",
+        "NAMESPACE": "${parameters['NAMESPACE']}"
+      },
+      "refId": "Post Upgrade Health Check",
+      "requisiteStageRefIds": [
+        "Post Upgrade TLS Setup"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Upgrade')['status'] == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "application": "banba",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Run k6 Tests & Assert",
+      "pipeline": "e908f29c-e1ac-4df5-a8e3-0cae7a426efe",
+      "pipelineParameters": {
+        "ADC_HOSTNAME": "${parameters['ADC_HOSTNAME']}",
+        "APP_MGR_HOSTNAME": "${parameters['APPMGR_HOSTNAME']}",
+        "BDR_HOSTNAME": "${parameters['BDR_HOSTNAME']}",
+        "CONFIG_FILES": "${parameters['CONFIG_FILES']}",
+        "DEPLOYMENT_NAME": "${parameters['DEPLOYMENT_NAME']}",
+        "ECM_HOSTNAME": "${parameters['ECM_HOSTNAME']}",
+        "EIC_HOSTNAME": "${parameters['EIC_HOSTNAME']}",
+        "EIC_VERSION": "${parameters['INT_CHART_VERSION']}",
+        "ENM_HOSTNAME": "${parameters['ENM_HOSTNAME']}",
+        "GAS_HOSTNAME": "${parameters['GAS_HOSTNAME']}",
+        "GERRIT_REFSPEC": "${parameters['K6_TESTWARE_VERSION']}",
+        "IAM_HOSTNAME": "${parameters['IAM_HOSTNAME']}",
+        "JENKINS_AGENT_LABEL": "fem5dockerslave5",
+        "KAFKA_HOSTNAME": "${parameters['KF_BO_HOSTNAME']}",
+        "KUBE_CONFIG": "${parameters['KUBE_CONFIG_FILE_CREDENTIAL_ID']}",
+        "NAMESPACE": "${parameters['NAMESPACE']}",
+        "PRELOAD_APP_MANAGER": "${parameters['PRELOAD_APP_MANAGER']}",
+        "RUN_ENM_INTEGRATION_TEST": "${parameters['RUN_ENM_INTEGRATION_TEST']}",
+        "RUN_TESTS": "${parameters['RUN_TESTS']}",
+        "SKIP_TESTS": "${parameters['SKIP_TESTS']}",
+        "TH_HOSTNAME": "${parameters['TH_HOSTNAME']}"
+      },
+      "refId": "Run k6 Tests & Assert",
+      "requisiteStageRefIds": [
+        "Post Upgrade Health Check"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Upgrade')['status'] == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Post Flow Checks",
+      "preconditions": [
+        {
+          "context": {
+            "expression": "#stage('Upgrade')['status'] == \"SUCCEEDED\" or #stage('Upgrade')['status'] == \"SKIPPED\"",
+            "failureMessage": "Upgrade failed"
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "#stage('Run k6 Tests & Assert')['status'] == \"SUCCEEDED\" or #stage('Run k6 Tests & Assert')['status'] == \"SKIPPED\" or #stage('Run k6 Tests & Assert')['status'] == \"FAILED_CONTINUE\"",
+            "failureMessage": "Failed to start K6 tests"
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "#stage('Pre Upgrade Health Check')['status'] == \"SUCCEEDED\" or #stage('Pre Upgrade Health Check')['status'] == \"SKIPPED\" or #stage('Pre Upgrade Health Check')['status'] == \"FAILED_CONTINUE\"",
+            "failureMessage": "Pre Upgrade Health Check failed"
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "#stage('Post Upgrade Health Check')['status'] == \"SUCCEEDED\" or #stage('Post Upgrade Health Check')['status'] == \"SKIPPED\" or #stage('Post Upgrade Health Check')['status'] == \"FAILED_CONTINUE\"",
+            "failureMessage": "Post Upgrade Health Check failed"
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+              "expression": "#stage('Pre-Deploy')['status'] == \"SUCCEEDED\" or #stage('Pre-Deploy')['status'] == \"SKIPPED\" or #stage('Pre-Deploy')['status'] == \"FAILED_CONTINUE\"",
+              "failureMessage": "Pre-Deploy failed"
+          },
+          "failPipeline": true,
+          "type": "expression"
+        }
+      ],
+      "refId": "Post Flow Checks",
+      "requisiteStageRefIds": [
+        "Run k6 Tests & Assert"
+      ],
+      "type": "checkPreconditions"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "CICD-UTILS-DDP-Upload",
+      "master": "oss-aispinn-fem5s11-eiffel052",
+      "name": "Push Data to DDP",
+      "parameters": {
+        "DDC_POD_NAME": "eric-oss-ddc",
+        "ENV_FILES_BUCKET_NAME": "${parameters['DEPLOYMENT_NAME']}_files",
+        "FUNCTIONAL_USER_SECRET": "reluser-user-creds",
+        "KUBE_CONFIG": "${parameters['KUBECONFIG_FILE']}",
+        "NAMESPACE": "${parameters['NAMESPACE']}",
+        "SLAVE": "evo_docker_engine_gic_IDUN",
+        "SPINNAKER_PIPELINE_ID": "${execution['id']}"
+      },
+      "refId": "Push Data to DDP",
+      "requisiteStageRefIds": [
+        "Post Flow Checks"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Post Flow Checks')['status'] != \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "RPT-RC_Quarantine-Environment",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Quarantine Environment",
+      "parameters": {
+        "ENV_NAME": "${parameters['DEPLOYMENT_NAME']}"
+      },
+      "refId": "Quarantine Environment",
+      "requisiteStageRefIds": [
+        "Post Flow Checks"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Post Flow Checks')['status'] != \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failPipeline": true,
+      "name": "End Flow",
+      "preconditions": [
+        {
+          "context": {
+            "stageName": "Post Flow Checks",
+            "stageStatus": "SUCCEEDED"
+          },
+          "failPipeline": true,
+          "type": "stageStatus"
+        }
+      ],
+      "refId": "End Flow",
+      "requisiteStageRefIds": [
+        "Quarantine Environment",
+        "Push Data to DDP"
+      ],
+      "type": "checkPreconditions"
+    }
+  ],
+  "triggers": []
+}

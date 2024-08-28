@@ -1,0 +1,213 @@
+{
+  "appConfig": {},
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "name": "SPINNAKER_PIPELINE_NAME",
+  "description": "Template name: eiap_connected_release_software_upload_flow.json in repo https://gerrit-gamma.gic.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources,branches",
+  "keepWaitingPipelines": true,
+  "limitConcurrent": true,
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+    "ui": true
+  },
+  "parameterConfig": [
+    {
+      "default": "",
+      "description": "",
+      "hasOptions": false,
+      "name": "PREVIOUS_RELEASE_INT_CHART_VERSION",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "",
+      "hasOptions": false,
+      "name": "LATEST_RELEASE_INT_CHART_VERSION",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "true",
+      "description": "",
+      "hasOptions": false,
+      "name": "IS_DM_RELEASED",
+      "options": [
+        {
+          "value": "true"
+        },
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "",
+      "hasOptions": false,
+      "name": "OSS_DEPLOYMENT_MANAGER_VERSION",
+      "pinned": true,
+      "required": true
+    }
+  ],
+  "schema": "1",
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "GetAppVersionFromHelmfile",
+      "master": "oss-aispinn-fem5s11-eiffel052",
+      "name": "Get Details of Previous Release",
+      "parameters": {
+        "FUNCTIONAL_USER_SECRET": "reluser-user-creds",
+        "INT_CHART_VERSION": "${parameters['PREVIOUS_RELEASE_INT_CHART_VERSION']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Get Details of Previous Release",
+      "requisiteStageRefIds": [],
+      "type": "jenkins",
+      "waitForCompletion": true
+    },
+    {
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "GetAppVersionFromHelmfile",
+      "master": "oss-aispinn-fem5s11-eiffel052",
+      "name": "Get Details of Latest Release",
+      "parameters": {
+        "FUNCTIONAL_USER_SECRET": "reluser-user-creds",
+        "INT_CHART_VERSION": "${parameters['LATEST_RELEASE_INT_CHART_VERSION']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Get Details of Latest Release",
+      "requisiteStageRefIds": [
+        "Get Details of Previous Release"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Get Details of Previous Release')['status']}\" == 'SUCCEEDED'",
+        "type": "expression"
+      },
+      "type": "jenkins",
+      "waitForCompletion": true
+    },
+    {
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "oss-idun-release-cicd_Get_Difference_Between_App_Versions",
+      "master": "oss-aispinn-fem5s11-eiffel052",
+      "name": "Get Diff Between Releases",
+      "parameters": {
+        "INT_CHART_VERSION": "${parameters['LATEST_RELEASE_INT_CHART_VERSION']}",
+        "IS_DM_RELEASED": "${parameters['IS_DM_RELEASED']}",
+        "LATEST_RELEASE_INT_CHART_VERSION": "${#stage('Get Details of Latest Release')['context']['propertyFileContents']}",
+        "OSS_DEPLOYMENT_MANAGER_VERSION": "${parameters['OSS_DEPLOYMENT_MANAGER_VERSION']}",
+        "PREVIOUS_RELEASE_INT_CHART_VERSION": "${#stage('Get Details of Previous Release')['context']['propertyFileContents']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Get Diff Between Releases",
+      "requisiteStageRefIds": [
+        "Get Details of Latest Release"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Get Details of Latest Release')['status']}\" == 'SUCCEEDED'",
+        "type": "expression"
+      },
+      "type": "jenkins",
+      "waitForCompletion": true
+    },
+    {
+      "continuePipeline": true,
+      "failPipeline": false,
+      "instructions": "Are we ready to release the SW to SWGW?",
+      "judgmentInputs": [],
+      "name": "Approve to Release",
+      "notifications": [],
+      "refId": "Approve to Release",
+      "requisiteStageRefIds": [
+        "Get Diff Between Releases"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Get Diff Between Releases')['status']}\" == 'SUCCEEDED'",
+        "type": "expression"
+      },
+      "type": "manualJudgment",
+      "waitForCompletion": true
+    },
+    {
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "DP-RAF",
+      "master": "oss-aeonic-fem2s11",
+      "name": "SW Upload",
+      "parameters": {
+        "fileInput": "${#stage('Get Diff Between Releases')['context']['APP_TO_RELEASE']}"
+      },
+      "refId": "SW Upload",
+      "requisiteStageRefIds": [
+        "Approve to Release"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Approve to Release')['status']}\" == 'SUCCEEDED'",
+        "type": "expression"
+      },
+      "type": "jenkins",
+      "waitForCompletion": true
+    },
+    {
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": true,
+      "name": "Flow Completed",
+      "preconditions": [
+        {
+          "context": {
+            "expression": "'${#stage('Get Details of Previous Release')['status']}' == 'SUCCEEDED'",
+            "failureMessage": "Get Details of Previous Release Failed!"
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "'${#stage('Get Details of Latest Release')['status']}' == 'SUCCEEDED' or '${#stage('Get Details of Latest Release')['status']}' == 'SKIPPED'",
+            "failureMessage": "Get Details of Latest Release Failed!"
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "'${#stage('Get Diff Between Releases')['status']}' == 'SUCCEEDED' or '${#stage('Get Diff Between Releases')['status']}' == 'SKIPPED'",
+            "failureMessage": "Get Diff Between Releases Failed!"
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "'${#stage('Approve to Release')['status']}' == 'SUCCEEDED' or '${#stage('Approve to Release')['status']}' == 'SKIPPED'",
+            "failureMessage": "Approve to Release Failed!"
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "'${#stage('SW Upload')['status']}' == 'SUCCEEDED' or '${#stage('SW Upload')['status']}' == 'SKIPPED'",
+            "failureMessage": "SW Upload Failed!"
+          },
+          "failPipeline": true,
+          "type": "expression"
+        }
+      ],
+      "requisiteStageRefIds": [
+        "SW Upload"
+      ],
+      "type": "checkPreconditions"
+    }
+  ],
+  "triggers": []
+}

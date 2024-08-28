@@ -1,0 +1,13 @@
+SPINNAKER_APPLICATION_NAME,APP_SHORT_NAME_UPPERCASE,APPLICATION_STAGING_PIPELINE_ID,SUBMIT_TO_IDUN_STAGING_PARAMETER,SUBMIT_TO_EO_STAGING_PARAMETER,APPLICATION_TEAMS_EMAILS,SKIP_PRE_TESTING_PARAMETER
+adc-e2e-cicd,ADC,5f583206-c6d9-46ca-b967-da128fd0d9c4,true,false,"PDLTEAMMID@pdl.internal.ericsson.com,PDLTEAMPIL@pdl.internal.ericsson.com,chaikam.anusha@wipro.com,sankar.k60@wipro.com",true
+eas-e2e-cicd,EAS,e10893df-7000-41f3-af41-8967337afcba,true,false,"PDLEOENFVO@pdl.internal.ericsson.com,PDLTSP6AUT@ericsson.com,devi.prasanna@wipro.com,mohammad.arbaz@wipro.com",true
+dmm-e2e-cicd,DMM,684bc696-7598-45d9-b975-bfa6b618a631,true,false,PDLTEAMSUN@pdl.internal.ericsson.com,true
+topology-handling-e2e-cicd,TH,fe5ca561-63cd-430d-9050-a8376827592c,true,false,"PDLENMTEAM@pdl.internal.ericsson.com,guruprasad.ambi@wipro.com,SA40066690@wipro.com,chukka.jyothsna@wipro.com",true
+app-mgr-e2e-cicd,APPMGR,3e52c10f-e245-480f-a2b7-7b766c01ffa4,true,false,"PDLOUTCAST@pdl.internal.ericsson.com,PDLONEYCOM@pdl.internal.ericsson.com,PDLTEAMRHA@pdl.internal.ericsson.com,PDLROGERRO@pdl.internal.ericsson.com",true
+config-handling-e2e-cicd,CH,96f936b7-f9f5-4da9-8d37-7940db4bd0fa,true,false,PDLEOENFVO@pdl.internal.ericsson.com,true
+ta-e2e-cicd,TA,1099757c-4eb6-445b-8970-59427fd12146,true,false,"PDLOUTCAST@pdl.internal.ericsson.com,PDLTEAMSAG@pdl.internal.ericsson.com,PDLAMINDIG@pdl.internal.ericsson.com",false
+os-e2e-cicd,OS,265a8a2e-f542-4e3f-b2c8-b11c15861bd9,true,false,PDLEEASWAT@pdl.internal.ericsson.com,false
+pmh-e2e-cicd,PMH,a67d8abc-939b-459e-835b-1f425f2f3538,true,false,"PDLBRAGITE@pdl.internal.ericsson.com,PDLVELOCIR@pdl.internal.ericsson.com,PDLEEASWAT@pdl.internal.ericsson.com",false
+ml-e2e-cicd,ML,1373040f-6bf1-47a4-81f4-2428b53ebfbe,true,false,PDLSMOKETE@pdl.internal.ericsson.com,false
+tieh-e2e-cicd,TIEH,d3984efc-08cb-46ab-8cff-cbc6a9154808,true,false,PDLDYNAMOD@pdl.internal.ericsson.com,true
+cs-e2e-cicd,CS,98380f18-ee90-4d2d-aa0f-e681ba30beaf,true,false,PDLTEAMATH@pdl.internal.ericsson.com,false

@@ -1,0 +1,56 @@
+{
+    "application": "SPINNAKER_APPLICATION_NAME",
+    "disabled": true,
+    "name": "SPINNAKER_PIPELINE_NAME",
+    "keepWaitingPipelines": false,
+    "limitConcurrent": true,
+    "parameterConfig": [
+      {
+        "default": "true",
+        "description": "",
+        "hasOptions": false,
+        "label": "",
+        "name": "SUCCESS",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": false,
+        "required": false
+      },
+      {
+        "default": "",
+        "description": "",
+        "hasOptions": false,
+        "label": "",
+        "name": "execution_id",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": false,
+        "required": false
+      }
+    ],
+    "spelEvaluator": "v4",
+    "stages": [
+      {
+        "name": "Check Preconditions",
+        "preconditions": [
+          {
+            "context": {
+              "expression": "\"${parameters['SUCCESS']}\" == \"true\""
+            },
+            "failPipeline": true,
+            "type": "expression"
+          }
+        ],
+        "refId": "Check Preconditions",
+        "requisiteStageRefIds": [],
+        "type": "checkPreconditions"
+      }
+    ],
+    "triggers": []
+  }

@@ -1,0 +1,29 @@
+modelVersion: 2.0
+
+description: "Common CICD Pipeline Resources: Precode Review Pipeline"
+
+docker-images:
+  - mdlint: armdocker.rnd.ericsson.se/dockerhub-ericsson-remote/davidanson/markdownlint-cli2
+
+properties:
+ - json-validation-script-path: cicd_files/jenkins/scripts/json_file_check.sh
+ - csv-validation-script-path: cicd_files/jenkins/scripts/csv_file_check.sh
+
+env:
+  - CHANGED_FILES
+
+rules:
+
+  lint-json:
+    - task: run-json-lint-script
+      cmd: sh ${json-validation-script-path}
+
+  lint-csv:
+    - task: run-csv-lint-script
+      cmd: sh ${csv-validation-script-path}
+
+  lint-md:
+    - task: run-md-lint-script
+      docker-image: mdlint
+      cmd: markdownlint-cli2 "**/*.md" --ignore "#node_modules" --ignore "#bob"
+

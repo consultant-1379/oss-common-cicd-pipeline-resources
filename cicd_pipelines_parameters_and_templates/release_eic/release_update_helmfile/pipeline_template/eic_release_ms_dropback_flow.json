@@ -1,0 +1,487 @@
+{
+  "disabled": false,
+  "keepWaitingPipelines": false,
+  "limitConcurrent": true,
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "name": "SPINNAKER_PIPELINE_NAME",
+  "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten. Template name: eic_release_ms_dropback_flow.json in repo https://gerrit-gamma.gic.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources,branches",
+  "locked": {
+      "allowUnlockUi": true,
+      "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+      "ui": true
+  },
+  "notifications": [
+      {
+        "address": "NOTIFICATION_ADDRESS",
+        "level": "pipeline",
+        "message": {
+          "pipeline.failed": {
+            "text": "The pipeline has failed."
+          }
+        },
+        "type": "email",
+        "when": [
+          "pipeline.failed"
+        ]
+      }
+  ],
+  "parameterConfig": [
+    {
+      "default": "",
+      "description": "Gerrit project (E.g. OSS/com.ericsson.oss.eiae/eiae-helmfile).",
+      "hasOptions": false,
+      "label": "",
+      "name": "APPLICATION_GERRIT_PROJECT",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Select 'true' if you want to create a branch for application or select 'false' to use an existing branch",
+      "hasOptions": true,
+      "label": "",
+      "name": "CREATE_APPLICATION_BRANCH",
+      "options": [
+        {
+          "value": "true"
+        },
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "latest",
+      "description": "Will pick up the latest tag in application Gerrit repo. If a specific version X.Y.Z is provided, it will checkout from the version specified. Else if latest is selected it will checkout from the latest version of the master branch",
+      "hasOptions": false,
+      "label": "",
+      "name": "APPLICATION_BRANCH_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Branch for the change to be pushed. If you are creating a branch for the application in the flow then leave this blank.",
+      "hasOptions": false,
+      "label": "",
+      "name": "APPLICATION_VCS_BRANCH",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "OSS/com.ericsson.oss.eiae/eiae-helmfile",
+      "description": "Gerrit project (E.g. OSS/com.ericsson.oss.eiae/eiae-helmfile).",
+      "hasOptions": false,
+      "label": "",
+      "name": "PRODUCT_GERRIT_PROJECT",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Select 'true' if you want to create a branch for product or select 'false' to use an existing branch",
+      "hasOptions": true,
+      "label": "",
+      "name": "CREATE_PRODUCT_BRANCH",
+      "options": [
+        {
+          "value": "true"
+        },
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "latest",
+      "description": "Will pick up the latest tag in product Gerrit repo. If a specific version X.Y.Z is provided, it will checkout from the version specified. Else if latest is selected it will checkout from the latest version of the master branch",
+      "hasOptions": false,
+      "label": "",
+      "name": "PRODUCT_BRANCH_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Branch for the change to be pushed. If you are creating a branch for the product in the flow then leave this blank.",
+      "hasOptions": false,
+      "label": "",
+      "name": "PRODUCT_VCS_BRANCH",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "helmfile",
+      "description": "Relative path to helm chart in git repo.",
+      "hasOptions": false,
+      "label": "",
+      "name": "APPLICATION_CHART_PATH",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Select 'prepare' to create a snapshot. Select 'publish' to publish the helmfile to drop repository.",
+      "hasOptions": true,
+      "label": "",
+      "name": "GERRIT_PREPARE_OR_PUBLISH",
+      "options": [
+        {
+          "value": "prepare"
+        },
+        {
+          "value": "publish"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "PATCH",
+      "description": "Possible values: MAJOR, MINOR, PATCH. Step this digit automatically in Chart.yaml after release when dependency change received.",
+      "hasOptions": true,
+      "label": "",
+      "name": "VERSION_STRATEGY",
+      "options": [
+        {
+          "value": "MINOR"
+        },
+        {
+          "value": "MAJOR"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "true",
+      "description": "For the publish command, wait for the gerrit patch to be set for a verified +1 or +2 or both before submitting, default is false.",
+      "hasOptions": true,
+      "label": "",
+      "name": "WAIT_SUBMITTABLE_BEFORE_PUBLISH",
+      "options": [
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Comma-separated dependency helm chart name list. E.g.: eric-pm-server, eric-data-document-database-pg",
+      "hasOptions": false,
+      "label": "",
+      "name": "MS_CHART_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Comma-separated dependency helm chart url list. E.g.: https://arm.rnd.ki.sw.ericsson.se/artifactory/proj-pm-1,https://arm.rnd.ki.sw.ericsson.se/artifactory/proj-pm-2",
+      "hasOptions": false,
+      "label": "",
+      "name": "MS_CHART_REPO",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Comma-separated dependency helm chart version list. E.g.: 1.0.0+66, 2.3.0+57",
+      "hasOptions": false,
+      "label": "",
+      "name": "MS_CHART_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "gerrit https url to helm chart git repo. Example: https://gerrit-gamma.gic.ericsson.se/adp-cicd/demo-app-release-chart.",
+      "hasOptions": false,
+      "label": "",
+      "name": "APPLICATION_GIT_REPO_URL",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Drop Helm chart repository url for the application. Eg. https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm-local/",
+      "hasOptions": false,
+      "label": "",
+      "name": "APPLICATION_HELM_DROP_REPO",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Internal Helm chart repository url for the Application. Eg. https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-ci-internal-helm/",
+      "hasOptions": false,
+      "label": "",
+      "name": "APPLICATION_HELM_INTERNAL_REPO",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Drop Helm chart repository url for the Product. Eg. https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm-local/",
+      "hasOptions": false,
+      "label": "",
+      "name": "PRODUCT_HELM_DROP_REPO",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Internal Helm chart repository url for the Prodct. Eg. https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-ci-internal-helm/",
+      "hasOptions": false,
+      "label": "",
+      "name": "PRODUCT_HELM_INTERNAL_REPO",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "true",
+      "description": "Set this to true to execute CSAR Build stage or false to skip it",
+      "hasOptions": true,
+      "label": "",
+      "name": "CSAR_BUILD",
+      "options": [
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    }
+  ],
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "essrian_oss-idun-release-cicd_Create_Branch",
+      "master": "oss-fem7s11-eiffel216",
+      "name": "Create Application Branch",
+      "parameters": {
+        "GERRIT_PROJECT": "${parameters['APPLICATION_GERRIT_PROJECT']}",
+        "VERSION": "${parameters['APPLICATION_BRANCH_VERSION']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Create Application Branch",
+      "requisiteStageRefIds": [],
+      "stageEnabled": {
+        "expression": "parameters['CREATE_APPLICATION_BRANCH'] == 'true'",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "OSS-Integration-Fetch-Build-Upload-Using-ADP-Inca",
+      "master": "oss-fem7s11-eiffel216",
+      "name": "MS dropback",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "eoadm100-docker-auth-config",
+        "CHART_NAME": "${trigger['parameters']['MS_CHART_NAME']}",
+        "CHART_PATH": "${trigger['parameters']['APPLICATION_CHART_PATH']}",
+        "CHART_REPO": "${trigger['parameters']['MS_CHART_REPO']}",
+        "CHART_VERSION": "${trigger['parameters']['MS_CHART_VERSION']}",
+        "GERRIT_PREPARE_OR_PUBLISH": "${trigger['parameters']['GERRIT_PREPARE_OR_PUBLISH']}",
+        "GERRIT_USER_SECRET": "reluser-user-creds",
+        "GIT_REPO_URL": "${trigger['parameters']['APPLICATION_GIT_REPO_URL']}",
+        "HELM_DROP_REPO": "${trigger['parameters']['APPLICATION_HELM_DROP_REPO']}",
+        "HELM_INTERNAL_REPO": "${trigger['parameters']['APPLICATION_HELM_INTERNAL_REPO']}",
+        "HELM_REPO_CREDENTIALS_ID": "eoadm100_helm_repository_creds",
+        "SLAVE_LABEL": "evo_docker_engine_athlone",
+        "SPINNAKER_PIPELINE_ID": "${execution['id']}",
+        "VCS_BRANCH": "${parameters['CREATE_APPLICATION_BRANCH'] == 'false' ? trigger['parameters']['APPLICATION_VCS_BRANCH'] : #stage('Create Application Branch')['context']['BRANCH_NAME']}",
+        "VERSION_STEP_STRATEGY_DEPENDENCY": "${trigger['parameters']['VERSION_STRATEGY']}",
+        "VERSION_STEP_STRATEGY_MANUAL": "${trigger['parameters']['VERSION_STRATEGY']}",
+        "WAIT_SUBMITTABLE_BEFORE_PUBLISH": "${trigger['parameters']['WAIT_SUBMITTABLE_BEFORE_PUBLISH']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "MS dropback",
+      "requisiteStageRefIds": [
+        "Create Application Branch"
+      ],
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "essrian_oss-idun-release-cicd_Create_Branch",
+      "master": "oss-fem7s11-eiffel216",
+      "name": "Create Product Branch",
+      "parameters": {
+        "GERRIT_PROJECT": "${parameters['PRODUCT_GERRIT_PROJECT']}",
+        "VERSION": "${parameters['PRODUCT_BRANCH_VERSION']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Create Product Branch",
+      "requisiteStageRefIds": [
+        "MS dropback"
+      ],
+      "stageEnabled": {
+        "expression": "parameters['CREATE_PRODUCT_BRANCH'] == 'true'",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "OSS-Integration-Fetch-Build-Upload-Using-ADP-Inca",
+      "master": "oss-fem7s11-eiffel216",
+      "name": "Application dropback",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "eoadm100-docker-auth-config",
+        "CHART_NAME": "${#stage('MS dropback')['context']['INT_CHART_NAME']}",
+        "CHART_PATH": "helmfile",
+        "CHART_REPO": "${#stage('MS dropback')['context']['INT_CHART_REPO']}",
+        "CHART_VERSION": "${#stage('MS dropback')['context']['INT_CHART_VERSION']}",
+        "GERRIT_PREPARE_OR_PUBLISH": "${trigger['parameters']['GERRIT_PREPARE_OR_PUBLISH']}",
+        "GERRIT_USER_SECRET": "reluser-user-creds",
+        "GIT_REPO_URL": "https://gerrit-gamma.gic.ericsson.se/a/OSS/com.ericsson.oss.eiae/eiae-helmfile.git",
+        "HELM_DROP_REPO": "${trigger['parameters']['PRODUCT_HELM_DROP_REPO']}",
+        "HELM_INTERNAL_REPO": "${trigger['parameters']['PRODUCT_HELM_INTERNAL_REPO']}",
+        "HELM_REPO_CREDENTIALS_ID": "eoadm100_helm_repository_creds",
+        "SLAVE_LABEL": "evo_docker_engine_athlone",
+        "SPINNAKER_PIPELINE_ID": "${execution['id']}",
+        "STATE_VALUES_FILE": "site-values/idun/ci/override/override-site-values-helmfile-template.yaml",
+        "VCS_BRANCH": "${parameters['CREATE_PRODUCT_BRANCH'] == 'false' ? trigger['parameters']['PRODUCT_VCS_BRANCH'] : #stage('Create Product Branch')['context']['BRANCH_NAME']}",
+        "VERSION_STEP_STRATEGY_DEPENDENCY": "${trigger['parameters']['VERSION_STRATEGY']}",
+        "VERSION_STEP_STRATEGY_MANUAL": "${trigger['parameters']['VERSION_STRATEGY']}",
+        "WAIT_SUBMITTABLE_BEFORE_PUBLISH": "${trigger['parameters']['WAIT_SUBMITTABLE_BEFORE_PUBLISH']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Application dropback",
+      "requisiteStageRefIds": [
+        "Create Product Branch"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('MS dropback')['status'] == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "oss-idun-release-cicd_Copy_EIC_Site_Values_To_OST",
+      "master": "oss-fem7s11-eiffel216",
+      "name": "Copy site_values to OST",
+      "parameters": {
+        "VERSION": "${#stage('Application dropback')['context']['INT_CHART_VERSION']}"
+      },
+      "refId": "Copy site_values to OST",
+      "requisiteStageRefIds": [
+        "Application dropback"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Application dropback')['status'] == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "application": "eic-release-e2e-cicd",
+      "failPipeline": true,
+      "name": "CSAR Build",
+      "pipeline": "7a7c372b-a633-4c03-a4fe-ee5f08c433bd",
+      "pipelineParameters": {
+        "INT_CHART_VERSION": "${#stage('Application dropback')['context']['INT_CHART_VERSION']}"
+      },
+      "refId": "CSAR Build",
+      "requisiteStageRefIds": [
+        "Copy site_values to OST"
+      ],
+      "stageEnabled": {
+        "expression": "parameters['CSAR_BUILD'] == \"true\"",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    }
+  ],
+  "triggers": []
+}

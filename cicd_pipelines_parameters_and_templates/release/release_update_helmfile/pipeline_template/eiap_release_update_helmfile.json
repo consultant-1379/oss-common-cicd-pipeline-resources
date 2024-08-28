@@ -1,0 +1,295 @@
+{
+  "disabled": false,
+  "keepWaitingPipelines": false,
+  "limitConcurrent": true,
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "name": "SPINNAKER_PIPELINE_NAME",
+  "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten. Template name: eiap_release_update_helmfile.json in repo https://gerrit-gamma.gic.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources,branches",
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+    "ui": true
+  },
+  "notifications": [
+    {
+      "address": "NOTIFICATION_ADDRESS",
+      "level": "pipeline",
+      "message": {
+        "pipeline.failed": {
+          "text": "The pipeline has failed."
+        }
+      },
+      "type": "email",
+      "when": [
+        "pipeline.failed"
+      ]
+    }
+  ],
+  "parameterConfig": [
+    {
+      "default": "",
+      "description": "Dependency helm chart name.",
+      "hasOptions": false,
+      "label": "",
+      "name": "CHART_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "",
+      "description": "Dependency helm chart version.",
+      "hasOptions": false,
+      "label": "",
+      "name": "CHART_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "",
+      "description": "Dependency helm chart URL.",
+      "hasOptions": false,
+      "label": "",
+      "name": "CHART_REPO",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "",
+      "description": "Ref Spec from the Gerrit review.",
+      "hasOptions": false,
+      "label": "GERRIT_REFSPEC",
+      "name": "GERRIT_REFSPEC",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "",
+      "description": "Branch for the change to be pushed.",
+      "hasOptions": false,
+      "label": "",
+      "name": "VCS_BRANCH",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "false",
+      "description": "For the publish command, wait for the gerrit patch to be set for a verified +1 or +2 or both before submitting, default is false.",
+      "hasOptions": false,
+      "label": "",
+      "name": "WAIT_SUBMITTABLE_BEFORE_PUBLISH",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Specify the slave label that you want the job to run on.",
+      "hasOptions": false,
+      "label": "",
+      "name": "SLAVE_LABEL",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Select 'prepare' to create a snapshot. Select 'publish' to publish the helmfile to drop repository.",
+      "hasOptions": true,
+      "label": "",
+      "name": "GERRIT_PREPARE_OR_PUBLISH",
+      "options": [
+        {
+          "value": "prepare"
+        },
+        {
+          "value": "publish"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "false",
+      "description": "Default is 'false', if set to true, downgrade of dependency is allowed.",
+      "hasOptions": true,
+      "label": "",
+      "name": "ALLOW_DOWNGRADE",
+      "options": [
+        {
+          "value": "true"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "PATCH",
+      "description": "Possible values: MAJOR, MINOR, PATCH. Step this digit automatically in Chart.yaml after release when dependency change received.",
+      "hasOptions": true,
+      "label": "",
+      "name": "VERSION_STRATEGY",
+      "options": [
+        {
+          "value": "PATCH"
+        },
+        {
+          "value": "MINOR"
+        },
+        {
+          "value": "MAJOR"
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "true",
+      "description": "Set this to true to execute CSAR Build stage or false to skip it",
+      "hasOptions": true,
+      "label": "",
+      "name": "CSAR_BUILD",
+      "options": [
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    }
+  ],
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "Helmfile-Fetch-Build-Upload",
+      "master": "oss-aispinn-fem5s11-eiffel052",
+      "name": "Helmfile Fetch Build Upload",
+      "parameters": {
+        "ALLOW_DOWNGRADE": "${trigger['parameters']['ALLOW_DOWNGRADE']}",
+        "ALWAYS_RELEASE": "true",
+        "ARMDOCKER_USER_SECRET": "eoadm100-docker-auth-config",
+        "AUTOMATIC_RELEASE": "false",
+        "CHART_NAME": "${trigger['parameters']['CHART_NAME']}",
+        "CHART_REPO": "${trigger['parameters']['CHART_REPO']}",
+        "CHART_VERSION": "${trigger['parameters']['CHART_VERSION']}",
+        "GERRIT_PREPARE_OR_PUBLISH": "${trigger['parameters']['GERRIT_PREPARE_OR_PUBLISH']}",
+        "GERRIT_REFSPEC": "${trigger['parameters']['GERRIT_REFSPEC']}",
+        "GERRIT_USER_SECRET": "reluser-user-creds",
+        "HELM_RELEASED_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+        "VCS_BRANCH": "${trigger['parameters']['VCS_BRANCH']}",
+        "VERSION_STEP_STRATEGY_DEPENDENCY": "${trigger['parameters']['VERSION_STRATEGY']}",
+        "VERSION_STEP_STRATEGY_MANUAL": "${trigger['parameters']['VERSION_STRATEGY']}",
+        "WAIT_SUBMITTABLE_BEFORE_PUBLISH": "${trigger['parameters']['WAIT_SUBMITTABLE_BEFORE_PUBLISH']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Helmfile Fetch Build Upload",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "idun-integration-site-values-update",
+      "master": "oss-fem7s11-eiffel216",
+      "name": "Copy site_values",
+      "parameters": {
+        "CHART_VERSION": "${#stage('Helmfile Fetch Build Upload')['context']['INT_CHART_VERSION']}"
+      },
+      "refId": "Copy site_values",
+      "requisiteStageRefIds": [
+        "Helmfile Fetch Build Upload"
+      ],
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "oss-idun-release-cicd_Copy_EIC_Site_Values_To_OST",
+      "markUnstableAsSuccessful": false,
+      "master": "oss-fem7s11-eiffel216",
+      "name": "Copy site_values to OST",
+      "parameters": {
+        "VERSION": "${#stage('Helmfile Fetch Build Upload')['context']['INT_CHART_VERSION']}"
+      },
+      "refId": "Copy site_values to OST",
+      "requisiteStageRefIds": [
+        "Helmfile Fetch Build Upload"
+      ],
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "job": "BASE-VERS_Update_Baseline_Version_In_Repository",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Update Latest Candidate Baseline Version",
+      "parameters": {
+        "KEY_TO_UPDATE_BASELINE_VERSION_OF": "RELEASE_CANDIDATE_INT_CHART_VERSION",
+        "NEW_BASELINE_VERSION": "${#stage('Helmfile Fetch Build Upload')['context']['INT_CHART_VERSION']}",
+        "VERSIONS_FILENAME": "versions"
+      },
+      "refId": "Update Latest Candidate Baseline Version",
+      "requisiteStageRefIds": [
+        "Helmfile Fetch Build Upload"
+      ],
+      "type": "jenkins"
+    },
+    {
+      "application": "eiap-release-e2e-cicd",
+      "failPipeline": true,
+      "name": "CSAR Build",
+      "pipeline": "c187f4db-555a-4a9a-a331-6dfdc79a5b97",
+      "pipelineParameters": {
+        "INT_CHART_VERSION": "${#stage('Helmfile Fetch Build Upload')['context']['INT_CHART_VERSION']}"
+      },
+      "refId": "CSAR Build",
+      "requisiteStageRefIds": [
+        "Copy site_values"
+      ],
+      "stageEnabled": {
+        "expression": "\"${parameters['CSAR_BUILD']}\" == \"true\"",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    }
+  ],
+  "triggers": []
+}

@@ -1,0 +1,6 @@
+SPINNAKER_APPLICATION_NAME,SPINNAKER_PIPELINE_NAME,EXECUTION_TIME
+idun-aas-e2e-cicd,eric-oss-pm-stats-exporter-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-oss-pm-stats-calculator-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-oss-pm-stats-query-service-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-data-engine-sk-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-pm-stats-log-shipper-AAS-E2E-Flow,21:00:00

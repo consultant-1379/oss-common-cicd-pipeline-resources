@@ -1,0 +1,2 @@
+SPINNAKER_APPLICATION_NAME,SPINNAKER_PIPELINE_NAME,NOTIFICATION_ADDRESS
+product-e2e-cicd,product-staging,PDLDUNPROD@pdl.internal.ericsson.com

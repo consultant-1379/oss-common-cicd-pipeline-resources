@@ -1,0 +1,15 @@
+This template generates an e2e microservice flow for IDUN microservices in IDUN greenfield application
+Greenfield application are applications that were created after IDUN was established.
+
+These microservices can be taken into the following products:
+  IDUN
+  EO
+
+List of Applications
+  ADC
+  APPMGR
+  CH
+  DMM
+  EAS
+  TA
+  TH

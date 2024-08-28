@@ -1,0 +1,2 @@
+increment_application_chart_version
+- The template generates a child pipeline that is called within the application staging pipeline to increment the respective application chart version.

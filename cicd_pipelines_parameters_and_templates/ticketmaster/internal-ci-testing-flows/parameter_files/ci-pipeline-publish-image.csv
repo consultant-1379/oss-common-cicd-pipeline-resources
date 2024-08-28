@@ -1,0 +1,2 @@
+SPINNAKER_APPLICATION_NAME,SPINNAKER_PIPELINE_NAME,CONTROLLER1
+ticketmaster-cicd,ci-pipeline-publish-image,oss-fem7s11-eiffel216

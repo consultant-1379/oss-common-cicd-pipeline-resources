@@ -1,0 +1,1694 @@
+{
+  "appConfig": {},
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten. Template name: idun_product_staging_pipeline.json in repo https://gerrit-gamma.gic.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources",
+  "disabled": false,
+  "name": "SPINNAKER_PIPELINE_NAME",
+  "keepWaitingPipelines": false,
+  "limitConcurrent": false,
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+    "ui": true
+  },
+  "notifications": [
+    {
+      "address": "NOTIFICATION_ADDRESS",
+      "level": "pipeline",
+      "message": {
+        "pipeline.failed": {
+          "text": "The product staging pipeline has failed"
+        }
+      },
+      "type": "email",
+      "when": [
+        "pipeline.failed"
+      ]
+    }
+  ],
+  "parameterConfig": [
+    {
+      "default": "None",
+      "description": "Name of the application chart within the integration chart",
+      "hasOptions": false,
+      "label": "",
+      "name": "CHART_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "None",
+      "description": "Repo of the application chart within the integration chart",
+      "hasOptions": false,
+      "label": "",
+      "name": "CHART_REPO",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "None",
+      "description": "Version of the application chart within the integration chart",
+      "hasOptions": false,
+      "label": "",
+      "name": "CHART_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "None",
+      "description": "Gerrit REF Spec is used by Inca to pull down a code review to build a new OSS Common Base",
+      "hasOptions": false,
+      "label": "",
+      "name": "GERRIT_REFSPEC",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "None",
+      "description": "Gerrit Branch is used by Inca to pull down a code review to build a new OSS Common Base",
+      "hasOptions": false,
+      "label": "",
+      "name": "GERRIT_BRANCH",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "eric-eiae-helmfile",
+      "description": "Name of the integration chart which will be used for the Initial install",
+      "hasOptions": false,
+      "label": "",
+      "name": "II_INT_CHART_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "0.0.0",
+      "description": "Version of the Integration Chart which will be used for the Initial Install",
+      "hasOptions": false,
+      "label": "",
+      "name": "II_INT_CHART_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm-local",
+      "description": "Repo of the Integration Chart which will be used for the Initial Install",
+      "hasOptions": false,
+      "label": "",
+      "name": "II_INT_CHART_REPO",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "adc th dmm eas appmgr ch os pmh ml sef tieh",
+      "description": "Applications that should be switch on during deployment",
+      "hasOptions": false,
+      "label": "TAGS",
+      "name": "TAGS",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "site-values/idun/ci/template/site-values-latest.yaml",
+      "description": "The Path where all the necessary site values are located for the install/upgrade",
+      "hasOptions": false,
+      "label": "",
+      "name": "PATH_TO_SITE_VALUES_FILE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "false",
+      "description": "Set this parameter to true if you wish for the environment to be quarantined if the deployment flow false",
+      "hasOptions": false,
+      "label": "",
+      "name": "QUARANTINE_ENV",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "Product_Staging",
+      "description": "RCR Tag is used to identify the environment by Report Center Registration Stage",
+      "hasOptions": false,
+      "label": "",
+      "name": "RCR_TAG",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "eo-integration-ci/honeypots/pooling/environments",
+      "description": "This is the directory within the Repo specified within the Gather-Env-Details Jenkins job where to find the pooling environment details",
+      "hasOptions": false,
+      "label": "",
+      "name": "ENV_DETAILS_DIR",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "PSO_helmfile_flow",
+      "description": "This is the label to search for that is attached to the environments in the Lockable Resource Plugin on Jenkins",
+      "hasOptions": false,
+      "label": "",
+      "name": "ENV_LABEL",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "Product  Staging",
+      "description": "Flow URL Tag is used when locking the environment to add a tag to describe what has locked the environment for easier tracking",
+      "hasOptions": false,
+      "label": "",
+      "name": "FLOW_URL_TAG",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "120",
+      "description": "This is the time to wait for an Environment to become available. After the time expires the job will fail out",
+      "hasOptions": false,
+      "label": "",
+      "name": "WAIT_TIME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "evo_docker_engine_gic_IDUN_PSO",
+      "description": "Label to choose which Jenkins slave to execute Jenkinsfiles against",
+      "hasOptions": false,
+      "label": "",
+      "name": "SLAVE_LABEL",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "psouser-user-creds",
+      "description": "Functional user for logging into armdocker",
+      "hasOptions": false,
+      "label": "",
+      "name": "FUNCTIONAL_USER_SECRET",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "ossapps100-arm-docker-auth-config",
+      "description": "Jenkins credentials ID for Docker login configuration file",
+      "hasOptions": false,
+      "label": "ARMDOCKER_USER_SECRET",
+      "name": "ARMDOCKER_USER_SECRET",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "3600",
+      "description": "Timeout for helmfile deploy",
+      "hasOptions": false,
+      "label": "",
+      "name": "HELM_TIMEOUT",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "true",
+      "description": "",
+      "hasOptions": false,
+      "label": "INCA_WAIT_SUBMIT",
+      "name": "WAIT_SUBMITTABLE_BEFORE_PUBLISH",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Specify what platform the deployment runs e.g. KaaS RH Azure AWS OCP",
+      "hasOptions": false,
+      "label": "PLATFORM",
+      "name": "PLATFORM",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "PSO_Standby",
+      "description": "Name of the pool containing 'Standby' test environments.",
+      "hasOptions": false,
+      "label": "",
+      "name": "STANDBY_POOL_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "PSO_helmfile_flow",
+      "description": "Name of the pool containing current environment being used in the Product Staging pipeline.",
+      "hasOptions": false,
+      "label": "",
+      "name": "PSO_FLOW_POOL_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "site-values/idun/ci/override/override-sitevalues-ps.yaml",
+      "description": "PATH_TO_SITE_VALUES_OVERRIDE_FILE",
+      "hasOptions": false,
+      "label": "PATH_TO_SITE_VALUES_OVERRIDE_FILE",
+      "name": "PATH_TO_SITE_VALUES_OVERRIDE_FILE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "false",
+      "description": "Skip CRD Deploy",
+      "hasOptions": true,
+      "label": "",
+      "name": "SKIP_CRD_DEPLOY",
+      "options": [
+        {
+          "value": "true"
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Name of the microservice chart within the integration chart",
+      "hasOptions": false,
+      "label": "MICROSERVICE_CHART_NAME",
+      "name": "MICROSERVICE_CHART_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "",
+      "description": "Repo of the microservice chart within the integration chart",
+      "hasOptions": false,
+      "label": "MICROSERVICE_CHART_REPO",
+      "name": "MICROSERVICE_CHART_REPO",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "",
+      "description": "Version of the microservice chart within the integration chart",
+      "hasOptions": false,
+      "label": "MICROSERVICE_CHART_VERSION",
+      "name": "MICROSERVICE_CHART_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "",
+      "description": "URL associated with the gerrit change",
+      "hasOptions": false,
+      "label": "GERRIT_CHANGE_URL",
+      "name": "GERRIT_CHANGE_URL",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "",
+      "description": "Summary of the GIT commit",
+      "hasOptions": false,
+      "label": "GIT_COMMIT_SUMMARY",
+      "name": "GIT_COMMIT_SUMMARY",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "base-platform-baseline",
+      "description": "This is the name of the Base Platform Version file. Only used during delivery of a base application.",
+      "hasOptions": false,
+      "label": "Base Platform Name",
+      "name": "BASE_PLATFORM_BASELINE_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm",
+      "description": "This is the repo location of the Base Platform version file. Only used during delivery of a base application.",
+      "hasOptions": false,
+      "label": "Base Platform Repo",
+      "name": "BASE_PLATFORM_BASELINE_REPO",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "",
+      "description": "This is the version of the Base Platform version file. Only used during delivery of a base application.",
+      "hasOptions": false,
+      "label": "Base Platform Version",
+      "name": "BASE_PLATFORM_BASELINE_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "false",
+      "description": "This is used in the rollback scenario where a base chart is causing an issue. Caution, ensure you are aware of the consequence in using this parameter.",
+      "hasOptions": false,
+      "label": "Allow Downgrade of Base Chart within the Helmfile",
+      "name": "ALLOW_BASE_BASELINE_DOWNGRADE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    }
+  ],
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "name": "Check is App Blocked",
+      "preconditions": [
+        {
+          "context": {
+            "expression": "${'eric-oss-pm-stats-calc-handling|eric-service-mesh-integration|eric-oss-common-base|eric-cncs-oss-config|eric-oss-ml-execution-env|eric-oss-ericsson-adaptation|eric-oss-config-handling|eric-cloud-native-base|eric-cloud-native-service-mesh|eric-service-exposure-framework|eric-oss-connected-systems-registry|eric-cnbase-oss-config|eric-oss-dmm|eric-oss-oran-support|eric-oss-app-mgr|eric-topology-handling|eric-oss-pf|eric-top-inv-exposure-handling'.matches( '(?=.*' + trigger['parameters']['CHART_NAME'].replace(' ','').replace(',', ')(?=.*') + ').*') or trigger['parameters']['GERRIT_BRANCH'].contains('master')}",
+            "failureMessage": "Your application is currently blocked from running in Idun Product Staging.\nContact PS for details - IDUN/Product Staging PDLDUNPROD@pdl.internal.ericsson.com"
+          },
+          "failPipeline": true,
+          "type": "expression"
+        }
+      ],
+      "refId": "Check is App Blocked",
+      "requisiteStageRefIds": [],
+      "type": "checkPreconditions"
+    },
+    {
+      "application": "product-e2e-cicd",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Reserve Environment",
+      "pipeline": "0fbc3d73-7b81-4d26-9d30-f05fc56ffa49",
+      "pipelineParameters": {
+        "ENV_DETAILS_DIR": "${trigger['parameters']['ENV_DETAILS_DIR']}",
+        "ENV_LABEL": "${trigger['parameters']['ENV_LABEL']}",
+        "FLOW_URL_TAG": "${trigger['parameters']['FLOW_URL_TAG']}",
+        "SPINNAKER_FLOW_ID": "${execution['id']}",
+        "WAIT_TIME": "${trigger['parameters']['WAIT_TIME']}"
+      },
+      "refId": "Reserve Environment",
+      "requisiteStageRefIds": [
+        "Check is App Blocked"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Check is App Blocked')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "OSS-Integration-Check-Gerrit-Central-Mirror-Sync-Status",
+      "master": "oss-fem7s11-eiffel216",
+      "name": "Check Gerrit Central Mirror Status Pre-Snapshot",
+      "parameters": {
+		  "SPINNAKER_PIPELINE_ID": "${execution['id']}"
+	  },
+      "refId": "Check Gerrit Central Mirror Status Pre-Snapshot",
+      "requisiteStageRefIds": [
+        "Reserve Environment"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Reserve Environment')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "Staging-Report-Register",
+      "master": "oss-fem4s11-eiffel216",
+      "name": "Report Center Registration",
+      "parameters": {
+        "EXEC_ID": "${execution.id}"
+      },
+      "refId": "Report_Center_Registration",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "OSS-Integration-Helmfile-Fetch-Build-Upload-Snapshot",
+      "master": "oss-fem7s11-eiffel216",
+      "name": "Helmfile Fetch Build Upload Snapshot",
+      "parameters": {
+        "ALLOW_DOWNGRADE": "${parameters['ALLOW_BASE_BASELINE_DOWNGRADE']}",
+        "CHART_NAME": "${CHART_NAME}",
+        "CHART_PATH": "helmfile",
+        "CHART_REPO": "${CHART_REPO}",
+        "CHART_VERSION": "${CHART_VERSION}",
+        "FUNCTIONAL_USER_TOKEN": "PSO-SNAPSHOT-TOKEN",
+        "GERRIT_PROJECT": "OSS/com.ericsson.oss.eiae/eiae-helmfile",
+        "GERRIT_REFSPEC": "",
+        "GERRIT_USER_SECRET": "ossapps100-user-creds",
+        "HELM_INTERNAL_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-ci-internal-helm",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+        "SPINNAKER_PIPELINE_ID": "${execution['id']}",
+        "STATE_VALUES_FILE": "site-values/idun/ci/override/override-site-values-helmfile-template.yaml",
+        "VERSION_STEP_STRATEGY_MANUAL": "PATCH"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Helmfile Fetch Build Upload Snapshot",
+      "requisiteStageRefIds": [
+        "Check Preconditions"
+      ],
+      "stageEnabled": {
+        "expression": "'${trigger['parameters']['GERRIT_REFSPEC']}' == 'None' and \"${#stage('Check Preconditions')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "OSS-Integration-Helmfile-Fetch-Build-Upload-Snapshot",
+      "master": "oss-fem7s11-eiffel216",
+      "name": "Helmfile Fetch Build Upload Snapshot from Ref Spec",
+      "parameters": {
+        "CHART_NAME": "",
+        "CHART_PATH": "helmfile",
+        "CHART_REPO": "",
+        "CHART_VERSION": "",
+        "FUNCTIONAL_USER_TOKEN": "PSO-SNAPSHOT-TOKEN",
+        "GERRIT_PROJECT": "OSS/com.ericsson.oss.eiae/eiae-helmfile",
+        "GERRIT_REFSPEC": "${trigger['parameters']['GERRIT_REFSPEC']}",
+        "GERRIT_USER_SECRET": "ossapps100-user-creds",
+        "HELM_INTERNAL_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-ci-internal-helm",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+        "SPINNAKER_PIPELINE_ID": "${execution['id']}",
+        "STATE_VALUES_FILE": "site-values/idun/ci/override/override-site-values-helmfile-template.yaml",
+        "VCS_BRANCH": "${trigger['parameters']['GERRIT_BRANCH']}",
+        "VERSION_STEP_STRATEGY_MANUAL": "PATCH"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Helmfile Fetch Build Upload Snapshot from Ref Spec",
+      "requisiteStageRefIds": [
+        "Check Gerrit Central Mirror Status Pre-Snapshot"
+      ],
+      "stageEnabled": {
+        "expression": "'${trigger['parameters']['GERRIT_REFSPEC']}' != 'None' and \"${#stage('Check Gerrit Central Mirror Status Pre-Snapshot')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failOnFailedExpressions": false,
+      "failPipeline": false,
+      "name": "Evaluate Variables",
+      "refId": "Evaluate Variables",
+      "requisiteStageRefIds": [
+        "Helmfile Fetch Build Upload Snapshot"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Helmfile Fetch Build Upload Snapshot')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "INT_CHART_NAME",
+          "value": "${#stage(\"Helmfile Fetch Build Upload Snapshot\")[\"context\"][\"INT_CHART_NAME\"]}"
+        },
+        {
+          "key": "INT_CHART_VERSION",
+          "value": "${#stage(\"Helmfile Fetch Build Upload Snapshot\")[\"context\"][\"INT_CHART_VERSION\"]}"
+        },
+        {
+          "key": "INT_CHART_REPO",
+          "value": "${#stage(\"Helmfile Fetch Build Upload Snapshot\")[\"context\"][\"INT_CHART_REPO\"]}"
+        },
+        {
+          "key": "NO_CHART_VERSION_CHANGES",
+          "value": "${#stage(\"Helmfile Fetch Build Upload Snapshot\")[\"context\"][\"NO_CHART_VERSION_CHANGES\"]}"
+        }
+      ]
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failOnFailedExpressions": false,
+      "failPipeline": false,
+      "name": "Evaluate Variables from Ref Spec Snapshot",
+      "refId": "Evaluate Variables from Ref Spec Snapshot",
+      "requisiteStageRefIds": [
+        "Helmfile Fetch Build Upload Snapshot from Ref Spec"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Helmfile Fetch Build Upload Snapshot from Ref Spec')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "INT_CHART_NAME",
+          "value": "${#stage(\"Helmfile Fetch Build Upload Snapshot from Ref Spec\")[\"context\"][\"INT_CHART_NAME\"]}"
+        },
+        {
+          "key": "INT_CHART_VERSION",
+          "value": "${#stage(\"Helmfile Fetch Build Upload Snapshot from Ref Spec\")[\"context\"][\"INT_CHART_VERSION\"]}"
+        },
+        {
+          "key": "INT_CHART_REPO",
+          "value": "${#stage(\"Helmfile Fetch Build Upload Snapshot from Ref Spec\")[\"context\"][\"INT_CHART_REPO\"]}"
+        },
+        {
+          "key": "NO_CHART_VERSION_CHANGES",
+          "value": "Helmfile Code Review"
+        }
+      ]
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Post Snapshot Gate",
+      "preconditions": [
+        {
+          "context": {
+            "expression": "\"${#stage('Evaluate Variables from Ref Spec Snapshot')['status']}\" == \"SUCCEEDED\" or \"${#stage('Evaluate Variables from Ref Spec Snapshot')['status']}\" == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Evaluate Variables')['status']}\" == \"SUCCEEDED\" or \"${#stage('Evaluate Variables')['status']}\" == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Helmfile Fetch Build Upload Snapshot')['status']}\" == \"SUCCEEDED\" or \"${#stage('Helmfile Fetch Build Upload Snapshot')['status']}\" == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Helmfile Fetch Build Upload Snapshot from Ref Spec')['status']}\" == \"SUCCEEDED\" or \"${#stage('Helmfile Fetch Build Upload Snapshot from Ref Spec')['status']}\" == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Check For CRDs')['status']}\" == \"SUCCEEDED\" or \"${#stage('Check For CRDs')['status']}\" == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Reserve Environment')['status']}\" == \"SUCCEEDED\" or \"${#stage('Reserve Environment')['status']}\" == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Check Gerrit Central Mirror Status Pre-Snapshot')['status']}\" == \"SUCCEEDED\" or \"${#stage('Check Gerrit Central Mirror Status Pre-Snapshot')['status']}\" == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Get Base Platform Baseline Details')['status']}\" == \"SUCCEEDED\" or \"${#stage('Get Base Platform Baseline Details')['status']}\" == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${NO_CHART_VERSION_CHANGES}\" == \"False\" or \"${NO_CHART_VERSION_CHANGES}\" == \"Helmfile Code Review\"",
+            "failureMessage": "This chart ( '${CHART_NAME}' : '${CHART_VERSION}' ) is already in the EIC baseline"
+          },
+          "failPipeline": true,
+          "type": "expression"
+        }
+      ],
+      "refId": "Post Snapshot Gate",
+      "requisiteStageRefIds": [
+        "Evaluate Variables",
+        "Evaluate Variables from Ref Spec Snapshot",
+        "Pre UG HC"
+      ],
+      "type": "checkPreconditions"
+    },
+    {
+      "application": "product-e2e-cicd",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Upgrade using Helmfile",
+      "pipeline": "927ada85-966c-4dbc-a942-f5e1cbb44a15",
+      "pipelineParameters": {
+        "ADC_HOSTNAME": "${#stage(\"Reserve Environment\")[\"context\"][\"EO_ADC_HOSTNAME\"]}",
+        "APPMGR_HOSTNAME": "${#stage(\"Reserve Environment\")[\"context\"][\"EO_APPMGR_HOSTNAME\"]}",
+        "ARMDOCKER_USER_SECRET": "${parameters['ARMDOCKER_USER_SECRET']}",
+        "BDR_HOSTNAME": "${#stage(\"Reserve Environment\")[\"context\"][\"EO_BDR_HOSTNAME\"]}",
+        "COLLECT_LOGS": "false",
+        "DDP_AUTO_UPLOAD": "true",
+        "DEPLOYMENT_TYPE": "upgrade",
+        "EIC_HOSTNAME": "${#stage(\"Reserve Environment\")[\"context\"][\"EO_EIC_HOSTNAME\"]}",
+        "ENV_CONFIG_FILE": "eo-integration-ci/honeypots/pooling/environments/${#stage(\"Reserve Environment\")[\"context\"][\"RESOURCE_NAME\"]}.conf",
+        "FH_SNMP_ALARM_IP": "${#stage(\"Reserve Environment\")[\"context\"][\"fhSnmpAlarmIp\"]}",
+        "FUNCTIONAL_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "GAS_HOSTNAME": "${#stage(\"Reserve Environment\")[\"context\"][\"EO_GAS_HOSTNAME\"]}",
+        "HELM_TIMEOUT": "${trigger['parameters']['HELM_TIMEOUT']}",
+        "IAM_HOSTNAME": "${#stage(\"Reserve Environment\")[\"context\"][\"IAM_HOSTNAME\"]}",
+        "INGRESS_IP": "${#stage(\"Reserve Environment\")[\"context\"][\"SM_IP\"]}",
+        "INT_CHART_NAME": "${INT_CHART_NAME}",
+        "INT_CHART_REPO": "${INT_CHART_REPO}",
+        "INT_CHART_VERSION": "${INT_CHART_VERSION}",
+        "KAFKA_BOOTSTRAP_HOSTNAME": "${#stage(\"Reserve Environment\")[\"context\"][\"EO_KAFKA_BOOTSTRAP_HOSTNAME\"]}",
+        "KUBE_CONFIG": "${#stage(\"Reserve Environment\")[\"context\"][\"KUBE_CONFIG\"]}",
+        "LA_HOSTNAME": "${#stage(\"Reserve Environment\")[\"context\"][\"EO_LA_HOSTNAME\"]}",
+        "ML_HOSTNAME": "${#stage(\"Reserve Environment\")[\"context\"][\"EO_ML_HOSTNAME\"]}",
+        "NAMESPACE": "${#stage(\"Reserve Environment\")[\"context\"][\"NAMESPACE\"]}",
+        "OS_HOSTNAME": "${#stage(\"Reserve Environment\")[\"context\"][\"EO_OS_HOSTNAME\"]}",
+        "PATH_TO_CERTIFICATES_FILES": "eo-integration-ci/${#stage(\"Reserve Environment\")[\"context\"][\"PATH_TO_CERTIFICATES_FILES\"]}",
+        "PATH_TO_SITE_VALUES_FILE": "${trigger['parameters']['PATH_TO_SITE_VALUES_FILE']}",
+        "PATH_TO_SITE_VALUES_OVERRIDE_FILE": "${trigger['parameters']['PATH_TO_SITE_VALUES_OVERRIDE_FILE']}",
+        "SKIP_CRD_DEPLOY": "${trigger['parameters']['SKIP_CRD_DEPLOY']}",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+        "SPINNAKER_PIPELINE_ID": "${execution['id']}",
+        "TAGS": "${trigger['parameters']['TAGS']}",
+        "TH_HOSTNAME": "${#stage(\"Reserve Environment\")[\"context\"][\"EO_TH_HOSTNAME\"]}",
+        "USE_CERTM": "true",
+        "USE_DM_PREPARE": "true"
+      },
+      "refId": "Upgrade using Helmfile",
+      "requisiteStageRefIds": [
+        "Post Snapshot Gate"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Post Snapshot Gate')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "application": "banba",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Start & Assert K6 Continuous Tests",
+      "pipeline": "05bae15e-417d-408a-95dc-4dfec1850b5a",
+      "pipelineParameters": {
+        "ADC_HOSTNAME": "${#stage(\"Reserve Environment\")[\"context\"][\"EO_ADC_HOSTNAME\"]}",
+        "AE_SKIP_TESTS": "oss-common-base-test",
+        "APP_MGR_HOSTNAME": "${#stage(\"Reserve Environment\")[\"context\"][\"EO_APPMGR_HOSTNAME\"]}",
+        "BDR_HOSTNAME": "${#stage(\"Reserve Environment\")[\"context\"][\"EO_BDR_HOSTNAME\"]}",
+        "CONFIG_FILES": ["main_single_iteration.json", "main_eic_app_manager_load.json", "main_eic_configuration_handling_load.json", "main_eic_ui_portal_load.json"],
+        "DEPLOYMENT_NAME": "${#stage(\"Reserve Environment\")[\"context\"][\"RESOURCE_NAME\"]}",
+        "ECM_HOSTNAME": "stsvp1aeocm09-175.stsoss.sero.gic.ericsson.se",
+        "ENM_HOSTNAME": "${#stage(\"Reserve Environment\")[\"context\"][\"ENM_HOSTNAME\"]}",
+        "FUNCTIONAL_USER_CREDENTIALS": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "GAS_HOSTNAME": "${#stage(\"Reserve Environment\")[\"context\"][\"EO_GAS_HOSTNAME\"]}",
+        "IAM_HOSTNAME": "${#stage(\"Reserve Environment\")[\"context\"][\"IAM_HOSTNAME\"]}",
+        "EIC_HOSTNAME": "${#stage(\"Reserve Environment\")[\"context\"][\"EO_EIC_HOSTNAME\"]}",
+        "JENKINS_AGENT_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+        "KAFKA_HOSTNAME": "${#stage(\"Reserve Environment\")[\"context\"][\"EO_KAFKA_BOOTSTRAP_HOSTNAME\"]}",
+        "KUBE_CONFIG": "${#stage(\"Reserve Environment\")[\"context\"][\"KUBE_CONFIG\"]}",
+        "RUN_CHARACTERISTICS": "true",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+        "SPINNAKER_PIPELINE_ID": "${execution['id']}",
+        "TH_HOSTNAME": "${#stage(\"Reserve Environment\")[\"context\"][\"EO_TH_HOSTNAME\"]}"
+      },
+      "refId": "Start & Assert K6 Continuous Tests",
+      "requisiteStageRefIds": [
+        "Upgrade using Helmfile"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Upgrade using Helmfile')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failOnFailedExpressions": false,
+      "failPipeline": false,
+      "name": "Post UG Gate",
+      "preconditions": [
+        {
+          "context": {
+            "expression": "\"${#stage('Reserve Environment')['status']}\" == \"SUCCEEDED\" or \"${#stage('Reserve Environment')['status']}\" == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Upgrade using Helmfile')['status']}\" == \"SUCCEEDED\" or \"${#stage('Upgrade using Helmfile')['status']}\" == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Start & Assert K6 Continuous Tests')['status']}\" == \"SUCCEEDED\" or \"${#stage('Start & Assert K6 Continuous Tests')['status']}\" == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        }
+      ],
+      "refId": "Post UG Gate",
+      "requisiteStageRefIds": [
+        "Start & Assert K6 Continuous Tests",
+        "Post UG HC"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Post Snapshot Gate')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "checkPreconditions"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "OSS-Integration-Check-Gerrit-Central-Mirror-Sync-Status",
+      "master": "oss-fem7s11-eiffel216",
+      "name": "Check Gerrit Central Mirror Status Pre-Release",
+      "parameters": {
+        "SPINNAKER_PIPELINE_ID": "${execution['id']}"
+      },
+      "refId": "Check Gerrit Central Mirror Status Pre-Release",
+      "requisiteStageRefIds": [
+        "Post UG Gate"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Post UG Gate')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "RPT-RC_Quarantine-Environment",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Quarantine Environment",
+      "parameters": {
+        "ENV_NAME": "${#stage(\"Reserve Environment\")[\"context\"][\"RESOURCE_NAME\"]}",
+        "SPINNAKER_PIPELINE_ID": "${execution['id']}"
+      },
+      "refId": "Quarantine Environment",
+      "requisiteStageRefIds": [
+        "Post UG Gate"
+      ],
+      "stageEnabled": {
+        "expression": "\"${trigger['parameters']['QUARANTINE_ENV']}\" == \"true\" and \"${#stage('Post UG Gate')['status']}\" != \"SUCCEEDED\" and \"${#stage('Reserve Environment')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "application": "product-e2e-cicd",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Redeploy Moved Out Environment",
+      "pipeline": "3c1982f7-475e-47f0-a5eb-44186296651e",
+      "pipelineParameters": {
+        "ENVIRONMENT_STATUS": "${ENVIRONMENT_STATUS}",
+        "ENV_NAME": "${#stage(\"Reserve Environment\")[\"context\"][\"RESOURCE_NAME\"]}",
+        "FUNCTIONAL_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "SKIP_UPGRADE": "${SKIP_UPGRADE}",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+        "SPINNAKER_PIPELINE_ID": "${execution['id']}",
+        "TAGS": "${trigger['parameters']['TAGS']}"
+      },
+      "refId": "Redeploy Moved Out Environment",
+      "requisiteStageRefIds": [
+        "Evaluate Environment Status",
+        "Collect Kubernetes Cluster logs",
+        "JenkinsPush Data to DDP"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Evaluate Environment Status')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": false
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "RPT-RC_Unreserve-Environment",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Unreserve Environment",
+      "parameters": {
+        "ENV_NAME": "${#stage(\"Reserve Environment\")[\"context\"][\"RESOURCE_NAME\"]}",
+		"SPINNAKER_PIPELINE_ID": "${execution['id']}"
+      },
+      "propertyFile": "",
+      "refId": "Unreserve Environment",
+      "requisiteStageRefIds": [
+        "Update Version in RPT Post UG"
+      ],
+      "stageEnabled": {
+        "expression": "'${#stage('Quarantine Environment')['status']}' == 'SKIPPED' and '${#stage('Post UG Gate')['status']}' == 'SUCCEEDED' and '${#stage('Reserve Environment')['status']}' == 'SUCCEEDED' or '${#stage('Reserve Environment')['status']}' == 'SUCCEEDED' and '${#stage('Post Snapshot Gate')['status']}' == 'FAILED_CONTINUE'",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "OSS-Integration-Fetch-Build-Upload-Using-ADP-Inca",
+      "master": "oss-fem7s11-eiffel216",
+      "name": "Helmfile Fetch Build Upload Release",
+      "parameters": {
+        "ALLOW_DOWNGRADE": "${parameters['ALLOW_BASE_BASELINE_DOWNGRADE']}",
+        "ALWAYS_RELEASE": "true",
+        "ARMDOCKER_USER_SECRET": "${parameters['ARMDOCKER_USER_SECRET']}",
+        "AUTOMATIC_RELEASE": "false",
+        "CHART_NAME": "${CHART_NAME}",
+        "CHART_PATH": "helmfile",
+        "CHART_REPO": "${CHART_REPO}",
+        "CHART_VERSION": "${CHART_VERSION}",
+        "GERRIT_PREPARE_OR_PUBLISH": "publish",
+        "GERRIT_REFSPEC": "",
+        "GERRIT_USER_SECRET": "ossapps100-user-creds",
+        "GIT_REPO_URL": "https://gerrit-gamma.gic.ericsson.se/a/OSS/com.ericsson.oss.eiae/eiae-helmfile.git",
+        "HELM_DROP_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm",
+        "HELM_INTERNAL_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-ci-internal-helm",
+        "HELM_RELEASED_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm",
+        "HELM_REPO_CREDENTIALS_ID": "eoadm100_helm_repository_creds",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+        "SPINNAKER_PIPELINE_ID": "${execution['id']}",
+        "STATE_VALUES_FILE": "site-values/idun/ci/override/override-site-values-helmfile-template.yaml",
+        "VERSION_STEP_STRATEGY_DEPENDENCY": "MINOR",
+        "VERSION_STEP_STRATEGY_MANUAL": "MINOR",
+        "WAIT_SUBMITTABLE_BEFORE_PUBLISH": "${trigger['parameters']['WAIT_SUBMITTABLE_BEFORE_PUBLISH']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Helmfile Fetch Build Upload Release",
+      "requisiteStageRefIds": [
+        "Check Gerrit Central Mirror Status Pre-Release"
+      ],
+      "stageEnabled": {
+        "expression": "'${trigger['parameters']['GERRIT_REFSPEC']}' == 'None' and \"${trigger['parameters']['QUARANTINE_ENV']}\" == \"false\" and \"${#stage('Check Gerrit Central Mirror Status Pre-Release')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "OSS-Integration-Fetch-Build-Upload-Using-ADP-Inca",
+      "master": "oss-fem7s11-eiffel216",
+      "name": "Helmfile Fetch Build Upload Release from Ref Spec",
+      "parameters": {
+        "ALWAYS_RELEASE": "true",
+        "ARMDOCKER_USER_SECRET": "${parameters['ARMDOCKER_USER_SECRET']}",
+        "AUTOMATIC_RELEASE": "false",
+        "CHART_NAME": "",
+        "CHART_PATH": "helmfile",
+        "CHART_REPO": "",
+        "CHART_VERSION": "",
+        "GERRIT_PREPARE_OR_PUBLISH": "publish",
+        "GERRIT_REFSPEC": "${trigger['parameters']['GERRIT_REFSPEC']}",
+        "GERRIT_USER_SECRET": "ossapps100-user-creds",
+        "GIT_REPO_URL": "https://gerrit-gamma.gic.ericsson.se/a/OSS/com.ericsson.oss.eiae/eiae-helmfile.git",
+        "HELM_DROP_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm",
+        "HELM_INTERNAL_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-ci-internal-helm",
+        "HELM_RELEASED_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm",
+        "HELM_REPO_CREDENTIALS_ID": "eoadm100_helm_repository_creds",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+        "SPINNAKER_PIPELINE_ID": "${execution['id']}",
+        "STATE_VALUES_FILE": "site-values/idun/ci/override/override-site-values-helmfile-template.yaml",
+        "VCS_BRANCH": "${trigger['parameters']['GERRIT_BRANCH']}",
+        "VERSION_STEP_STRATEGY_DEPENDENCY": "MINOR",
+        "VERSION_STEP_STRATEGY_MANUAL": "MINOR",
+        "WAIT_SUBMITTABLE_BEFORE_PUBLISH": "${trigger['parameters']['WAIT_SUBMITTABLE_BEFORE_PUBLISH']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Helmfile Fetch Build Upload Release from Ref Spec",
+      "requisiteStageRefIds": [
+        "Check Gerrit Central Mirror Status Pre-Release"
+      ],
+      "stageEnabled": {
+        "expression": "'${trigger['parameters']['GERRIT_REFSPEC']}' != 'None' and \"${trigger['parameters']['QUARANTINE_ENV']}\" == \"false\" and \"${#stage('Check Gerrit Central Mirror Status Pre-Release')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failOnFailedExpressions": false,
+      "failPipeline": false,
+      "name": "Evaluate Variables from Upload Release",
+      "refId": "Evaluate Variables from Upload Release",
+      "requisiteStageRefIds": [
+        "Helmfile Fetch Build Upload Release"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Helmfile Fetch Build Upload Release')['status']}\" == \"SUCCEEDED\" or \"${#stage('Helmfile Fetch Build Upload Release')['status']}\" == \"FAILED_CONTINUE\"",
+        "type": "expression"
+      },
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "RELEASE_INT_CHART_VERSION",
+          "value": "${#stage(\"Helmfile Fetch Build Upload Release\")[\"context\"][\"INT_CHART_VERSION\"]}"
+        },
+        {
+          "key": "UPLOAD_RELEASE_STATUS",
+          "value": "${#stage(\"Helmfile Fetch Build Upload Release\")[\"context\"][\"BUILD_STATUS\"]}"
+        }
+      ]
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failOnFailedExpressions": false,
+      "failPipeline": false,
+      "name": "Evaluate Variables from Upload Release from Ref Spec",
+      "refId": "Evaluate Variables from Upload Release from Ref Spec",
+      "requisiteStageRefIds": [
+        "Helmfile Fetch Build Upload Release from Ref Spec"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Helmfile Fetch Build Upload Release from Ref Spec')['status']}\" == \"SUCCEEDED\" or \"${#stage('Helmfile Fetch Build Upload Release from Ref Spec')['status']}\" == \"FAILED_CONTINUE\"",
+        "type": "expression"
+      },
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "RELEASE_INT_CHART_VERSION",
+          "value": "${#stage(\"Helmfile Fetch Build Upload Release from Ref Spec\")[\"context\"][\"INT_CHART_VERSION\"]}"
+        },
+        {
+          "key": "UPLOAD_RELEASE_STATUS",
+          "value": "${#stage(\"Helmfile Fetch Build Upload Release from Ref Spec\")[\"context\"][\"BUILD_STATUS\"]}"
+        }
+      ]
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "RPT-RC_Update-Environment-Details",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Update Version in RPT Post UG",
+      "parameters": {
+        "ENV_NAME": "${#stage(\"Reserve Environment\")[\"context\"][\"RESOURCE_NAME\"]}",
+        "version": "${RELEASE_INT_CHART_VERSION}",
+		"SPINNAKER_PIPELINE_ID": "${execution['id']}"
+      },
+      "refId": "Update Version in RPT Post UG",
+      "requisiteStageRefIds": [
+        "Evaluate Variables from Upload Release",
+        "Evaluate Variables from Upload Release from Ref Spec"
+      ],
+      "stageEnabled": {
+        "expression": "'${#stage('Upgrade using Helmfile').status}' == 'SUCCEEDED' and ('${#stage('Evaluate Variables from Upload Release').status}' == 'SUCCEEDED' or '${#stage('Evaluate Variables from Upload Release from Ref Spec').status}' == 'SUCCEEDED')",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Post Upload Gate",
+      "preconditions": [
+        {
+          "context": {
+            "expression": "\"${#stage('Helmfile Fetch Build Upload Release')['status']}\" == \"SUCCEEDED\" or \"${#stage('Helmfile Fetch Build Upload Release')['status']}\" == \"SKIPPED\" or \"${ UPLOAD_RELEASE_STATUS}\" == \"DOWNGRADE_NOT_ALLOWED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Helmfile Fetch Build Upload Release from Ref Spec')['status']}\" == \"SUCCEEDED\" or \"${#stage('Helmfile Fetch Build Upload Release from Ref Spec')['status']}\" == \"SKIPPED\" or \"${ UPLOAD_RELEASE_STATUS}\" == \"DOWNGRADE_NOT_ALLOWED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Post UG Gate')['status']}\" == \"SUCCEEDED\" or \"${#stage('Post UG Gate')['status']}\" == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Check Gerrit Central Mirror Status Pre-Release')['status']}\" == \"SUCCEEDED\" or \"${#stage('Check Gerrit Central Mirror Status Pre-Release')['status']}\" == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        }
+      ],
+      "refId": "Post Upload Gate",
+      "requisiteStageRefIds": [
+        "EIAP_map_eiap_testware_versions",
+        "Unreserve Environment"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Post Snapshot Gate')['status']}\" == \"SUCCEEDED\" or \"${#stage('Evaluate Variables from Upload Release')['status']}\" == \"SUCCEEDED\" or \"${#stage('Evaluate Variables from Upload Release from Ref Spec')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "checkPreconditions"
+    },
+    {
+      "name": "Flow Completed",
+      "preconditions": [
+        {
+          "context": {
+            "expression": "\"${#stage('Post Snapshot Gate')['status']}\" == \"SUCCEEDED\" or \"${#stage('Post Snapshot Gate')['status']}\" == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Post UG Gate')['status']}\" == \"SUCCEEDED\" or \"${#stage('Post UG Gate')['status']}\" == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Post Upload Gate')['status']}\" == \"SUCCEEDED\" or \"${#stage('Post Upload Gate')['status']}\" == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        }
+      ],
+      "refId": "Flow Completed",
+      "requisiteStageRefIds": [
+        "Quarantine Environment",
+        "Post Upload Gate",
+        "Redeploy Moved Out Environment"
+      ],
+      "type": "checkPreconditions"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "RPT-RC_Update_Freshest_Standby_Environment_To_Available_And_Swap_Pool",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Move Freshest Standby Environment into PSO Pool",
+      "parameters": {
+        "POOL_CONTAINING_STANDBY_ENV": "${parameters[\"STANDBY_POOL_NAME\"]}",
+        "POOL_TO_SWAP_FRESHEST_ENV_TO": "${parameters[\"PSO_FLOW_POOL_NAME\"]}",
+        "SPINNAKER_PIPELINE_ID": "${execution['id']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Move Freshest Standby Environment into PSO Pool",
+      "requisiteStageRefIds": [
+        "Post UG Gate"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Reserve Environment')['status']}\" == \"SUCCEEDED\" and \"${#stage('Post Snapshot Gate')['status']}\" == \"SUCCEEDED\" and \"${#stage('Post UG Gate')['status']}\" == \"FAILED_CONTINUE\" and \"${trigger['parameters']['QUARANTINE_ENV']}\" == \"false\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "RPT-RC_Swap_Test_Environment_Pool",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Move Failed Environment to Standby Pool",
+      "parameters": {
+        "ENV_NAME": "${#stage(\"Reserve Environment\")[\"context\"][\"RESOURCE_NAME\"]}",
+        "POOL_TO_SWAP_ENVIRONMENT_FROM": "${parameters[\"PSO_FLOW_POOL_NAME\"]}",
+        "POOL_TO_SWAP_ENVIRONMENT_TO": "${parameters[\"STANDBY_POOL_NAME\"]}",
+        "SPINNAKER_PIPELINE_ID": "${execution['id']}"
+      },
+      "refId": "Move Failed Environment to Standby Pool",
+      "requisiteStageRefIds": [
+        "Move Freshest Standby Environment into PSO Pool"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Reserve Environment')['status']}\" == \"SUCCEEDED\" and \"${#stage('Move Freshest Standby Environment into PSO Pool')['status']}\" == \"SUCCEEDED\" and \"${trigger['parameters']['QUARANTINE_ENV']}\" == \"false\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failOnFailedExpressions": true,
+      "failPipeline": false,
+      "name": "Evaluate Environment Status",
+      "refId": "Evaluate Environment Status",
+      "requisiteStageRefIds": [
+        "Move Failed Environment to Standby Pool"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Move Freshest Standby Environment into PSO Pool')['status']}\" == \"SUCCEEDED\" or \"${#stage('Move Freshest Standby Environment into PSO Pool')['status']}\" == \"FAILED_CONTINUE\" or \"${#stage('Move Failed Environment to Standby Pool')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "ENVIRONMENT_STATUS",
+          "value": "${(#stage('Move Freshest Standby Environment into PSO Pool')['status'] == \"SUCCEEDED\") ? \"Standby\" : \"Available\"}"
+        },
+        {
+          "key": "SKIP_UPGRADE",
+          "value": "${(#stage('Upgrade using Helmfile')['status'] == \"SUCCEEDED\") ? \"false\" : \"true\"}"
+        }
+      ]
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "EIAP_Prod_Eng_map_eiap_testware_versions",
+      "master": "oss-fem7s11-eiffel216",
+      "name": "EIAP_map_eiap_testware_versions",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "${parameters['ARMDOCKER_USER_SECRET']}",
+        "EIAP_VERSION": "${RELEASE_INT_CHART_VERSION}",
+        "SPINNAKER_PIPELINE_ID": "${execution['id']}"
+      },
+      "refId": "EIAP_map_eiap_testware_versions",
+      "requisiteStageRefIds": [
+        "Evaluate Variables from Upload Release",
+        "Evaluate Variables from Upload Release from Ref Spec"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Helmfile Fetch Build Upload Release')['status']}\" == \"SUCCEEDED\" or \"${#stage('Helmfile Fetch Build Upload Release from Ref Spec')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "OSS-Integration-Check-For-CRDS",
+      "master": "oss-fem7s11-eiffel216",
+      "name": "Check For CRDs",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "${parameters['ARMDOCKER_USER_SECRET']}",
+        "CHART_NAME": "${trigger['parameters']['CHART_NAME']}",
+        "CHART_REPO": "${trigger['parameters']['CHART_REPO']}",
+        "CHART_VERSION": "${trigger['parameters']['CHART_VERSION']}",
+        "FUNCTIONAL_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "HELMFILE_CHART_NAME": "${trigger['parameters']['II_INT_CHART_NAME']}",
+        "HELMFILE_CHART_REPO": "${trigger['parameters']['II_INT_CHART_REPO']}",
+        "HELMFILE_CHART_VERSION": "0.0.0",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+        "SPINNAKER_PIPELINE_ID": "${execution['id']}"
+      },
+      "propertyFile": "crd_details_artifact.properties",
+      "refId": "Check For CRDs",
+      "requisiteStageRefIds": [
+        "Check Gerrit Central Mirror Status Pre-Snapshot"
+      ],
+      "stageEnabled": {
+        "expression": "\"${trigger['parameters'][\"BASE_PLATFORM_BASELINE_VERSION\"]}\" == \"\" and '${trigger['parameters']['GERRIT_REFSPEC']}' == 'None' and \"${#stage('Check Gerrit Central Mirror Status Pre-Snapshot')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "Get-K8S-logs",
+      "master": "oss-fem7s11-eiffel216",
+      "name": "Collect Kubernetes Cluster logs",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "${parameters['ARMDOCKER_USER_SECRET']}",
+        "FUNCTIONAL_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "KUBECONFIG_FILE": "${#stage(\"Reserve Environment\")[\"context\"][\"KUBE_CONFIG\"]}",
+        "NAMESPACE": "${#stage(\"Reserve Environment\")[\"context\"][\"NAMESPACE\"]}",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+        "SPINNAKER_PIPELINE_ID": "${execution['id']}"
+      },
+      "refId": "Collect Kubernetes Cluster logs",
+      "requisiteStageRefIds": [
+        "Post UG Gate"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Reserve Environment')['status']}\" == \"SUCCEEDED\" and \"${#stage('Post Snapshot Gate')['status']}\" == \"SUCCEEDED\" and \"${#stage('Post UG Gate')['status']}\" == \"FAILED_CONTINUE\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "method": "POST",
+      "name": "Create Pipeline Execution Dashboard Entry",
+      "notifications": [
+        {
+          "address": "2d8c65d4.ericsson.onmicrosoft.com@emea.teams.ms",
+          "level": "stage",
+          "type": "email",
+          "when": [
+            "stage.failed"
+          ]
+        }
+      ],
+      "payload": {
+        "applicationName": "${(execution.trigger.parameters.CHART_NAME != '') and (execution.trigger.parameters.CHART_NAME != 'None')   ?  execution.trigger.parameters.CHART_NAME : 'N/A'}",
+        "applicationVersion": "${(execution.trigger.parameters.CHART_VERSION != '') and (execution.trigger.parameters.CHART_VERSION != 'None') ? execution.trigger.parameters.CHART_VERSION : 'N/A'}",
+        "executionId": "${execution.id}",
+        "gitCommitSummary": "${execution.trigger.parameters.GIT_COMMIT_SUMMARY.toString()}",
+        "links": [
+          {
+            "href": "https://spinnaker.rnd.gic.ericsson.se/#/applications/${execution.application}/executions/details/${execution.id}",
+            "rel": "Spinnaker Execution"
+          },
+          {
+            "href": "${execution.trigger.parameters.GERRIT_CHANGE_URL.contains('https://') ? execution.trigger.parameters.GERRIT_CHANGE_URL : 'https://'+execution.trigger.parameters.GERRIT_CHANGE_URL}",
+            "rel": "${execution.trigger.parameters.GERRIT_CHANGE_URL.contains('https://') ? 'Gerrit Commit URL' : 'Invalid Gerrit Commit URL'}"
+          }
+        ],
+        "microserviceName": "${(execution.trigger.parameters.MICROSERVICE_CHART_NAME != '') and (execution.trigger.parameters.MICROSERVICE_CHART_NAME != 'None') ?  execution.trigger.parameters.MICROSERVICE_CHART_NAME : 'N/A'}",
+        "microserviceVersion": "${(execution.trigger.parameters.MICROSERVICE_CHART_VERSION != '') and (execution.trigger.parameters.MICROSERVICE_CHART_VERSION != 'None') ? execution.trigger.parameters.MICROSERVICE_CHART_VERSION : 'N/A' }",
+        "productName": "${execution.trigger.parameters.II_INT_CHART_NAME}",
+        "spinnakerApplication": "${execution.application}",
+        "spinnakerPipelineName": "${execution.name}",
+        "stagingArea": "PRODUCT",
+        "start": "${new java.text.SimpleDateFormat(\"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'\").format(new java.util.Date(execution['startTime']))}",
+        "status": "${execution.status}",
+        "testwareVersion": "N/A"
+      },
+      "refId": "Create Pipeline Execution Dashboard Entry",
+      "requisiteStageRefIds": [],
+      "statusUrlResolution": "getMethod",
+      "type": "webhook",
+      "url": "https://ped.ews.gic.ericsson.se/api/v1/pipeline-executions"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "OSS-Integration-HealthCheck-Using-DM",
+      "master": "oss-fem7s11-eiffel216",
+      "name": "Pre UG HC",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "${parameters['ARMDOCKER_USER_SECRET']}",
+        "FUNCTIONAL_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "KUBECONFIG_FILE": "${#stage(\"Reserve Environment\")[\"context\"][\"KUBE_CONFIG\"]}",
+        "NAMESPACE": "${#stage(\"Reserve Environment\")[\"context\"][\"NAMESPACE\"]}",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+        "SPINNAKER_PIPELINE_ID": "${execution['id']}"
+      },
+      "refId": "Pre UG HC",
+      "requisiteStageRefIds": [
+        "Reserve Environment"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Reserve Environment')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "CICD-UTILS-STS-Perform-Health-Checks",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Perform STS HC",
+      "parameters": {
+        "ENM_NAME": "${#stage(\"Reserve Environment\")[\"context\"][\"ENM_HOSTNAME\"]}",
+        "SPINNAKER_PIPELINE_ID": "${execution['id']}"
+      },
+      "refId": "Perform STS HC",
+      "requisiteStageRefIds": [
+        "Reserve Environment"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Reserve Environment')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "OSS-Integration-HealthCheck-Using-DM",
+      "master": "oss-fem7s11-eiffel216",
+      "name": "Post UG HC",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "${parameters['ARMDOCKER_USER_SECRET']}",
+        "FUNCTIONAL_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "KUBECONFIG_FILE": "${#stage(\"Reserve Environment\")[\"context\"][\"KUBE_CONFIG\"]}",
+        "NAMESPACE": "${#stage(\"Reserve Environment\")[\"context\"][\"NAMESPACE\"]}",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+        "SPINNAKER_PIPELINE_ID": "${execution['id']}"
+      },
+      "refId": "Post UG HC",
+      "requisiteStageRefIds": [
+        "Upgrade using Helmfile"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Upgrade using Helmfile')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "isNew": true,
+      "job": "OSS-Integration-Set-Get-Base-Platform-Baseline-App-Versions",
+      "master": "oss-fem7s11-eiffel216",
+      "name": "Get Base Platform Baseline Details",
+      "parameters": {
+        "AGENT_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+        "ARMDOCKER_USER_SECRET": "${parameters['ARMDOCKER_USER_SECRET']}",
+        "FUNCTIONAL_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "HELMFILE_NAME": "${trigger['parameters'][\"BASE_PLATFORM_BASELINE_NAME\"]}",
+        "HELMFILE_REPO": "${trigger['parameters'][\"BASE_PLATFORM_BASELINE_REPO\"]}",
+        "HELMFILE_VERSION": "${trigger['parameters'][\"BASE_PLATFORM_BASELINE_VERSION\"]}",
+        "PATH_TO_HELMFILE": "${trigger['parameters'][\"BASE_PLATFORM_BASELINE_NAME\"]}",
+        "SPINNAKER_PIPELINE_ID": "${execution['id']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Get Base Platform Baseline Details",
+      "requisiteStageRefIds": [
+        "Check Gerrit Central Mirror Status Pre-Snapshot"
+      ],
+      "stageEnabled": {
+        "expression": "\"${trigger['parameters'][\"BASE_PLATFORM_BASELINE_VERSION\"]}\" != \"\" and \"${#stage('Check Gerrit Central Mirror Status Pre-Snapshot')['status']}\" == \"SUCCEEDED\" and '${trigger['parameters']['GERRIT_REFSPEC']}' == 'None'",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failOnFailedExpressions": false,
+      "failPipeline": false,
+      "isNew": true,
+      "name": "Evaluate Variables For Base Platform Baseline",
+      "refId": "Evaluate Variables For Base Platform Baseline",
+      "requisiteStageRefIds": [
+        "Get Base Platform Baseline Details"
+      ],
+      "stageEnabled": {
+        "expression": "\"${trigger['parameters'][\"BASE_PLATFORM_BASELINE_VERSION\"]}\" != \"\" and \"${#stage('Get Base Platform Baseline Details')['status']}\" == \"SUCCEEDED\" and '${trigger['parameters']['GERRIT_REFSPEC']}' == 'None'",
+        "type": "expression"
+      },
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "CHART_NAME",
+          "value": "${#stage(\"Get Base Platform Baseline Details\")[\"context\"][\"BASE_PLATFORM_BASELINE_CHART_NAME\"]}"
+        },
+        {
+          "key": "CHART_VERSION",
+          "value": "${#stage(\"Get Base Platform Baseline Details\")[\"context\"][\"BASE_PLATFORM_BASELINE_CHART_VERSION\"]}"
+        },
+        {
+          "key": "CHART_REPO",
+          "value": "${#stage(\"Get Base Platform Baseline Details\")[\"context\"][\"BASE_PLATFORM_BASELINE_CHART_REPO\"]}"
+        }
+      ]
+    },
+    {
+      "failOnFailedExpressions": false,
+      "isNew": true,
+      "name": "Evaluate Variables for CRD Checks",
+      "refId": "Evaluate Variables for CRD Checks",
+      "requisiteStageRefIds": [
+        "Check For CRDs"
+      ],
+      "stageEnabled": {
+        "expression": "\"${trigger['parameters'][\"BASE_PLATFORM_BASELINE_VERSION\"]}\" == \"\" and '${trigger['parameters']['GERRIT_REFSPEC']}' == 'None' and \"${#stage('Check For CRDs')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "CHART_NAME",
+          "value": "${#stage(\"Check For CRDs\")[\"context\"][\"CHART_NAME\"]}"
+        },
+        {
+          "key": "CHART_VERSION",
+          "value": "${#stage(\"Check For CRDs\")[\"context\"][\"CHART_VERSION\"]}"
+        },
+        {
+          "key": "CHART_REPO",
+          "value": "${#stage(\"Check For CRDs\")[\"context\"][\"CHART_REPO\"]}"
+        }
+      ]
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "isNew": true,
+      "name": "Check Preconditions",
+      "preconditions": [
+        {
+          "context": {
+            "expression": "\"${#stage('Evaluate Variables For Base Platform Baseline')['status']}\" == \"SUCCEEDED\" or \"${#stage('Evaluate Variables For Base Platform Baseline')['status']}\" == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Evaluate Variables for CRD Checks')['status']}\" == \"SUCCEEDED\" or \"${#stage('Evaluate Variables for CRD Checks')['status']}\" == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        }
+      ],
+      "refId": "Check Preconditions",
+      "requisiteStageRefIds": [
+        "Evaluate Variables For Base Platform Baseline",
+        "Evaluate Variables for CRD Checks"
+      ],
+      "stageEnabled": {
+        "expression": "'${trigger['parameters']['GERRIT_REFSPEC']}' == 'None' and \"${#stage('Reserve Environment')['status']}\" == \"SUCCEEDED\" and \"${#stage('Check Gerrit Central Mirror Status Pre-Snapshot')['status']}\" == \"SUCCEEDED\" and \"${#stage('Check For CRDs')['status']}\" == \"SUCCEEDED\" or \"${#stage('Get Base Platform Baseline Details')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "checkPreconditions"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "CICD-UTILS-DDP-Upload",
+      "master": "oss-fem7s11-eiffel216",
+      "name": "JenkinsPush Data to DDP",
+      "parameters": {
+        "DDC_POD_NAME": "eric-oss-ddc",
+        "KUBE_CONFIG": "${#stage(\"Reserve Environment\")[\"context\"][\"KUBE_CONFIG\"]}",
+        "NAMESPACE": "${#stage(\"Reserve Environment\")[\"context\"][\"NAMESPACE\"]}",
+        "SLAVE": "${trigger['parameters']['SLAVE_LABEL']}",
+        "SPINNAKER_PIPELINE_ID": "${execution['id']}"
+      },
+      "refId": "JenkinsPush Data to DDP",
+      "requisiteStageRefIds": [
+        "Post UG Gate"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Reserve Environment')['status']}\" == \"SUCCEEDED\" and \"${#stage('Post Snapshot Gate')['status']}\" == \"SUCCEEDED\" and \"${#stage('Post UG Gate')['status']}\" == \"FAILED_CONTINUE\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    }
+  ],
+  "triggers": []
+}

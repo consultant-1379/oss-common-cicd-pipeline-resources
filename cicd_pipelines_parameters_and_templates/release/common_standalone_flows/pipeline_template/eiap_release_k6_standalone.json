@@ -1,0 +1,194 @@
+{
+    "appConfig": {},
+    "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten. Template name: eiap_release_k6_standalone.json in repo https://gerrit-gamma.gic.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources,branches",
+    "disabled": false,
+    "keepWaitingPipelines": false,
+    "application": "SPINNAKER_APPLICATION_NAME",
+    "name": "SPINNAKER_PIPELINE_NAME",
+    "limitConcurrent": false,
+    "locked": {
+        "allowUnlockUi": true,
+        "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+        "ui": true
+    },
+    "notifications": [
+        {
+            "address": "NOTIFICATION_ADDRESS",
+            "level": "pipeline",
+            "type": "email",
+            "when": [
+                "pipeline.failed",
+                "pipeline.complete"
+            ]
+        }
+    ],
+    "parameterConfig": [
+      {
+        "default": "",
+        "description": "Name of the deployment to run tests against",
+        "hasOptions": false,
+        "label": "",
+        "name": "DEPLOYMENT_NAME",
+        "pinned": true,
+        "required": false
+      },
+      {
+        "default": "",
+        "description": "Namespace of environment",
+        "hasOptions": false,
+        "label": "",
+        "name": "NAMESPACE",
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "",
+        "description": "Kubernetes configuration file to specify which environment to run tests against",
+        "hasOptions": false,
+        "label": "",
+        "name": "KUBECONFIG_FILE",
+        "pinned": true,
+        "required": false
+      },
+      {
+        "default": "",
+        "description": "Run given tests scenarios and nothing else e.g. CANARY_UPGRADE_01, CANARY_UPGRADE_03",
+        "hasOptions": false,
+        "label": "",
+        "name": "RUN_TESTS",
+        "pinned": true,
+        "required": false
+      },
+      {
+        "default": "",
+        "description": "Skips given test scenarios e.g. CANARY_UPGRADE_01, CANARY_UPGRADE_03",
+        "hasOptions": false,
+        "label": "",
+        "name": "SKIP_TESTS",
+        "pinned": true,
+        "required": false
+      },
+      {
+        "default": "",
+        "description": "By default these tests will run e.g., ['main_multiple_iterations.json', 'main_single_iteration.json', 'main_CU2.json'] Override it if needed",
+        "hasOptions": false,
+        "label": "",
+        "name": "CONFIG_FILES",
+        "pinned": true,
+        "required": false
+      },
+      {
+        "default": "",
+        "description": "Hostname for ADC",
+        "hasOptions": false,
+        "label": "",
+        "name": "ADC_HOSTNAME",
+        "pinned": true,
+        "required": false
+      },
+      {
+        "default": "",
+        "description": "Hostname for App Manager",
+        "hasOptions": false,
+        "label": "",
+        "name": "APP_MGR_HOSTNAME",
+        "pinned": true,
+        "required": false
+      },
+      {
+        "default": "",
+        "description": "Hostname for DMAPP",
+        "hasOptions": false,
+        "label": "",
+        "name": "DMAPP_HOSTNAME",
+        "pinned": true,
+        "required": false
+      },
+      {
+        "default": "",
+        "description": "Hostname for ENM",
+        "hasOptions": false,
+        "label": "",
+        "name": "ENM_HOSTNAME",
+        "pinned": true,
+        "required": false
+      },
+      {
+        "default": "",
+        "description": "Hostname for GAS",
+        "hasOptions": false,
+        "label": "",
+        "name": "GAS_HOSTNAME",
+        "pinned": true,
+        "required": false
+      },
+      {
+        "default": "",
+        "description": "Hostname for TH",
+        "hasOptions": false,
+        "label": "",
+        "name": "TH_HOSTNAME",
+        "pinned": true,
+        "required": false
+      },
+      {
+        "default": "refs/tags/live-release",
+        "description": "Ref Spec from the Gerrit review.",
+        "hasOptions": false,
+        "label": "",
+        "name": "GERRIT_REFSPEC",
+        "pinned": true,
+        "required": false
+      },
+      {
+        "default": "",
+        "description": "Hostname for KAFKA",
+        "hasOptions": false,
+        "label": "",
+        "name": "KAFKA_HOSTNAME",
+        "pinned": false,
+        "required": false
+      },
+      {
+        "default": "",
+        "description": "Hostname for Bulk Data Repository (BDR)",
+        "hasOptions": false,
+        "label": "",
+        "name": "BDR_HOSTNAME",
+        "pinned": true,
+        "required": true
+      }
+    ],
+    "spelEvaluator": "v4",
+    "stages": [
+      {
+        "continuePipeline": false,
+        "failPipeline": true,
+        "job": "EIC_Prod_Eng_test_suite_deploy_job_live_release",
+        "master": "oss-aispinn-fem5s11-eiffel052",
+        "name": "Run K6 Tests",
+        "parameters": {
+          "ADC_HOSTNAME": "${parameters['ADC_HOSTNAME']}",
+          "APP_MGR_HOSTNAME": "${parameters['APP_MGR_HOSTNAME']}",
+          "BDR_HOSTNAME": "${parameters['BDR_HOSTNAME']}",
+          "CONFIG_FILES": "${parameters['CONFIG_FILES']}",
+          "DEPLOYMENT_NAME": "${parameters['DEPLOYMENT_NAME']}",
+          "EIC_NAMESPACE": "${parameters['NAMESPACE']}",
+          "ENM_HOSTNAME": "${parameters['ENM_HOSTNAME']}",
+          "FUNCTIONAL_USER_CREDENTIALS": "reluser-user-creds",
+          "GAS_HOSTNAME": "${parameters['GAS_HOSTNAME']}",
+          "GERRIT_REFSPEC": "${parameters['GERRIT_REFSPEC']}",
+          "KAFKA_HOSTNAME": "${parameters['KAFKA_HOSTNAME']}",
+          "KUBECONFIG_FILE": "${parameters['KUBECONFIG_FILE']}",
+          "RUN_TESTS": "${parameters['RUN_TESTS']}",
+          "SKIP_TESTS": "${parameters['SKIP_TESTS']}",
+          "TEAM_MEMBER_SIGNUM": "",
+          "TH_HOSTNAME": "${parameters['TH_HOSTNAME']}"
+        },
+        "refId": "Run K6 Tests",
+        "requisiteStageRefIds": [],
+        "type": "jenkins"
+      }
+    ],
+    "triggers": []
+  }

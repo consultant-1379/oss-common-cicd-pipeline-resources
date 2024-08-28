@@ -1,0 +1,3 @@
+SPINNAKER_APPLICATION_NAME,SPINNAKER_PIPELINE_NAME,EXECUTION_TIME
+idun-aas-e2e-cicd,eric-cs-storage-encryption-provider-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-sep-log-shipper-AAS-E2E-Flow,21:00:00

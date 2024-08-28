@@ -1,0 +1,3 @@
+SPINNAKER_APPLICATION_NAME,SPINNAKER_PIPELINE_NAME,AUTO_APP_SHORT_NAME,AUTO_APP_NAME,CHECK_IF_ENV_IS_ON_AUTO_APP_VERSION_PIPELINE_ID,INGRESS_LOGIN_USER_VALUE,ONBOARDING_INSTANTIATION_VERIFICATION_PIPELINE_ID,ADMIN_USER_CREDENTIALS_VALUE
+autoapp-eacc-e2e-cicd,last-released-eacc-to-latest-candidate-eacc-on-oldest-supported-eiap-Flow,EACC,eric-oss-auto-config-consistency,39c64565-32e9-4710-85ba-9ecb50e374e8,,1f3bcc7f-12ce-4867-98d6-204b92d4a950,appmgr-admin-user-creds-release-oldest-eiap-version
+autoapp-pme-e2e-cicd,last-released-pme-to-latest-candidate-pme-on-oldest-supported-eiap-Flow,PME,eric-oss-performance-monitoring-enabler,a4b1f790-24fa-496d-811b-e36bf852d794,gas-user,834cd7b8-8a0e-423e-a5e9-cb1d58d86334,appmgr-admin-user-creds-release-oldest-eiap-version

@@ -1,0 +1,822 @@
+{
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "name": "SPINNAKER_PIPELINE_NAME",
+  "appConfig": {},
+  "description": "The is a CI Testing pipeline for helmfile functionality to be used by Team TicketMaster",
+  "disabled": false,
+  "keepWaitingPipelines": false,
+  "limitConcurrent": false,
+  "notifications": [],
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "This pipeline is maintained by Spinnaker as a code, any changes made through the UI will be overwritten. Please see https://gerrit-gamma.gic.ericsson.se/plugins/gitiles/OSS/com.ericsson.oss.aeonic/oss-integration-ci/+/refs/heads/master/docs/flows/Internal_CI_Test_Flow.md for details",
+    "ui": true
+  },
+  "parameterConfig": [
+    {
+      "default": "None",
+      "description": "Name of the microservice chart within the integration chart",
+      "hasOptions": false,
+      "label": "",
+      "name": "CHART_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "None",
+      "description": "Version of the microservice chart within the integration chart",
+      "hasOptions": false,
+      "label": "",
+      "name": "CHART_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "None",
+      "description": "Repo of the microservice chart within the integration chart",
+      "hasOptions": false,
+      "label": "",
+      "name": "CHART_REPO",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "None",
+      "description": "CI Code review under test",
+      "hasOptions": false,
+      "label": "",
+      "name": "GERRIT_REFSPEC",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "eric-eiae-helmfile",
+      "description": "Name of the integration chart which will be used for the Initial install",
+      "hasOptions": false,
+      "label": "",
+      "name": "II_INT_CHART_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "0.0.0",
+      "description": "Version of the Integration Chart which will be used for the Initial Install",
+      "hasOptions": false,
+      "label": "",
+      "name": "II_INT_CHART_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm-local",
+      "description": "Repo of the Integration Chart which will be used for the Initial Install",
+      "hasOptions": false,
+      "label": "",
+      "name": "II_INT_CHART_REPO",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "evo_docker_engine_gic_IDUN",
+      "description": "Label to choose which Jenkins slave to execute Jenkinsfiles against",
+      "hasOptions": false,
+      "label": "",
+      "name": "SLAVE_LABEL",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "ciloopman-user-creds",
+      "description": "Functional user for logging into armdocker",
+      "hasOptions": false,
+      "label": "",
+      "name": "FUNCTIONAL_USER_SECRET",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "armdocker.rnd.ericsson.se/proj-eric-oss-drop/eric-oss-ci-scripts:latest",
+      "description": "",
+      "hasOptions": false,
+      "label": "CI Docker Image to use",
+      "name": "CI_DOCKER_IMAGE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    }
+  ],
+  "schema": "1",
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "CI-Test-Check-For-CRDS",
+      "master": "CONTROLLER1",
+      "name": "Check For CRDs - None Found",
+      "parameters": {
+        "CHART_NAME": "${trigger['parameters']['CHART_NAME']}",
+        "CHART_REPO": "${trigger['parameters']['CHART_REPO']}",
+        "CHART_VERSION": "${trigger['parameters']['CHART_VERSION']}",
+        "CI_DOCKER_IMAGE": "${trigger['parameters']['CI_DOCKER_IMAGE']}",
+        "FUNCTIONAL_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "GERRIT_REFSPEC": "${trigger['parameters']['GERRIT_REFSPEC']}",
+        "HELMFILE_CHART_NAME": "${trigger['parameters']['II_INT_CHART_NAME']}",
+        "HELMFILE_CHART_REPO": "${trigger['parameters']['II_INT_CHART_REPO']}",
+        "HELMFILE_CHART_VERSION": "${trigger['parameters']['II_INT_CHART_VERSION']}",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}"
+      },
+      "propertyFile": "crd_details_artifact.properties",
+      "refId": "Check For CRDs - None Found",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "CI-Test-Get-Microservice-Info-From-Helmfile",
+      "master": "CONTROLLER1",
+      "name": "Get Microservice Info",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "ciloopman-docker-auth-config",
+        "CI_DOCKER_IMAGE": "${trigger['parameters']['CI_DOCKER_IMAGE']}",
+        "FUNCTIONAL_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "GERRIT_REFSPEC": "${trigger['parameters']['GERRIT_REFSPEC']}",
+        "INT_CHART_NAME": "eric-ci-helmfile",
+        "INT_CHART_VERSION": "${trigger['parameters']['II_INT_CHART_VERSION']}",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}"
+      },
+      "propertyFile": "helmServicesContent.txt",
+      "refId": "Get Microservice Info",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "CI-Test-Get-Release-Info-From-Helmfile",
+      "master": "CONTROLLER1",
+      "name": "Get Release Info",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "ciloopman-docker-auth-config",
+        "CI_DOCKER_IMAGE": "${trigger['parameters']['CI_DOCKER_IMAGE']}",
+        "FUNCTIONAL_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "GERRIT_REFSPEC": "${trigger['parameters']['GERRIT_REFSPEC']}",
+        "INT_CHART_NAME": "${trigger['parameters']['II_INT_CHART_NAME']}",
+        "INT_CHART_REPO": "${trigger['parameters']['II_INT_CHART_REPO']}",
+        "INT_CHART_VERSION": "${trigger['parameters']['II_INT_CHART_VERSION']}",
+        "PATH_TO_HELMFILE": "${trigger['parameters']['II_INT_CHART_NAME']}/helmfile.yaml",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+        "STATE_VALUES_FILE": "${trigger['parameters']['II_INT_CHART_NAME']}/build-environment/tags_true.yaml"
+      },
+      "propertyFile": "csar_build.properties",
+      "refId": "Get Release Info",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "name": "Check Preconditions",
+      "preconditions": [
+        {
+          "context": {
+            "stageName": "Get Microservice Info",
+            "stageStatus": "SUCCEEDED"
+          },
+          "failPipeline": true,
+          "type": "stageStatus"
+        },
+        {
+          "context": {
+            "stageName": "Check Output From Get Release Info",
+            "stageStatus": "SUCCEEDED"
+          },
+          "failPipeline": true,
+          "type": "stageStatus"
+        },
+        {
+          "context": {
+            "stageName": "Check Output From CRD - Single output",
+            "stageStatus": "SUCCEEDED"
+          },
+          "failPipeline": true,
+          "type": "stageStatus"
+        },
+        {
+          "context": {
+            "stageName": "Check Output From CRD - Multiple output",
+            "stageStatus": "SUCCEEDED"
+          },
+          "failPipeline": true,
+          "type": "stageStatus"
+        },
+        {
+          "context": {
+            "stageName": "Compare Latest Versions In Helmfile",
+            "stageStatus": "SUCCEEDED"
+          },
+          "failPipeline": true,
+          "type": "stageStatus"
+        },
+        {
+          "context": {
+            "stageName": "Check Output From Build Helmfile - Single package",
+            "stageStatus": "SUCCEEDED"
+          },
+          "failPipeline": true,
+          "type": "stageStatus"
+        },
+        {
+          "context": {
+            "stageName": "Check Output From Build Helmfile - Multiple package",
+            "stageStatus": "SUCCEEDED"
+          },
+          "failPipeline": true,
+          "type": "stageStatus"
+        },
+        {
+          "context": {
+            "stageName": "Check Output From Get Baseline",
+            "stageStatus": "SUCCEEDED"
+          },
+          "failPipeline": true,
+          "type": "stageStatus"
+        },
+        {
+          "context": {
+            "stageName": "Check Output From Snapshot Helmfile - Single package",
+            "stageStatus": "SUCCEEDED"
+          },
+          "failPipeline": true,
+          "type": "stageStatus"
+        },
+        {
+          "context": {
+            "stageName": "Common Helmfile PCR Test",
+            "stageStatus": "SUCCEEDED"
+          },
+          "failPipeline": true,
+          "type": "stageStatus"
+        }
+      ],
+      "refId": "Check Preconditions",
+      "requisiteStageRefIds": [
+        "Get Microservice Info",
+        "Check Output From Get Release Info",
+        "Check Output From CRD - Single output",
+        "Check Output From CRD - Multiple output",
+        "Compare Latest Versions In Helmfile",
+        "Check Output From Build Helmfile - Single package",
+        "Check Output From Build Helmfile - Multiple package",
+        "Check Output From Get Baseline",
+        "Check Output From Snapshot Helmfile - Single package",
+        "Common Helmfile PCR Test"
+      ],
+      "type": "checkPreconditions"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Check Output From Get Release Info",
+      "preconditions": [
+        {
+          "context": {
+            "expression": "\"${#stage(\"Get Release Info\")[\"context\"]['eric-data-document-database-pg_name']==\"eric-data-document-database-pg,eric-tm-ingress-controller-cr-crd\"}\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage(\"Get Release Info\")[\"context\"]['eric-data-document-database-pg_version']==\"7.5.0+50,11.0.0+29\"}\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage(\"Get Release Info\")[\"context\"]['eric-data-document-database-pg_url']==\"https://arm.sero.gic.ericsson.se/artifactory/proj-adp-gs-all-helm/,https://arm.sero.gic.ericsson.se/artifactory/proj-adp-gs-all-helm\"}\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        }
+      ],
+      "refId": "Check Output From Get Release Info",
+      "requisiteStageRefIds": [
+        "Get Release Info"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Get Release Info')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "checkPreconditions"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Check Output From CRD - Single output",
+      "preconditions": [
+        {
+          "context": {
+            "stageName": "Check For CRDs - None Found",
+            "stageStatus": "SUCCEEDED"
+          },
+          "failPipeline": true,
+          "type": "stageStatus"
+        }
+      ],
+      "refId": "Check Output From CRD - Single output",
+      "requisiteStageRefIds": [
+        "Check For CRDs - None Found"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Check For CRDs - None Found')['context']['CHART_NAME']}\" == \"eric-eo-act-cna\"",
+        "type": "expression"
+      },
+      "type": "checkPreconditions"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "CI-Test-Check-For-CRDS",
+      "master": "CONTROLLER1",
+      "name": "Check For CRDs - One Found",
+      "parameters": {
+        "CHART_NAME": "eric-cloud-native-service-mesh",
+        "CHART_REPO": "https://arm.sero.gic.ericsson.se/artifactory/proj-adp-umbrella-released-helm/",
+        "CHART_VERSION": "8.7.0",
+        "CI_DOCKER_IMAGE": "${trigger['parameters']['CI_DOCKER_IMAGE']}",
+        "FUNCTIONAL_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "GERRIT_REFSPEC": "${trigger['parameters']['GERRIT_REFSPEC']}",
+        "HELMFILE_CHART_NAME": "eric-eiae-helmfile",
+        "HELMFILE_CHART_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm/",
+        "HELMFILE_CHART_VERSION": "2.206.0",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}"
+      },
+      "propertyFile": "crd_details_artifact.properties",
+      "refId": "Check For CRDs - One Found",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "CI-Test-Compare-Latest-Versions-In-Helmfile",
+      "master": "CONTROLLER1",
+      "name": "Compare Latest Versions In Helmfile",
+      "parameters": {
+        "HELMFILE_CHART_VERSION": "${trigger['parameters']['II_INT_CHART_VERSION']}",
+        "HELMFILE_CHART_REPO": "${trigger['parameters']['II_INT_CHART_REPO']}",
+        "HELMFILE_CHART_NAME": "${trigger['parameters']['II_INT_CHART_NAME']}",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+        "FUNCTIONAL_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "ARMDOCKER_USER_SECRET": "ciloopman-docker-auth-config",
+        "CI_DOCKER_IMAGE": "${trigger['parameters']['CI_DOCKER_IMAGE']}",
+        "GERRIT_REFSPEC": "${trigger['parameters']['GERRIT_REFSPEC']}",
+        "PATH_TO_HELMFILE": "${trigger['parameters']['II_INT_CHART_NAME']}/helmfile.yaml",
+        "STATE_VALUES_FILE": "${trigger['parameters']['II_INT_CHART_NAME']}/build-environment/tags_true.yaml"
+      },
+      "refId": "Compare Latest Versions In Helmfile",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Check Output From CRD - Multiple output",
+      "preconditions": [
+        {
+          "context": {
+            "stageName": "Check For CRDs - One Found",
+            "stageStatus": "SUCCEEDED"
+          },
+          "failPipeline": true,
+          "type": "stageStatus"
+        }
+      ],
+      "refId": "Check Output From CRD - Multiple output",
+      "requisiteStageRefIds": [
+        "Check For CRDs - One Found"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Check For CRDs - One Found')['context']['CHART_NAME']}\" == \"eric-cloud-native-service-mesh, eric-mesh-controller-crd\"",
+        "type": "expression"
+      },
+      "type": "checkPreconditions"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "CI-Test-Fetch-Build-Upload-Using-ADP-Inca",
+      "master": "CONTROLLER1",
+      "name": "INCA Helmfile Test - Prepare - Single package",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "ciloopman-docker-auth-config",
+        "CHART_NAME": "eric-data-document-database-pg",
+        "CHART_PATH": "internal/ci-helmfile/eric-ci-inca-helmfile",
+        "CHART_REPO": "https://arm.sero.gic.ericsson.se/artifactory/proj-adp-gs-all-helm/",
+        "CHART_VERSION": "7.6.0-16",
+        "CI_REFSPEC": "${trigger['parameters']['GERRIT_REFSPEC']}",
+        "GERRIT_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "GIT_REPO_URL": "https://gerrit-gamma.gic.ericsson.se/a/OSS/com.ericsson.oss.aeonic/oss-integration-ci.git",
+        "HELM_DROP_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm-local",
+        "HELM_INTERNAL_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-ci-internal-helm",
+        "HELM_REPO_CREDENTIALS_ID": "ciloopman_helm_repository_creds",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+        "STATE_VALUES_FILE": ".bob/tmp_repo/internal/build/site-values/site-values.yaml"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "INCA Helmfile Test - Prepare - Single package",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "CI-Test-Get-App-Version-From-Helmfile",
+      "master": "CONTROLLER1",
+      "name": "Get Version in Built Helmfile - Single package",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "ciloopman-docker-auth-config",
+        "CI_DOCKER_IMAGE": "${trigger['parameters']['CI_DOCKER_IMAGE']}",
+        "FUNCTIONAL_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "GERRIT_REFSPEC": "${trigger['parameters']['GERRIT_REFSPEC']}",
+        "INT_CHART_NAME": "${#stage('INCA Helmfile Test - Prepare - Single package')['context']['INT_CHART_NAME']}",
+        "INT_CHART_REPO": "${#stage('INCA Helmfile Test - Prepare - Single package')['context']['INT_CHART_REPO']}",
+        "INT_CHART_VERSION": "${#stage('INCA Helmfile Test - Prepare - Single package')['context']['INT_CHART_VERSION']}",
+        "PATH_TO_HELMFILE": "\"${#stage('INCA Helmfile Test - Prepare - Single package')['context']['INT_CHART_NAME']}\"/helmfile.yaml",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+        "STATE_VALUES_FILE": "\"${#stage('INCA Helmfile Test - Prepare - Single package')['context']['INT_CHART_NAME']}\"/build-environment/tags_true.yaml"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Get Version in Built Helmfile - Single package",
+      "requisiteStageRefIds": [
+        "INCA Helmfile Test - Prepare - Single package"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('INCA Helmfile Test - Prepare - Single package')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Check Output From Build Helmfile - Single package",
+      "preconditions": [
+        {
+          "context": {
+            "stageName": "Get Version in Built Helmfile - Single package",
+            "stageStatus": "SUCCEEDED"
+          },
+          "failPipeline": true,
+          "type": "stageStatus"
+        }
+      ],
+      "refId": "Check Output From Build Helmfile - Single package",
+      "requisiteStageRefIds": [
+        "Get Version in Built Helmfile - Single package"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Get Version in Built Helmfile - Single package')['context']['eric-data-document-database-pg']}\" == \"7.6.0-16\" && \"${#stage('Get Version in Built Helmfile - Single package')['context']['eric-ci-helm-b']}\" == \"1.0.1\"",
+        "type": "expression"
+      },
+      "type": "checkPreconditions"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "CI-Test-Fetch-Build-Upload-Using-ADP-Inca",
+      "master": "CONTROLLER1",
+      "name": "INCA Helmfile Test - Prepare - Multiple packages",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "ciloopman-docker-auth-config",
+        "CHART_NAME": "eric-data-document-database-pg, eric-ci-helm-b",
+        "CHART_PATH": "internal/ci-helmfile/eric-ci-inca-helmfile",
+        "CHART_REPO": "https://arm.sero.gic.ericsson.se/artifactory/proj-adp-gs-all-helm/,  https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm-local",
+        "CHART_VERSION": "7.6.0-16, 1.0.4",
+        "CI_REFSPEC": "${trigger['parameters']['GERRIT_REFSPEC']}",
+        "GERRIT_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "GIT_REPO_URL": "https://gerrit-gamma.gic.ericsson.se/a/OSS/com.ericsson.oss.aeonic/oss-integration-ci.git",
+        "HELM_DROP_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm-local",
+        "HELM_INTERNAL_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-ci-internal-helm",
+        "HELM_REPO_CREDENTIALS_ID": "ciloopman_helm_repository_creds",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+        "STATE_VALUES_FILE": ".bob/tmp_repo/internal/build/site-values/site-values.yaml"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "INCA Helmfile Test - Prepare - Multiple packages",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Check Output From Build Helmfile - Multiple package",
+      "preconditions": [
+        {
+          "context": {
+            "stageName": "Get Version in Built Helmfile - Multiple packages",
+            "stageStatus": "SUCCEEDED"
+          },
+          "failPipeline": true,
+          "type": "stageStatus"
+        }
+      ],
+      "refId": "Check Output From Build Helmfile - Multiple package",
+      "requisiteStageRefIds": [
+        "Get Version in Built Helmfile - Multiple packages"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Get Version in Built Helmfile - Multiple packages')['context']['eric-data-document-database-pg']}\" == \"7.6.0-16\" && \"${#stage('Get Version in Built Helmfile - Multiple packages')['context']['eric-ci-helm-b']}\" == \"1.0.4\"",
+        "type": "expression"
+      },
+      "type": "checkPreconditions"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "CI-Test-Get-App-Version-From-Helmfile",
+      "master": "CONTROLLER1",
+      "name": "Get Version in Built Helmfile - Multiple packages",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "ciloopman-docker-auth-config",
+        "CI_DOCKER_IMAGE": "${trigger['parameters']['CI_DOCKER_IMAGE']}",
+        "FUNCTIONAL_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "GERRIT_REFSPEC": "${trigger['parameters']['GERRIT_REFSPEC']}",
+        "INT_CHART_NAME": "${#stage('INCA Helmfile Test - Prepare - Multiple packages')['context']['INT_CHART_NAME']}",
+        "INT_CHART_REPO": "${#stage('INCA Helmfile Test - Prepare - Multiple packages')['context']['INT_CHART_REPO']}",
+        "INT_CHART_VERSION": "${#stage('INCA Helmfile Test - Prepare - Multiple packages')['context']['INT_CHART_VERSION']}",
+        "PATH_TO_HELMFILE": "\"${#stage('INCA Helmfile Test - Prepare - Multiple packages')['context']['INT_CHART_NAME']}\"/helmfile.yaml",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+        "STATE_VALUES_FILE": "\"${#stage('INCA Helmfile Test - Prepare - Multiple packages')['context']['INT_CHART_NAME']}\"/build-environment/tags_true.yaml"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Get Version in Built Helmfile - Multiple packages",
+      "requisiteStageRefIds": [
+        "INCA Helmfile Test - Prepare - Multiple packages"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('INCA Helmfile Test - Prepare - Multiple packages')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "CI-Test-Set-Get-Base-Platform-Baseline-App-Versions",
+      "master": "CONTROLLER1",
+      "name": "Get Base Platform Baseline Details",
+      "parameters": {
+        "AGENT_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+        "ARMDOCKER_USER_SECRET": "ciloopman-docker-auth-config",
+        "CI_DOCKER_IMAGE": "${trigger['parameters']['CI_DOCKER_IMAGE']}",
+        "FUNCTIONAL_USER_SECRET": "ciloopman-user-creds",
+        "GERRIT_REFSPEC": "${trigger['parameters']['GERRIT_REFSPEC']}",
+        "HELMFILE_NAME": "${#stage('Build Base Platform Baseline')['context']['BASE_PLATFORM_BASELINE_NAME']}",
+        "HELMFILE_REPO": "${#stage('Build Base Platform Baseline')['context']['BASE_PLATFORM_BASELINE_REPO']}",
+        "HELMFILE_VERSION": "${#stage('Build Base Platform Baseline')['context']['BASE_PLATFORM_BASELINE_VERSION']}",
+        "PATH_TO_HELMFILE": "eric-ci-inca-helmfile"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Get Base Platform Baseline Details",
+      "requisiteStageRefIds": [
+        "Build Base Platform Baseline"
+      ],
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "CI-Test-Base-Platform-Baseline-Management",
+      "master": "CONTROLLER1",
+      "name": "Build Base Platform Baseline",
+      "parameters": {
+        "AGENT_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+        "ALLOW_DOWNGRADE": "true",
+        "ARMDOCKER_USER_SECRET": "ciloopman-docker-auth-config",
+        "ARTIFACT_UPLOAD_TO_ARM": "true",
+        "CHART_NAME": "eric-data-document-database-pg",
+        "CHART_REPO": "https://arm.sero.gic.ericsson.se/artifactory/proj-adp-gs-all-helm/",
+        "CHART_VERSION": "7.6.0-16",
+        "CI_DOCKER_IMAGE": "${trigger['parameters']['CI_DOCKER_IMAGE']}",
+        "CI_REFSPEC": "${trigger['parameters']['GERRIT_REFSPEC']}",
+        "FUNCTIONAL_USER_TOKEN": "ciloopman-arm-token",
+        "GERRIT_PROJECT": "OSS/com.ericsson.oss.aeonic/oss-integration-ci",
+        "GERRIT_USER_SECRET": "ciloopman-user-creds",
+        "GIT_REPO_URL": "https://gerrit-gamma.gic.ericsson.se/a/OSS/com.ericsson.oss.aeonic/oss-integration-ci.git",
+        "HELMFILE_PATH": "internal/ci-helmfile/eric-ci-inca-helmfile",
+        "HELM_DROP_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm",
+        "HELM_INTERNAL_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-ci-internal-helm"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Build Base Platform Baseline",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Check Output From Get Baseline",
+      "preconditions": [
+        {
+          "context": {
+            "stageName": "Get Base Platform Baseline Details",
+            "stageStatus": "SUCCEEDED"
+          },
+          "failPipeline": true,
+          "type": "stageStatus"
+        }
+      ],
+      "refId": "Check Output From Get Baseline",
+      "requisiteStageRefIds": [
+        "Get Base Platform Baseline Details"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Get Base Platform Baseline Details')['context']['eric-data-document-database-pg_name']}\" == \"eric-data-document-database-pg\"",
+        "type": "expression"
+      },
+      "type": "checkPreconditions"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "CI-Test-OSS-Integration-Helmfile-Fetch-Build-Upload-Snapshot",
+      "master": "CONTROLLER1",
+      "name": "Snapshot Helmfile Test - Prepare - Single package",
+      "parameters": {
+        "GERRIT_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "FUNCTIONAL_USER_TOKEN": "ciloopman-arm-token",
+        "CHART_NAME": "eric-data-document-database-pg",
+        "CHART_PATH": "internal/ci-helmfile/eric-ci-inca-helmfile",
+        "CHART_REPO": "https://arm.sero.gic.ericsson.se/artifactory/proj-adp-gs-all-helm/",
+        "CHART_VERSION": "7.6.0-16",
+        "CI_REFSPEC": "${trigger['parameters']['GERRIT_REFSPEC']}",
+        "GERRIT_PROJECT": "OSS/com.ericsson.oss.aeonic/oss-integration-ci",
+        "HELM_INTERNAL_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-ci-internal-helm",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+        "STATE_VALUES_FILE": ".bob/cloned_repo/internal/build/site-values/site-values.yaml"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Snapshot Helmfile Test - Prepare - Single package",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "CI-Test-OSS-Integration-Helmfile-Common-Testing",
+      "master": "CONTROLLER1",
+      "name": "Common Helmfile PCR Test",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "ciloopman-docker-auth-config",
+        "CHART_PATH": "",
+        "CI_DOCKER_IMAGE": "${trigger['parameters']['CI_DOCKER_IMAGE']}",
+        "CI_REFSPEC": "${trigger['parameters']['GERRIT_REFSPEC']}",
+        "FUNCTIONAL_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "GERRIT_PATCHSET_REVISION": "",
+        "GERRIT_PROJECT": "OSS/com.ericsson.oss.aeonic/oss-integration-ci",
+        "GERRIT_REFSPEC": "",
+        "GERRIT_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "HELMFILE_NAME": "ci-inca-helmfile",
+        "INT_CHART_NAME": "${#stage('Snapshot Helmfile Test - Prepare - Single package')['context']['INT_CHART_NAME']}",
+        "INT_CHART_REPO": "${#stage('Snapshot Helmfile Test - Prepare - Single package')['context']['INT_CHART_REPO']}",
+        "INT_CHART_VERSION": "${#stage('Snapshot Helmfile Test - Prepare - Single package')['context']['INT_CHART_VERSION']}",
+        "PATH_TO_SITE_VALUES_FILE": "internal/ci-helmfile/eric-ci-inca-helmfile/templates/site-values-template.yaml",
+        "PATH_TO_SITE_VALUES_OVERRIDE_FILE": "internal/ci-helmfile/eric-ci-inca-helmfile/values-templates/eric-data-document-database-pg-values.yaml.gotmpl",
+        "KUBERNETES_COMPATIBILITY_SITE_VALUES_PATH": "testsuite/kubernetes-tests/ci-inca-helmfile/k8s-compatibility-site-values.yaml",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+        "VCS_BRANCH": "master"
+      },
+      "refId": "Common Helmfile PCR Test",
+      "requisiteStageRefIds": [
+        "Snapshot Helmfile Test - Prepare - Single package"
+      ],
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "CI-Test-Get-App-Version-From-Helmfile",
+      "master": "CONTROLLER1",
+      "name": "Get Version in Snapshot Helmfile - Single package",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "ciloopman-docker-auth-config",
+        "CI_DOCKER_IMAGE": "${trigger['parameters']['CI_DOCKER_IMAGE']}",
+        "FUNCTIONAL_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "GERRIT_REFSPEC": "${trigger['parameters']['GERRIT_REFSPEC']}",
+        "INT_CHART_NAME": "${#stage('Snapshot Helmfile Test - Prepare - Single package')['context']['INT_CHART_NAME']}",
+        "INT_CHART_REPO": "${#stage('Snapshot Helmfile Test - Prepare - Single package')['context']['INT_CHART_REPO']}",
+        "INT_CHART_VERSION": "${#stage('Snapshot Helmfile Test - Prepare - Single package')['context']['INT_CHART_VERSION']}",
+        "PATH_TO_HELMFILE": "\"${#stage('Snapshot Helmfile Test - Prepare - Single package')['context']['INT_CHART_NAME']}\"/helmfile.yaml",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+        "STATE_VALUES_FILE": "\"${#stage('Snapshot Helmfile Test - Prepare - Single package')['context']['INT_CHART_NAME']}\"/build-environment/tags_true.yaml"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Get Version in Snapshot Helmfile - Single package",
+      "requisiteStageRefIds": [
+        "Snapshot Helmfile Test - Prepare - Single package"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Snapshot Helmfile Test - Prepare - Single package')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Check Output From Snapshot Helmfile - Single package",
+      "preconditions": [
+        {
+          "context": {
+            "stageName": "Get Version in Snapshot Helmfile - Single package",
+            "stageStatus": "SUCCEEDED"
+          },
+          "failPipeline": true,
+          "type": "stageStatus"
+        }
+      ],
+      "refId": "Check Output From Snapshot Helmfile - Single package",
+      "requisiteStageRefIds": [
+        "Get Version in Snapshot Helmfile - Single package"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Get Version in Snapshot Helmfile - Single package')['context']['eric-data-document-database-pg']}\" == \"7.6.0-16\" && \"${#stage('Get Version in Snapshot Helmfile - Single package')['context']['eric-ci-helm-b']}\" == \"1.0.1\"",
+        "type": "expression"
+      },
+      "type": "checkPreconditions"
+    }
+  ],
+  "tags": [
+    {
+      "name": "CONTROLLER1",
+      "value": "SPINNAKER_PIPELINE_NAME"
+    }
+  ],
+  "triggers": []
+}

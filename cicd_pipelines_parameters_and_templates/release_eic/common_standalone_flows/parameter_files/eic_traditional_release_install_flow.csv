@@ -1,0 +1,3 @@
+SPINNAKER_APPLICATION_NAME,SPINNAKER_PIPELINE_NAME,NOTIFICATION_ADDRESS,CLEANUP_TYPE_DEFAULT,UPDATE_II_BASELINE
+eic-release-e2e-cicd,Scheduled_eic-baseline-II,james.mackenzie@ericsson.com,FULL,true
+eic-release-e2e-cicd,Scheduled_eic-II-loop,james.mackenzie@ericsson.com,PARTIAL,false

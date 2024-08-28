@@ -1,0 +1,12 @@
+
+ {
+    "config": {
+        "line-length": false,
+        "no-duplicate-heading": false,
+        "no-trailing-punctuation": false,
+        "no-multiple-blanks": false,
+        "blanks-around-headings":false,
+        "first-line-heading":false,
+        "link-fragments":false
+    }
+  }

@@ -1,0 +1,6 @@
+This template generates the application release flow for the respective greenfield applications.
+Greenfield application are applications that were created after IDUN was established.
+What separates this pipeline from the brownfield pipelines is the following:
+  This pipeline is triggered by a gerrit submit trigger.
+  This pipeline provides feedback to the gerrit review on each stage.
+  This feedback is then displayed in the gerrit history.

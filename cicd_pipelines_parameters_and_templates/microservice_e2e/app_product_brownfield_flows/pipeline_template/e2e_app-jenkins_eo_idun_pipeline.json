@@ -1,0 +1,186 @@
+{
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten. Template name: e2e_app-jenkins_eo_idun_pipeline.json in repo https://gerrit.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources,branches",
+  "disabled": false,
+  "name": "SPINNAKER_PIPELINE_NAME",
+  "limitConcurrent": false,
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "APPLICATION_STAGING_JOB_NAME",
+      "master": "APPLICATION_STAGING_FEM_CONTROLLER",
+      "name": "APPLICATION_STAGING_NAME",
+      "notifications": [
+        {
+          "address": "${trigger.properties['GIT_AUTHOR_EMAIL']}",
+          "cc": "APPLICATION_STAGING_EMAIL_CC",
+          "level": "stage",
+          "message": {
+            "stage.complete": {
+              "text": "Stage successful"
+            },
+            "stage.failed": {
+              "text": "Please investigate this failure"
+            }
+          },
+          "type": "email",
+          "when": [
+            "stage.failed",
+            "stage.complete"
+          ]
+        }
+      ],
+      "parameters": {
+        "CHART_NAME": "${trigger.properties['CHART_NAME']}",
+        "CHART_REPO": "${trigger.properties['CHART_REPO']}",
+        "CHART_VERSION": "${trigger.properties['CHART_VERSION']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "APPLICATION_STAGING_NAME",
+      "requisiteStageRefIds": [],
+      "sendNotifications": true,
+      "stageTimeoutMs": 50400000,
+      "type": "jenkins"
+    },
+    {
+      "application": "eoapp",
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "name": "EO_Product_Staging",
+      "notifications": [
+        {
+          "address": "PDLAPPSTAG@pdl.internal.ericsson.com",
+          "level": "stage",
+          "message": {
+            "stage.failed": {
+              "text": "Please investigate this failure"
+            }
+          },
+          "type": "email",
+          "when": [
+            "stage.failed"
+          ]
+        }
+      ],
+      "pipeline": "739eb6ce-eca1-44eb-a281-1dc5c23caa03",
+      "pipelineParameters": {
+        "CHART_NAME": "${#stage(\"APPLICATION_STAGING_NAME\")[\"context\"][\"CHART_NAME\"]}",
+        "CHART_REPO": "${#stage(\"APPLICATION_STAGING_NAME\")[\"context\"][\"CHART_REPO\"]}",
+        "CHART_VERSION": "${#stage(\"APPLICATION_STAGING_NAME\")[\"context\"][\"CHART_VERSION\"]}"
+      },
+      "refId": "EO_Product_Staging",
+      "requisiteStageRefIds": [
+        "APPLICATION_STAGING_NAME"
+      ],
+      "sendNotifications": true,
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "application": "product-e2e-cicd",
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "name": "IDUN_Product_Staging",
+      "notifications": [
+        {
+          "address": "PDLAPPSTAG@pdl.internal.ericsson.com",
+          "level": "stage",
+          "message": {
+            "stage.failed": {
+              "text": "Please investigate this failure"
+            }
+          },
+          "type": "email",
+          "when": [
+            "stage.failed"
+          ]
+        }
+      ],
+      "pipeline": "d8e85bad-3d55-433b-b7db-d3d3567e2553",
+      "pipelineParameters": {
+        "CHART_NAME": "${#stage(\"APPLICATION_STAGING_NAME\")[\"context\"][\"CHART_NAME\"]}",
+        "CHART_REPO": "${#stage(\"APPLICATION_STAGING_NAME\")[\"context\"][\"CHART_REPO\"]}",
+        "CHART_VERSION": "${#stage(\"APPLICATION_STAGING_NAME\")[\"context\"][\"CHART_VERSION\"]}"
+      },
+      "refId": "IDUN_Product_Staging",
+      "requisiteStageRefIds": [
+        "APPLICATION_STAGING_NAME"
+      ],
+      "sendNotifications": true,
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "EO-Integration-Generate-Chart-Version",
+      "markUnstableAsSuccessful": true,
+      "master": "oss-aispinn-fem5s11-eiffel052",
+      "name": "Get_MS_Version",
+      "parameters": {
+        "CHART_NAME": "${#stage(\"APPLICATION_STAGING_NAME\")[\"context\"][\"CHART_NAME\"]}",
+        "CHART_VERSION": "${#stage(\"APPLICATION_STAGING_NAME\")[\"context\"][\"CHART_VERSION\"]}",
+        "EO_VERSION": "${#stage(\"APPLICATION_STAGING_NAME\")[\"context\"][\"EO_INTEGRATION_CHART_VERSION\"]}",
+        "FLOW_URL_TAG": "Application Staging",
+        "PIPELINE_STATUS": "${#stage(\"EO_Product_Staging\")[\"status\"]}",
+        "TRIGGERING_CHART": "${#stage(\"APPLICATION_STAGING_NAME\")[\"context\"][\"TRIGGERING_CHART\"]}",
+        "TRIGGERING_VERSION": "${#stage(\"APPLICATION_STAGING_NAME\")[\"context\"][\"TRIGGERING_VERSION\"]}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Get_MS_Version",
+      "requisiteStageRefIds": [
+        "EO_Product_Staging"
+      ],
+      "type": "jenkins",
+      "waitForCompletion": false
+    },
+    {
+      "application": "idun-aas-e2e-cicd",
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "isNew": true,
+      "name": "AAS_E2E_Flow",
+      "pipeline": "AAS_E2E_FLOW_PIPELINE_ID",
+      "refId": "AAS_E2E_Flow",
+      "requisiteStageRefIds": [
+        "IDUN_Product_Staging"
+      ],
+      "type": "pipeline",
+      "waitForCompletion": false
+    },
+    {
+      "name": "Flow_Completed",
+      "preconditions": [
+        {
+          "context": {
+            "expression": "\"${#stage('EO_Product_Staging')['status']}\" == \"SUCCEEDED\" and \"${#stage('IDUN_Product_Staging')['status']}\" == \"SUCCEEDED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        }
+      ],
+      "refId": "Flow_Completed",
+      "requisiteStageRefIds": [
+        "EO_Product_Staging",
+        "IDUN_Product_Staging"
+      ],
+      "type": "checkPreconditions"
+    }
+  ],
+  "triggers": [
+    {
+      "enabled": true,
+      "job": "TRIGGER_JOB_NAME",
+      "master": "TRIGGER_FEM_CONTROLLER",
+      "propertyFile": "artifact.properties",
+      "type": "jenkins"
+    }
+  ]
+}

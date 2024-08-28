@@ -1,0 +1,160 @@
+{
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "name": "APP_SHORT_NAME_UPPERCASE_Unreserve_Flow",
+  "description": "This pipeline used to redeploy and unreserve environmens on main pipeline completions/termination.It is maintained with template: https://gerrit.ericsson.se/plugins/gitiles/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources/+/refs/heads/master/cicd_pipelines_parameters_and_templates/aapp_staging/unreserve_redeploy_flow/pipeline_template/unreserve_redeploy_flow.json",
+  "expectedArtifacts": [],
+  "keepWaitingPipelines": true,
+  "lastModifiedBy": "zolepan",
+  "limitConcurrent": false,
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+    "ui": true
+  },
+  "schema": "1",
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "failOnFailedExpressions": false,
+      "name": "Evaluate Variables",
+      "refId": "Evaluate Variables",
+      "requisiteStageRefIds": [],
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "NAMESPACE_WAS_RESERVED",
+          "value": "${trigger.parentExecution.stages.?[name == \"Reserve Namespace\"][0].status == \"SUCCEEDED\"}"
+        },
+        {
+          "key": "RESOURCE_NAME",
+          "value": "${trigger.parentExecution.stages.?[name == \"Reserve Namespace\"][0].context.RESOURCE_NAME}"
+        },
+        {
+          "key": "QUARANTINE_ENV",
+          "value": "${trigger.parentExecution.trigger.parameters.QUARANTINE_ENV and trigger.parentExecution.status != \"SUCCEEDED\"}"
+        },
+        {
+          "key": "ENV_CONFIG_FILE_PATH",
+          "value": "oss-common-ci/ci-infrastructure/pooling/resources/${RESOURCE_NAME}.conf"
+        },
+        {
+          "key": "PARENT_PARAMETERS",
+          "value": "${trigger.parentExecution.trigger.parameters}"
+        }
+      ]
+    },
+    {
+      "application": "common-e2e-cicd",
+      "failPipeline": true,
+      "name": "Redeploy Namespace",
+      "pipeline": "4ec4b5df-b15b-4b90-afaf-4bf96ccf1a7c",
+      "pipelineParameters": {
+        "ENV_CONFIG_FILE": "${ENV_CONFIG_FILE_PATH}",
+        "ENV_NAME": "${RESOURCE_NAME}",
+        "FULL_PATH_TO_SITE_VALUES_FILE": "${trigger.parentExecution.trigger.parameters.PATH_TO_SITE_VALUES_FILE}",
+        "HELM_TIMEOUT": "${trigger.parentExecution.trigger.parameters.HELM_TIMEOUT}",
+        "INT_CHART_NAME": "${trigger.parentExecution.trigger.parameters.HELMFILE_NAME}",
+        "INT_CHART_REPO": "${trigger.parentExecution.trigger.parameters.II_HELMFILE_REPO}",
+        "INT_CHART_VERSION": "${trigger.parentExecution.trigger.parameters.II_HELMFILE_VERSION}",
+        "PATH_TO_SITE_VALUES_OVERRIDE_FILE": "${trigger.parentExecution.trigger.parameters.PATH_TO_SITE_VALUES_OVERRIDE_FILE}",
+        "PERFORM_REDEPLOY": "${trigger.parentExecution.trigger.parameters.NEEDS_UPGRADE_TESTING? \"true\" : \"false\"}",
+        "TAGS": "${trigger.parentExecution.trigger.parameters.TAGS}"
+      },
+      "refId": "Redeploy Namespace",
+      "requisiteStageRefIds": [
+        "Wait for user input"
+      ],
+      "stageEnabled": {
+        "expression": "${ NAMESPACE_WAS_RESERVED and not (#stage(\"Wait for user input\").context.judgmentStatus == \"stop\")}",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "OSS-Integration-Quarantine-Environment",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Quarantine Namespace",
+      "notifications": [
+        {
+          "address": "PDLAPPSTAG@pdl.internal.ericsson.com",
+          "level": "stage",
+          "message": {
+            "stage.failed": {
+              "text": "Failed to quarantine Namespace"
+            }
+          },
+          "type": "email",
+          "when": [
+            "stage.failed"
+          ]
+        }
+      ],
+      "parameters": {
+        "ENV_NAME": "${RESOURCE_NAME}"
+      },
+      "refId": "Quarantine Namespace",
+      "requisiteStageRefIds": [
+        "Evaluate Variables"
+      ],
+      "sendNotifications": true,
+      "stageEnabled": {
+        "expression": "QUARANTINE_ENV and NAMESPACE_WAS_RESERVED",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "instructions": "Environment \"${RESOURCE_NAME}\" was quarantined for 3 days. \nPlease, press the \"CONTINUE\" button if the namespace can be unreserved earlier.\n\"STOP\" will leave the environment in a reserved state, until someone manually unreserves it.\nConsequently, fewer namespaces will be available for your pipelines.",
+      "judgmentInputs": [],
+      "name": "Wait for user input",
+      "notifications": [
+        {
+          "address": "PDLAPPSTAG@pdl.internal.ericsson.com",
+          "level": "stage",
+          "message": {
+            "manualJudgmentStop": {
+              "text": "Someone decided to leave the namespace quarantined, please check it."
+            }
+          },
+          "type": "email",
+          "when": [
+            "manualJudgmentStop"
+          ]
+        }
+      ],
+      "refId": "Wait for user input",
+      "requisiteStageRefIds": [
+        "Quarantine Namespace"
+      ],
+      "sendNotifications": true,
+      "stageEnabled": {
+        "expression": "QUARANTINE_ENV and NAMESPACE_WAS_RESERVED",
+        "type": "expression"
+      },
+      "stageTimeoutMs": 259200000,
+      "type": "manualJudgment"
+    }
+  ],
+  "tags": [],
+  "triggers": [
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "enabled": true,
+      "expectedArtifactIds": [],
+      "pipeline": "DEPLOYMENT_VERIFICATION_PIPELINE_ID",
+      "status": [
+        "failed",
+        "canceled",
+        "successful"
+      ],
+      "type": "pipeline"
+    }
+  ]
+}

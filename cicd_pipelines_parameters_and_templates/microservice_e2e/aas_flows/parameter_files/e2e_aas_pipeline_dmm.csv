@@ -1,0 +1,11 @@
+SPINNAKER_APPLICATION_NAME,SPINNAKER_PIPELINE_NAME,EXECUTION_TIME
+idun-aas-e2e-cicd,eric-oss-data-catalog-st-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-dmm-data-document-database-pg-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-dmm-schema-registry-sr-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-oss-kf-sz-op-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-oss-data-collection-controller-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-oss-eric-log-shipper-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-oss-kf-resource-manager-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-oss-data-specification-lcm-adapter-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-oss-object-storage-access-manager-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-oss-sef-exposure-api-manager-client-AAS-E2E-Flow,21:00:00

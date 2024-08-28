@@ -1,0 +1,226 @@
+{
+  "appConfig": {},
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten. Template name: reserve_and_gather_env_details.json in repo https://gerrit.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources",
+  "disabled": false,
+  "name": "SPINNAKER_PIPELINE_NAME",
+  "keepWaitingPipelines": true,
+  "limitConcurrent": true,
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+    "ui": true
+  },
+  "notifications": [
+    {
+      "address": "NOTIFICATION_ADDRESS",
+      "level": "pipeline",
+      "message": {
+        "pipeline.failed": {
+          "text": "The reserve and gather env details pipeline has failed."
+        }
+      },
+      "type": "email",
+      "when": ["pipeline.failed"]
+    }
+  ],
+  "parameterConfig": [
+    {
+      "default": "",
+      "description": "This is the label to search for that is attached to the environments in the Lockable Resource Plugin on Jenkins",
+      "hasOptions": false,
+      "label": "ENV_LABEL",
+      "name": "ENV_LABEL",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "Product_Staging_Child_Flow",
+      "description": "RCF Tag is used to identify the environment by Report Center Registration Stage for Child flows",
+      "hasOptions": false,
+      "label": "",
+      "name": "RCF_TAG",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "Spinnaker",
+      "description": "Flow URL Tag is used when locking the invironment to add a tag to descript what has locked the environment for easier tracking",
+      "hasOptions": false,
+      "label": "FLOW_URL_TAG",
+      "name": "FLOW_URL_TAG",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "120",
+      "description": "This is the time to wait for an Environment to become available. After the time expirers the job will fail out",
+      "hasOptions": false,
+      "label": "WAIT_TIME",
+      "name": "WAIT_TIME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "ci-infrastructure/pooling/resources",
+      "description": "This is the directory within the Repo specified within the  Gather-Env-Details Jenkins job where to find the  pooling environment details",
+      "hasOptions": false,
+      "label": "ENV_DETAILS_DIR",
+      "name": "ENV_DETAILS_DIR",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "This is used when mapped a flow to an environment",
+      "hasOptions": false,
+      "label": "SPINNAKER_FLOW_ID",
+      "name": "SPINNAKER_FLOW_ID",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "evo_docker_engine_gic_IDUN_PSO",
+      "description": "Label used by PS agents",
+      "hasOptions": false,
+      "label": "AGENT_LABEL",
+      "name": "AGENT_LABEL",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    }
+  ],
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "Staging-Report-Register-Child-Flow",
+      "master": "oss-fem4s11-eiffel216",
+      "name": "Report Center Registration",
+      "parameters": {
+        "EXEC_ID": "${execution.id}"
+      },
+      "refId": "Report_Center_Registration",
+      "requisiteStageRefIds": [],
+      "type": "jenkins",
+      "waitForCompletion": false
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "RPT-RC_Reserve-Environment",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Reserve Env",
+      "parameters": {
+        "ENV_LABEL": "${trigger['parameters']['ENV_LABEL']}",
+        "FLOW_URL": "https://spinnaker.rnd.gic.ericsson.se/#/applications/${execution['application']}/executions/details/${trigger['parameters']['SPINNAKER_FLOW_ID']}",
+        "FLOW_URL_TAG": "${trigger['parameters']['FLOW_URL_TAG']}",
+        "SPINNAKER_PIPELINE_ID": "${execution['id']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Reserve Env",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "Gather-Env-Details",
+      "master": "oss-fem7s11-eiffel216",
+      "name": "Gather Env Details",
+      "parameters": {
+        "ENV_DETAILS_DIR": "${trigger['parameters']['ENV_DETAILS_DIR']}",
+        "ENV_NAME": "${#stage(\"Reserve Env\")[\"context\"][\"RESOURCE_NAME\"]}",
+        "FUNCTIONAL_USER_SECRET": "psouser-user-creds",
+        "SLAVE_LABEL": "${trigger['parameters']['AGENT_LABEL']}",
+        "SPINNAKER_PIPELINE_ID": "${execution['id']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Gather Env Details",
+      "requisiteStageRefIds": [
+        "Reserve Env"
+      ],
+      "stageEnabled": {
+        "expression": "'${#stage('Reserve Env')['status']}' == 'SUCCEEDED'",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "RPT-RC_Unreserve-Environment",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Unreserve Env",
+      "parameters": {
+        "ENV_NAME": "${#stage('Reserve Env')['context']['RESOURCE_NAME']}"
+      },
+      "refId": "Unreserve Env",
+      "requisiteStageRefIds": [
+        "Gather Env Details"
+      ],
+      "stageEnabled": {
+        "expression": "'${#stage('Reserve Env')['status']}' == 'SUCCEEDED' and '${#stage('Gather Env Details')['status']}' == 'FAILED_CONTINUE'",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "name": "Flow Completed",
+      "preconditions": [
+        {
+          "context": {
+            "expression": "( '${#stage('Reserve Env')['status']}' == 'SUCCEEDED' and '${#stage('Gather Env Details')['status']}' == 'SUCCEEDED' and '${#stage('Unreserve Env')['status']}' == 'SKIPPED' )",
+            "failureMessage": "Issue in reserve and gather environment details Spinnaker flow."
+          },
+          "failPipeline": true,
+          "type": "expression"
+        }
+      ],
+      "refId": "Flow Completed",
+      "requisiteStageRefIds": [
+        "Unreserve Env"
+      ],
+      "type": "checkPreconditions"
+    }
+  ],
+  "triggers": []
+}

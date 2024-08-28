@@ -1,0 +1,340 @@
+{
+    "appConfig": {},
+    "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten, Template name: autoapp_onoarding_instantiation_verification_flow_new.json in repo https://gerrit.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources",
+    "keepWaitingPipelines": false,
+    "limitConcurrent": false,
+    "application": "SPINNAKER_APPLICATION_NAME",
+    "name": "SPINNAKER_PIPELINE_NAME",
+    "locked": {
+        "allowUnlockUi": true,
+        "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+        "ui": true
+    },
+    "parameterConfig": [
+      {
+        "default": "",
+        "description": "Hostname for APPMGR",
+        "hasOptions": false,
+        "name": "APPMGR_HOSTNAME",
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "",
+        "description": "Name of the auto app helm chart",
+        "hasOptions": false,
+        "name": "CHART_NAME",
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "",
+        "description": "Version of the auto app helm chart",
+        "hasOptions": false,
+        "name": "CHART_VERSION",
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "",
+        "description": "Repo of the auto app helm chart",
+        "hasOptions": false,
+        "name": "CHART_REPO",
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "",
+        "description": "Name of the Environment in which the auto app will be onboarded and instantiated",
+        "hasOptions": false,
+        "name": "ENVIRONMENT_NAME",
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "",
+        "description": "The path of the Auto App CSAR",
+        "hasOptions": false,
+        "name": "CSAR_PATH",
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "true",
+        "description": "If set to true - all Auto App data will not be deleted",
+        "hasOptions": true,
+        "name": "SKIP_CLEAN_UP",
+        "options": [
+          {
+            "value": "true"
+          },
+          {
+            "value": "false"
+          }
+        ],
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "",
+        "description": "The type of instatiation to perform",
+        "hasOptions": true,
+        "name": "INSTANTIATION_TYPE",
+        "options": [
+          {
+            "value": "initial_instantiation"
+          },
+          {
+            "value": "instantiation_to_higher_version"
+          }
+        ],
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "",
+        "description": "The jenkins credential id for Kubeconfig for the environment",
+        "hasOptions": false,
+        "name": "KUBECONFIG_FILE_CREDENTIAL_ID",
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "",
+        "description": "The namespace in which the auto app will be onboarded and instantiated",
+        "hasOptions": false,
+        "name": "NAMESPACE",
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "",
+        "description": "Jenkins Credential id for aws config file (for AAS).",
+        "hasOptions": false,
+        "label": "",
+        "name": "AWS_CONFIG_FILE_CREDENTIAL_ID",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "",
+        "description": "Jenkins Credential id for aws creds file (for AAS).",
+        "hasOptions": false,
+        "label": "",
+        "name": "AWS_CREDS_FILE_CREDENTIAL_ID",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "",
+        "description": "ADMIN_USER_CREDENTIALS to run pipeline with.",
+        "hasOptions": false,
+        "label": "",
+        "name": "ADMIN_USER_CREDENTIALS",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "",
+        "description": "CPS Username for Pre/Post testing pipelines",
+        "hasOptions": false,
+        "label": "",
+        "name": "INGRESS_CPS_USER",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": true,
+        "required": false
+      },
+      {
+        "default": "",
+        "description": "Ingress Hostname for Pre/Post testing pipelines",
+        "hasOptions": false,
+        "label": "",
+        "name": "INGRESS_HOST",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": true,
+        "required": false
+      },
+      {
+        "default": "",
+        "description": "Ingress Password for Pre/Post testing pipelines",
+        "hasOptions": false,
+        "label": "",
+        "name": "INGRESS_LOGIN_PASSWORD",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": true,
+        "required": false
+      },
+      {
+        "default": "",
+        "description": "Ingress Username for Pre/Post testing pipelines",
+        "hasOptions": false,
+        "label": "",
+        "name": "INGRESS_LOGIN_USER",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": true,
+        "required": false
+      },
+      {
+        "default": "",
+        "description": "Restsim Host for Pre/Post testing pipelines",
+        "hasOptions": false,
+        "label": "",
+        "name": "RESTSIM_HOST",
+        "pinned": true,
+        "required": true
+      }
+    ],
+    "spelEvaluator": "v4",
+    "stages": [
+      {
+        "continuePipeline": false,
+        "failPipeline": true,
+        "job": "APP-MGR-PC-Delete-All-Onboarded-Auto-Apps",
+        "master": "oss-fem5s11-eiffel216",
+        "name": "Delete All Auto App Data",
+        "parameters": {
+          "ADMIN_USER_CREDENTIALS": "${parameters['ADMIN_USER_CREDENTIALS']}",
+          "APPMGR_HOSTNAME": "${parameters['APPMGR_HOSTNAME']}",
+          "AUTO_APP_CHART_NAME": "${parameters['CHART_NAME']}",
+          "ENV_NAME": "${parameters['ENVIRONMENT_NAME']}"
+        },
+        "refId": "Delete All Auto App Data",
+        "requisiteStageRefIds": [],
+        "stageEnabled": {
+          "expression": "!${parameters['SKIP_CLEAN_UP']}",
+          "type": "expression"
+        },
+        "type": "jenkins"
+      },
+      {
+        "application": "SPINNAKER_APPLICATION_NAME",
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": false,
+        "failPipeline": true,
+        "name": "Pre Onboarding Testing",
+        "pipeline": "PRE_ONBOARDING_TESTING_PIPELINE_ID",
+        "pipelineParameters": {
+          "AWS_CONFIG_FILE_CREDENTIAL_ID": "${parameters['AWS_CONFIG_FILE_CREDENTIAL_ID']}",
+          "AWS_CREDS_FILE_CREDENTIAL_ID": "${parameters['AWS_CREDS_FILE_CREDENTIAL_ID']}",
+          "CHART_NAME": "${parameters['CHART_NAME']}",
+          "CHART_REPO": "${parameters['CHART_REPO']}",
+          "CHART_VERSION": "${parameters['CHART_VERSION']}",
+          "INGRESS_CPS_USER": "${parameters['INGRESS_CPS_USER']}",
+          "INGRESS_HOST": "${parameters['INGRESS_HOST']}",
+          "INGRESS_LOGIN_PASSWORD": "${parameters['INGRESS_LOGIN_PASSWORD']}",
+          "INGRESS_LOGIN_USER": "${parameters['INGRESS_LOGIN_USER']}",
+          "INSTANTIATION_TYPE": "${parameters['INSTANTIATION_TYPE']}",
+          "KUBECONFIG_FILE_CREDENTIAL_ID": "${parameters['KUBECONFIG_FILE_CREDENTIAL_ID']}",
+          "NAMESPACE": "${parameters['NAMESPACE']}",
+          "RESTSIM_HOSTNAME": "${parameters['RESTSIM_HOST']}"
+        },
+        "refId": "Pre Onboarding Testing",
+        "requisiteStageRefIds": [
+          "Delete All Auto App Data"
+        ],
+        "type": "pipeline",
+        "waitForCompletion": true
+      },
+      {
+        "continuePipeline": false,
+        "failPipeline": true,
+        "job": "APP-MGR-PC-Onboard-Auto-App",
+        "master": "oss-fem5s11-eiffel216",
+        "name": "Onboarding",
+        "parameters": {
+          "ADMIN_USER_CREDENTIALS": "${parameters['ADMIN_USER_CREDENTIALS']}",
+          "APPMGR_HOSTNAME": "${parameters['APPMGR_HOSTNAME']}",
+          "AUTO_APP_CHART_NAME": "${parameters['CHART_NAME']}",
+          "AUTO_APP_CHART_VERSION": "${parameters['CHART_VERSION']}",
+          "CSAR_PATH": "${parameters['CSAR_PATH']}",
+          "ENV_NAME": "${parameters['ENVIRONMENT_NAME']}"
+        },
+        "propertyFile": "artifact.properties",
+        "refId": "Onboarding",
+        "requisiteStageRefIds": [
+          "Pre Onboarding Testing"
+        ],
+        "type": "jenkins"
+      },
+      {
+        "continuePipeline": false,
+        "failPipeline": true,
+        "job": "APP-MGR-PC-Instantiate-Auto-App",
+        "master": "oss-fem5s11-eiffel216",
+        "name": "Instantiation",
+        "parameters": {
+          "ADDITIONAL_PARAMETERS": "${parameters['CHART_NAME']}_additional_parameters_${parameters['ENVIRONMENT_NAME']}",
+          "ADMIN_USER_CREDENTIALS": "${parameters['ADMIN_USER_CREDENTIALS']}",
+          "APPMGR_HOSTNAME": "${parameters['APPMGR_HOSTNAME']}",
+          "AUTO_APP_CHART_NAME": "${parameters['CHART_NAME']}",
+          "AUTO_APP_ID": "${#stage('Onboarding')['context']['APP_ID']}",
+          "ENV_NAME": "${parameters['ENVIRONMENT_NAME']}",
+          "INSTANTIATION_TYPE": "${parameters['INSTANTIATION_TYPE']}"
+        },
+        "propertyFile": "artifact.properties",
+        "refId": "Instantiation",
+        "requisiteStageRefIds": [
+          "Onboarding"
+        ],
+        "type": "jenkins"
+      },
+      {
+        "application": "SPINNAKER_APPLICATION_NAME",
+        "failPipeline": true,
+        "name": "Post Instantiation Testing",
+        "pipeline": "POST_INSTANTIATION_TESTING_PIPELINE_ID",
+        "pipelineParameters": {
+          "AWS_CONFIG_FILE_CREDENTIAL_ID": "${parameters['AWS_CONFIG_FILE_CREDENTIAL_ID']}",
+          "AWS_CREDS_FILE_CREDENTIAL_ID": "${parameters['AWS_CREDS_FILE_CREDENTIAL_ID']}",
+          "CHART_NAME": "${parameters['CHART_NAME']}",
+          "CHART_REPO": "${parameters['CHART_REPO']}",
+          "CHART_VERSION": "${parameters['CHART_VERSION']}",
+          "INGRESS_CPS_USER": "${parameters['INGRESS_CPS_USER']}",
+          "INGRESS_HOST": "${parameters['INGRESS_HOST']}",
+          "INGRESS_LOGIN_PASSWORD": "${parameters['INGRESS_LOGIN_PASSWORD']}",
+          "INGRESS_LOGIN_USER": "${parameters['INGRESS_LOGIN_USER']}",
+          "KUBECONFIG_FILE_CREDENTIAL_ID": "${parameters['KUBECONFIG_FILE_CREDENTIAL_ID']}",
+          "NAMESPACE": "${parameters['NAMESPACE']}",
+          "RESTSIM_HOSTNAME": "${parameters['RESTSIM_HOST']}"
+        },
+        "refId": "Post Instantiation Testing",
+        "requisiteStageRefIds": [
+          "Instantiation"
+        ],
+        "type": "pipeline",
+        "waitForCompletion": true
+      }
+    ],
+    "triggers": []
+  }

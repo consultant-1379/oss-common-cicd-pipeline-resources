@@ -1,0 +1,475 @@
+{
+  "appConfig": {},
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "name": "SPINNAKER_PIPELINE_NAME",
+  "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten. Template name: eic_release_refresh_flow.json in repo https://gerrit-gamma.gic.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources,branches",
+  "keepWaitingPipelines": false,
+  "limitConcurrent": false,
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+    "ui": true
+  },
+  "notifications": [
+    {
+      "address": "NOTIFICATION_ADDRESS",
+      "level": "pipeline",
+      "message": {
+        "pipeline.failed": {
+          "text": "The pipeline has failed."
+        }
+      },
+      "type": "email",
+      "when": [
+        "pipeline.failed"
+      ]
+    }
+  ],
+  "parameterConfig": [
+    {
+      "default": "",
+      "description": "Name of the deployment",
+      "hasOptions": false,
+      "label": "ENV_NAME",
+      "name": "ENV_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "false",
+      "description": "Option to use real CSAR. If false then dummy CSAR will be used",
+      "hasOptions": false,
+      "label": "",
+      "name": "USE_REAL_CSAR",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "armdocker.rnd.ericsson.se",
+      "description": "",
+      "hasOptions": false,
+      "label": "",
+      "name": "DOCKER_REGISTRY",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "None",
+      "description": "",
+      "hasOptions": false,
+      "label": "",
+      "name": "DOCKER_REGISTRY_CREDENTIALS",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "oss-deploy",
+      "description": "",
+      "hasOptions": false,
+      "label": "",
+      "name": "NAMESPACE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "armdocker.rnd.ericsson.se/proj-eric-oss-drop/eric-oss-deployment-manager",
+      "description": "Deployment Manager Repository.",
+      "hasOptions": false,
+      "label": "",
+      "name": "DEPLOYMENT_MANAGER_REPO",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "latest",
+      "description": "Update the Deployment Manager From State.",
+      "hasOptions": false,
+      "label": "",
+      "name": "NEW_DM_FROM_STATE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "true",
+      "description": "When set to true uses the site values generated from the Deployment manager prepare command for the deployment.",
+      "hasOptions": false,
+      "label": "",
+      "name": "USE_DM_PREPARE",
+      "options": [
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "true",
+      "description": "When set to true, enables the DDP auto upload",
+      "hasOptions": true,
+      "label": "",
+      "name": "DDP_AUTO_UPLOAD",
+      "options": [
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "false",
+      "description": "When set to true, ENM integration tests will be run",
+      "hasOptions": true,
+      "label": "",
+      "name": "RUN_ENM_INTEGRATION_TEST",
+      "options": [
+        {
+          "value": "true"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    }
+  ],
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "RPT-RC_Update-Test-Environment-Status",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Update Env Status to Refreshing",
+      "parameters": {
+        "ENV_NAME": "${parameters['ENV_NAME']}",
+        "status": "Refreshing"
+      },
+      "refId": "Update Env Status to Refreshing",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "DSC-DIT-Download-Document-As-Artifact",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Get Environment Details",
+      "parameters": {
+        "DIT_NAME_PARAMETER": "${parameters['ENV_NAME']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Get Environment Details",
+      "requisiteStageRefIds": [
+        "Update Env Status to Refreshing"
+      ],
+      "type": "jenkins"
+    },
+    {
+      "failOnFailedExpressions": true,
+      "name": "Evaluate Variables",
+      "refId": "Evaluate Variables",
+      "requisiteStageRefIds": [
+        "Get Environment Details"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Get Environment Details')['status'] == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "TO_STATE_SITE_VALUES_OVERRIDE_FILE",
+          "value": "${(#stage(\"Get Environment Details\")[\"context\"]['TO_STATE_SITE_VALUES_OVERRIDE_FILE']== None)? 'NONE':#stage(\"Get Environment Details\")[\"context\"]['TO_STATE_SITE_VALUES_OVERRIDE_FILE']}"
+        },
+        {
+          "key": "SKIP_TESTS",
+          "value": "${(#stage(\"Get Environment Details\")[\"context\"]['SKIP_TESTS']== None)?  \"\":#stage(\"Get Environment Details\")[\"context\"]['SKIP_TESTS']}"
+        },
+        {
+          "key": "RUN_TESTS",
+          "value": "${(#stage(\"Get Environment Details\")[\"context\"]['RUN_TESTS']== None)? \"\":#stage(\"Get Environment Details\")[\"context\"]['RUN_TESTS']}"
+        },
+        {
+          "key": "ECM_HOSTNAME",
+          "value": "${(#stage(\"Get Environment Details\")[\"context\"]['ECM_HOST_REPLACE']== None)? \"\":#stage(\"Get Environment Details\")[\"context\"]['ECM_HOST_REPLACE']}"
+        },
+        {
+          "key": "ENM_HOSTNAME",
+          "value": "${(#stage(\"Get Environment Details\")[\"context\"]['ENM_HOST_REPLACE']== None)? \"\":#stage(\"Get Environment Details\")[\"context\"]['ENM_HOST_REPLACE']}"
+        }
+      ]
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "BASE-VERS_Retrieve_Baseline_Version",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Retrieve Latest Release Version",
+      "parameters": {
+        "KEY_TO_RETRIEVE_BASELINE_VERSION_OF": "RELEASE_CANDIDATE_INT_CHART_VERSION",
+        "VERSIONS_FILENAME": "versions"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Retrieve Latest Release Version",
+      "requisiteStageRefIds": [
+        "Evaluate Variables"
+      ],
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "BASE-VERS_Compare_Version_With_Baseline_Version",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Compare Versions",
+      "parameters": {
+        "BASELINE_VERSION_IN_REPO": "${#stage('Retrieve Latest Release Version')['context']['RELEASE_CANDIDATE_INT_CHART_VERSION']}",
+        "VERSION_FOR_COMPARISON": "${#stage('Get Environment Details')['context']['VERSION']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Compare Versions",
+      "requisiteStageRefIds": [
+        "Retrieve Latest Release Version"
+      ],
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "Get-K8S-logs",
+      "master": "oss-fem7s11-eiffel216",
+      "name": "Collect ADP Logs",
+      "parameters": {
+          "ARMDOCKER_USER_SECRET": "reluser-creds-docker",
+          "ENV_FILES_BUCKET_NAME": "${parameters['ENV_NAME']}_files",
+          "FUNCTIONAL_USER_SECRET": "reluser-user-creds",
+          "KUBECONFIG_FILE": "${#stage(\"Get Environment Details\")[\"context\"][\"KUBE_CONFIG\"]}",
+          "NAMESPACE": "${#stage(\"Get Environment Details\")[\"context\"]['NAMESPACE']}"
+      },
+      "refId": "Collect ADP Logs",
+      "requisiteStageRefIds": [
+          "Compare Versions"
+      ],
+      "type": "jenkins"
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Upgrade to Green Baseline Version",
+      "pipeline": "e6c06ca6-1798-48ae-bc07-6406460db4a2",
+      "pipelineParameters": {
+        "ADC_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"ADC_HOST_REPLACE\"]}",
+        "APPMGR_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"APPMGR_HOST_REPLACE\"]}",
+        "BDR_HOSTNAME": "${#stage('Get Environment Details')['context']['BDR_HOST_REPLACE']}",
+        "CONFIG_FILES": "${#stage(\"Get Environment Details\")[\"context\"][\"CONFIG_FILES\"]}",
+        "DDP_AUTO_UPLOAD": "${parameters['DDP_AUTO_UPLOAD']}",
+        "DEPLOYMENT_MANAGER_REPO": "${parameters['DEPLOYMENT_MANAGER_REPO']}",
+        "DEPLOYMENT_MANAGER_VERSION": "${parameters['NEW_DM_FROM_STATE']}",
+        "DEPLOYMENT_NAME": "${parameters['ENV_NAME']}",
+        "DOCKER_REGISTRY": "${parameters['DOCKER_REGISTRY']}",
+        "DOCKER_REGISTRY_CREDENTIALS": "${parameters['DOCKER_REGISTRY_CREDENTIALS']}",
+        "ECM_HOSTNAME": "${ECM_HOSTNAME}",
+        "EIC_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"EIC_HOST_REPLACE\"]}",
+        "ENM_HOSTNAME": "${ENM_HOSTNAME}",
+        "GAS_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"GAS_HOST_REPLACE\"]}",
+        "IAM_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"IAM_HOST_REPLACE\"]}",
+        "INT_CHART_VERSION": "${#stage(\"Retrieve Latest Release Version\")[\"context\"][\"RELEASE_CANDIDATE_INT_CHART_VERSION\"]}",
+        "K6_TESTWARE_VERSION": "${#stage(\"Get Environment Details\")[\"context\"][\"K6_TESTWARE_VERSION\"]}",
+        "KF_BO_HOSTNAME": "${#stage('Get Environment Details')['context']['KAFKA_BOOTSTRAP_HOST_REPLACE']}",
+        "KUBECONFIG_FILE": "${#stage(\"Get Environment Details\")[\"context\"][\"KUBE_CONFIG\"]}",
+        "KUBE_CONFIG_FILE_CREDENTIAL_ID": "${#stage(\"Get Environment Details\")[\"context\"][\"KUBE_CONFIG_FILE_CREDENTIAL_ID\"]}",
+        "NAMESPACE": "${parameters['NAMESPACE']}",
+        "PRELOAD_APP_MANAGER": "false",
+        "RUN_ENM_INTEGRATION_TEST": "${parameters['RUN_ENM_INTEGRATION_TEST']}",
+        "RUN_TESTS": "${RUN_TESTS}",
+        "SITE_VALUES_OVERRIDE_FILE_NAME": "${TO_STATE_SITE_VALUES_OVERRIDE_FILE}",
+        "SKIP_TESTS": "${SKIP_TESTS}",
+        "TAGS": "${#stage(\"Get Environment Details\")[\"context\"][\"TAGS\"]}",
+        "TH_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"TH_HOST_REPLACE\"]}",
+        "USE_CERTM": "true",
+        "USE_DM_PREPARE": "${parameters['USE_DM_PREPARE']}",
+        "USE_REAL_CSAR": "${parameters['USE_REAL_CSAR']}"
+      },
+      "refId": "Upgrade to Green Baseline Version",
+      "requisiteStageRefIds": [
+        "Collect ADP Logs"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Retrieve Latest Release Version')['status'] == \"SUCCEEDED\" and #stage(\"Compare Versions\")[\"context\"][\"RESULT_OF_COMPARISON\"].contains(\"lower\")",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "failPipeline": true,
+      "name": "Update Version in RPT and DIT to Latest Candidate Version",
+      "pipeline": "c2ef3a0e-65be-45a1-91ac-d8661170dd30",
+      "pipelineParameters": {
+        "ENVIRONMENT_NAME": "${parameters['ENV_NAME']}",
+        "INT_CHART_VERSION": "${#stage('Retrieve Latest Release Version')['context']['RELEASE_CANDIDATE_INT_CHART_VERSION']}"
+      },
+      "refId": "Update Version in RPT and DIT to Latest Candidate Version",
+      "requisiteStageRefIds": [
+        "Upgrade to Green Baseline Version"
+      ],
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Post Flow Checks",
+      "preconditions": [
+        {
+          "context": {
+            "expression": "#stage('Update Env Status to Refreshing')['status'] == \"SUCCEEDED\" or #stage('Update Env Status to Refreshing')['status'] == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "#stage('Get Environment Details')['status'] == \"SUCCEEDED\" or #stage('Get Environment Details')['status'] == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "#stage('Upgrade to Green Baseline Version')['status'] == \"SUCCEEDED\" or #stage('Upgrade to Green Baseline Version')['status'] == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "#stage('Update Version in RPT and DIT to Latest Candidate Version')['status'] == \"SUCCEEDED\" or #stage('Update Version in RPT and DIT to Latest Candidate Version')['status'] == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "#stage('Retrieve Latest Release Version')['status'] == \"SUCCEEDED\" or #stage('Retrieve Latest Release Version')['status'] == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "#stage('Compare Versions')['status'] == \"SUCCEEDED\" or #stage('Compare Versions')['status'] == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        }
+      ],
+      "refId": "Post Flow Checks",
+      "requisiteStageRefIds": [
+        "Update Version in RPT and DIT to Latest Candidate Version"
+      ],
+      "type": "checkPreconditions"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "RPT-RC_Quarantine-Environment",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Quarantine Environment",
+      "parameters": {
+        "ENV_NAME": "${parameters['ENV_NAME']}"
+      },
+      "refId": "Quarantine Environment",
+      "requisiteStageRefIds": [
+        "Post Flow Checks"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Post Flow Checks')['status'] != \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "RPT-RC_Update-Test-Environment-Status",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Update Env Status to Available",
+      "parameters": {
+        "ENV_NAME": "${parameters['ENV_NAME']}",
+        "status": "Available"
+      },
+      "refId": "Update Env Status to Available",
+      "requisiteStageRefIds": [
+        "Quarantine Environment"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Post Flow Checks')['status'] == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "name": "End Flow",
+      "preconditions": [
+        {
+          "context": {
+            "stageName": "Post Flow Checks",
+            "stageStatus": "SUCCEEDED"
+          },
+          "failPipeline": true,
+          "type": "stageStatus"
+        }
+      ],
+      "refId": "End Flow",
+      "requisiteStageRefIds": [
+        "Update Env Status to Available"
+      ],
+      "type": "checkPreconditions"
+    }
+  ],
+  "triggers": []
+}

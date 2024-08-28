@@ -1,0 +1,197 @@
+{
+    "appConfig": {},
+    "keepWaitingPipelines": false,
+    "limitConcurrent": true,
+    "application": "SPINNAKER_APPLICATION_NAME",
+    "name": "SPINNAKER_PIPELINE_NAME",
+    "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten, Template name: oldest_supported_autoapp_on_latest_eiap_flow.json in repo https://gerrit.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources",
+    "locked": {
+        "allowUnlockUi": true,
+        "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+        "ui": true
+    },
+    "parameterConfig": [
+      {
+        "default": "",
+        "description": "Name of the auto app helm chart",
+        "hasOptions": false,
+        "name": "CHART_NAME",
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "",
+        "description": "Version of the auto app helm chart",
+        "hasOptions": false,
+        "name": "CHART_VERSION",
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "",
+        "description": "Repo of the auto app helm chart",
+        "hasOptions": false,
+        "name": "CHART_REPO",
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "",
+        "description": "Name of the Environment in which the auto app will be onboarded and instantiated",
+        "hasOptions": false,
+        "name": "ENVIRONMENT_NAME",
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "https://arm.seli.gic.ericsson.se",
+        "description": "Storage Instance (Staging and Release) to receive CSARs from",
+        "hasOptions": false,
+        "name": "CSAR_STORAGE_INSTANCE",
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "proj-eric-oss-drop-generic-local",
+        "description": "Storage directory (Release) to receive the CSARs from",
+        "hasOptions": false,
+        "name": "CSAR_STORAGE_REPO_RELEASE",
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "INGRESS_LOGIN_USER_VALUE",
+        "description": "Ingress login user",
+        "hasOptions": false,
+        "label": "",
+        "name": "INGRESS_LOGIN_USER",
+        "pinned": true,
+        "required": false
+      }
+    ],
+    "spelEvaluator": "v4",
+    "stages": [
+      {
+        "continuePipeline": false,
+        "failPipeline": true,
+        "job": "RPT-RC_Retrieve-Environment-Details",
+        "master": "oss-fem5s11-eiffel216",
+        "name": "Get Environment Details",
+        "parameters": {
+          "ENV_NAME": "${parameters['ENVIRONMENT_NAME']}"
+        },
+        "propertyFile": "artifact.properties",
+        "refId": "Get Environment Details",
+        "requisiteStageRefIds": [],
+        "type": "jenkins"
+      },
+      {
+        "continuePipeline": false,
+        "failPipeline": true,
+        "job": "BASE-VERS_Retrieve_Baseline_Version",
+        "master": "oss-fem5s11-eiffel216",
+        "name": "Get Oldest Supported AUTO_APP_SHORT_NAME Version",
+        "parameters": {
+          "KEY_TO_RETRIEVE_BASELINE_VERSION_OF": "AUTO_APP_NAME_OLDEST_SUPPORTED_VERSION",
+          "VERSIONS_FILENAME": "autoapp_versions"
+        },
+        "propertyFile": "artifact.properties",
+        "refId": "Get Oldest Supported AUTO_APP_SHORT_NAME Version",
+        "requisiteStageRefIds": [
+          "Get Environment Details"
+        ],
+        "type": "jenkins"
+      },
+      {
+        "application": "SPINNAKER_APPLICATION_NAME",
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": true,
+        "failPipeline": false,
+        "name": "Check If Env Is On Oldest Supported AUTO_APP_SHORT_NAME Version",
+        "pipeline": "CHECK_IF_ENV_IS_ON_AUTO_APP_VERSION_PIPELINE_ID",
+        "pipelineParameters": {
+          "ADMIN_USER_CREDENTIALS": "ADMIN_USER_CREDENTIALS_VALUE",
+          "APPMGR_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"APPMGR_HOSTNAME\"]}",
+          "AUTO_APP_CHART_NAME": "${parameters['CHART_NAME']}",
+          "AUTO_APP_CHART_VERSION": "${#stage(\"Get Oldest Supported AUTO_APP_SHORT_NAME Version\")[\"context\"][\"AUTO_APP_NAME_OLDEST_SUPPORTED_VERSION\"]}",
+          "ENV_NAME": "${parameters['ENVIRONMENT_NAME']}"
+        },
+        "refId": "Check If Env Is On Oldest Supported AUTO_APP_SHORT_NAME Version",
+        "requisiteStageRefIds": [
+          "Get Oldest Supported AUTO_APP_SHORT_NAME Version"
+        ],
+        "type": "pipeline",
+        "waitForCompletion": true
+      },
+      {
+        "application": "SPINNAKER_APPLICATION_NAME",
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": false,
+        "failPipeline": true,
+        "name": "Upgrade To Latest Candidate AUTO_APP_SHORT_NAME Version",
+        "pipeline": "ONBOARDING_INSTANTIATION_VERIFICATION_PIPELINE_ID",
+        "pipelineParameters": {
+          "ADMIN_USER_CREDENTIALS": "ADMIN_USER_CREDENTIALS_VALUE",
+          "APPMGR_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"APPMGR_HOSTNAME\"]}",
+          "AWS_CONFIG_FILE_CREDENTIAL_ID": "${#stage(\"Get Environment Details\")[\"context\"][\"AWS_CONFIG_FILE_CREDENTIAL_ID\"]}",
+          "AWS_CREDS_FILE_CREDENTIAL_ID": "${#stage(\"Get Environment Details\")[\"context\"][\"AWS_CREDS_FILE_CREDENTIAL_ID\"]}",
+          "CHART_NAME": "${parameters['CHART_NAME']}",
+          "CHART_REPO": "${parameters['CHART_REPO']}",
+          "CHART_VERSION": "${parameters['CHART_VERSION']}",
+          "CSAR_PATH": "${parameters['CSAR_STORAGE_INSTANCE']}/artifactory/${parameters['CSAR_STORAGE_REPO_RELEASE']}/csars/rapps/${parameters['CHART_NAME']}/${parameters['CHART_VERSION']}/${parameters['CHART_NAME']}-${parameters['CHART_VERSION']}.csar",
+          "ENVIRONMENT_NAME": "${parameters['ENVIRONMENT_NAME']}",
+          "INGRESS_CPS_USER": "cps-user",
+          "INGRESS_HOST": "${#stage(\"Get Environment Details\")[\"context\"][\"GAS_HOSTNAME\"]}",
+          "INGRESS_LOGIN_PASSWORD": "Ericsson123!",
+          "INGRESS_LOGIN_USER": "INGRESS_LOGIN_USER_VALUE",
+          "INSTANTIATION_TYPE": "instantiation_to_higher_version",
+          "KUBECONFIG_FILE_CREDENTIAL_ID": "${#stage(\"Get Environment Details\")[\"context\"][\"KUBECONFIG_FILE_CREDENTIAL_ID\"]}",
+          "NAMESPACE": "${#stage(\"Get Environment Details\")[\"context\"][\"NAMESPACE\"]}",
+          "RESTSIM_HOST": "${#stage(\"Get Environment Details\")[\"context\"][\"RESTSIM_HOST\"]}"
+        },
+        "refId": "Upgrade To Latest Candidate AUTO_APP_SHORT_NAME Version",
+        "requisiteStageRefIds": [
+          "Initial Instantiation To Oldest Supported AUTO_APP_SHORT_NAME Version"
+        ],
+        "type": "pipeline",
+        "waitForCompletion": true
+      },
+      {
+        "application": "SPINNAKER_APPLICATION_NAME",
+        "failPipeline": true,
+        "name": "Initial Instantiation To Oldest Supported AUTO_APP_SHORT_NAME Version",
+        "pipeline": "ONBOARDING_INSTANTIATION_VERIFICATION_PIPELINE_ID",
+        "pipelineParameters": {
+          "ADMIN_USER_CREDENTIALS": "ADMIN_USER_CREDENTIALS_VALUE",
+          "APPMGR_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"APPMGR_HOSTNAME\"]}",
+          "AWS_CONFIG_FILE_CREDENTIAL_ID": "${#stage(\"Get Environment Details\")[\"context\"][\"AWS_CONFIG_FILE_CREDENTIAL_ID\"]}",
+          "AWS_CREDS_FILE_CREDENTIAL_ID": "${#stage(\"Get Environment Details\")[\"context\"][\"AWS_CREDS_FILE_CREDENTIAL_ID\"]}",
+          "CHART_NAME": "${parameters['CHART_NAME']}",
+          "CHART_REPO": "${parameters['CHART_REPO']}",
+          "CHART_VERSION": "${#stage(\"Get Oldest Supported AUTO_APP_SHORT_NAME Version\")[\"context\"][\"AUTO_APP_NAME_OLDEST_SUPPORTED_VERSION\"]}",
+          "CSAR_PATH": "${parameters['CSAR_STORAGE_INSTANCE']}/artifactory/${parameters['CSAR_STORAGE_REPO_RELEASE']}/csars/rapps/${parameters['CHART_NAME']}/${#stage(\"Get Oldest Supported AUTO_APP_SHORT_NAME Version\")[\"context\"][\"AUTO_APP_NAME_OLDEST_SUPPORTED_VERSION\"]}/${parameters['CHART_NAME']}-${#stage(\"Get Oldest Supported AUTO_APP_SHORT_NAME Version\")[\"context\"][\"AUTO_APP_NAME_OLDEST_SUPPORTED_VERSION\"]}.csar",
+          "ENVIRONMENT_NAME": "${parameters['ENVIRONMENT_NAME']}",
+          "INGRESS_CPS_USER": "cps-user",
+          "INGRESS_HOST": "${#stage(\"Get Environment Details\")[\"context\"][\"GAS_HOSTNAME\"]}",
+          "INGRESS_LOGIN_PASSWORD": "Ericsson123!",
+          "INGRESS_LOGIN_USER": "INGRESS_LOGIN_USER_VALUE",
+          "INSTANTIATION_TYPE": "initial_instantiation",
+          "KUBECONFIG_FILE_CREDENTIAL_ID": "${#stage(\"Get Environment Details\")[\"context\"][\"KUBECONFIG_FILE_CREDENTIAL_ID\"]}",
+          "NAMESPACE": "${#stage(\"Get Environment Details\")[\"context\"][\"NAMESPACE\"]}",
+          "RESTSIM_HOST": "${#stage(\"Get Environment Details\")[\"context\"][\"RESTSIM_HOST\"]}",
+          "SKIP_CLEAN_UP": "false"
+        },
+        "refId": "Initial Instantiation To Oldest Supported AUTO_APP_SHORT_NAME Version",
+        "requisiteStageRefIds": [
+          "Check If Env Is On Oldest Supported AUTO_APP_SHORT_NAME Version"
+        ],
+        "stageEnabled": {
+          "expression": "\"${#stage('Check If Env Is On Oldest Supported AUTO_APP_SHORT_NAME Version')['status']}\" != \"SUCCEEDED\"",
+          "type": "expression"
+        },
+        "type": "pipeline",
+        "waitForCompletion": true
+      }
+    ],
+    "triggers": []
+  }

@@ -1,0 +1,169 @@
+{
+  "appConfig": {},
+  "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten. Template name: eic_release_csar_build_flow.json in repo https://gerrit-gamma.gic.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources,branches",
+  "disabled": false,
+  "keepWaitingPipelines": false,
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "name": "SPINNAKER_PIPELINE_NAME",
+  "limitConcurrent": false,
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+    "ui": true
+  },
+  "notifications": [
+    {
+      "address": "NOTIFICATION_ADDRESS",
+      "level": "pipeline",
+      "message": {
+        "pipeline.failed": {
+          "text": "The pipeline has failed."
+        }
+      },
+      "type": "email",
+      "when": [
+        "pipeline.failed"
+      ]
+    }
+  ],
+  "parameterConfig": [
+    {
+      "default": "eric-eiae-helmfile",
+      "description": "Name of the helmfile that holds the Application to build into CSAR's",
+      "hasOptions": false,
+      "label": "INT_CHART_NAME",
+      "name": "INT_CHART_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "Release_Staging_Child_Flow",
+      "description": "RCF Tag is used to identify the environment by Report Center Registration Stage for Child flows",
+      "hasOptions": false,
+      "label": "",
+      "name": "RCF_TAG",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "0.0.0",
+      "description": "Version of the Integration Chart that holds the new microservice",
+      "hasOptions": false,
+      "label": "INT_CHART_VERSION",
+      "name": "INT_CHART_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm",
+      "description": "Repo of the Integration Chart that holds the new microservice",
+      "hasOptions": false,
+      "label": "INT_CHART_REPO",
+      "name": "INT_CHART_REPO",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "eric-eiae-helmfile/helmfile.yaml",
+      "description": "Full path to the helmfile yaml file within the extracted product helmfile archive.",
+      "hasOptions": false,
+      "label": "PATH_TO_HELMFILE",
+      "name": "PATH_TO_HELMFILE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "eric-eiae-helmfile/build-environment/tags_true.yaml",
+      "description": "Site values file used to generate what CSAR are to be built",
+      "hasOptions": false,
+      "label": "STATE_VALUES_FILE",
+      "name": "STATE_VALUES_FILE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    }
+  ],
+  "stages": [
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "Staging-Report-Register-Child-Flow",
+      "master": "oss-fem4s11-eiffel216",
+      "name": "Report Center Registration",
+      "parameters": {
+        "EXEC_ID": "${execution.id}"
+      },
+      "refId": "Report_Center_Registration",
+      "requisiteStageRefIds": [],
+      "type": "jenkins",
+      "waitForCompletion": true
+    },
+    {
+      "application": "common-e2e-cicd",
+      "failPipeline": true,
+      "name": "csar-build-flow",
+      "pipeline": "a1761b58-9846-46db-8833-9c6e3b3eb293",
+      "pipelineParameters": {
+        "INT_CHART_NAME": "${trigger['parameters']['INT_CHART_NAME']}",
+        "INT_CHART_REPO": "${trigger['parameters']['INT_CHART_REPO']}",
+        "INT_CHART_VERSION": "${trigger['parameters']['INT_CHART_VERSION']}",
+        "PATH_TO_HELMFILE": "${trigger['parameters']['PATH_TO_HELMFILE']}",
+        "SLAVE_LABEL": "evo_docker_engine_gic",
+        "STATE_VALUES_FILE": "${trigger['parameters']['STATE_VALUES_FILE']}"
+      },
+      "refId": "csar-build-flow",
+      "requisiteStageRefIds": [],
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "name": "Completed",
+      "preconditions": [
+        {
+          "context": {
+            "stageName": "csar-build-flow",
+            "stageStatus": "SUCCEEDED"
+          },
+          "failPipeline": true,
+          "type": "stageStatus"
+        }
+      ],
+      "refId": "Completed",
+      "requisiteStageRefIds": [
+        "csar-build-flow"
+      ],
+      "type": "checkPreconditions"
+    }
+  ],
+  "triggers": []
+}

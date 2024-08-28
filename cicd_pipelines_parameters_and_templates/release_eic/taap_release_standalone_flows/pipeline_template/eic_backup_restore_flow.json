@@ -1,0 +1,643 @@
+{
+    "appConfig": {},
+    "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten. Template name: eic_backup_restore_flow.json in repo https://gerrit-gamma.gic.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources,branches",
+    "keepWaitingPipelines": false,
+    "limitConcurrent": false,
+    "application": "SPINNAKER_APPLICATION_NAME",
+    "name": "SPINNAKER_PIPELINE_NAME",
+    "locked": {
+        "allowUnlockUi": true,
+        "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+        "ui": true
+    },
+    "notifications": [
+        {
+        "address": "NOTIFICATION_ADDRESS",
+        "level": "pipeline",
+        "message": {
+            "pipeline.failed": {
+            "text": "The pipeline has failed."
+            }
+        },
+        "type": "email",
+        "when": [
+            "pipeline.failed"
+        ]
+        }
+    ],
+    "parameterConfig": [
+      {
+        "default": "PARTIAL",
+        "description": "The Type of cleanup that needs to be done. FULL will cleanup the deployment helm releases, crd helm releases, crd components, clusterroles, cluster rolebindings, namespaces (deployment and crd). Where as PARTIAL will only cleanup the deployment namespace. FULL cleanup option should NOT be used in such cases where single cluster is hosting multiple deployments.",
+        "hasOptions": true,
+        "label": "",
+        "name": "CLEANUP_TYPE",
+        "options": [
+          {
+            "value": "FULL"
+          }
+        ],
+        "pinned": true,
+        "required": false
+      },
+      {
+        "default": "yes",
+        "description": "",
+        "hasOptions": false,
+        "label": "",
+        "name": "CLEANUP_SFTP",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "true",
+        "description": "When set to true, enables the DDP auto upload",
+        "hasOptions": true,
+        "label": "",
+        "name": "DDP_AUTO_UPLOAD",
+        "options": [
+          {
+            "value": "false"
+          }
+        ],
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "armdocker.rnd.ericsson.se/proj-eric-oss-drop/eric-oss-deployment-manager",
+        "description": "Deployment Manager Repository.",
+        "hasOptions": false,
+        "label": "",
+        "name": "DEPLOYMENT_MANAGER_REPO",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "default",
+        "description": "Deployment Manager version.",
+        "hasOptions": false,
+        "label": "",
+        "name": "DEPLOYMENT_MANAGER_VERSION",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "",
+        "description": "The test environment to use for the flow",
+        "hasOptions": false,
+        "label": "",
+        "name": "ENV_NAME",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "site-values-latest.yaml",
+        "description": "Name of the datafile in OST bucket.",
+        "hasOptions": false,
+        "label": "",
+        "name": "TO_STATE_SITE_VALUE_FILE",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": false,
+        "required": true
+      },
+      {
+        "default": "override-sitevalues-release-to-state.yaml",
+        "description": "Name of the datafile in OST bucket.",
+        "hasOptions": false,
+        "label": "",
+        "name": "TO_STATE_SITE_VALUES_OVERRIDE_FILE",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": false,
+        "required": true
+      },
+      {
+        "default": "install",
+        "description": "Choose to run 'Install' or 'Upgrade'",
+        "hasOptions": true,
+        "label": "",
+        "name": "INSTALL_OR_UPGRADE",
+        "options": [
+          {
+            "value": "install"
+          },
+          {
+            "value": "upgrade"
+          }
+        ],
+        "required": true
+      },
+      {
+        "default": "0.0.0",
+        "description": "The version of integration chart",
+        "hasOptions": false,
+        "label": "",
+        "name": "INT_CHART_VERSION",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "refs/tags/live-release",
+        "description": "The version of the K6 testware to be used.",
+        "hasOptions": false,
+        "label": "",
+        "name": "K6_TESTWARE_VERSION",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "Release_Staging_Child_Flow",
+        "description": "RCF Tag is used to identify the environment by Report Center Registration Stage for Child flows",
+        "hasOptions": false,
+        "label": "",
+        "name": "RCF_TAG",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "true",
+        "description": "When set to true, ENM integration tests will be run",
+        "hasOptions": true,
+        "label": "",
+        "name": "RUN_ENM_INTEGRATION_TEST",
+        "options": [
+          {
+            "value": "false"
+          }
+        ],
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "",
+        "description": "Credentials for SFTP",
+        "hasOptions": false,
+        "label": "",
+        "name": "SFTP_CREDENTIALS_ID",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "",
+        "description": "Server path of SFTP",
+        "hasOptions": false,
+        "label": "",
+        "name": "SFTP_SERVER_PATH",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "evo_docker_engine_gic_IDUN",
+        "description": "",
+        "hasOptions": false,
+        "label": "",
+        "name": "SLAVE_LABEL",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "true",
+        "description": "When set to true uses the site values generated from the Deployment manager prepare command for the deployment.",
+        "hasOptions": true,
+        "label": "",
+        "name": "USE_DM_PREPARE",
+        "options": [
+          {
+            "value": "false"
+          }
+        ],
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "false",
+        "description": "Option to use real CSAR. If false then dummy CSAR will be used",
+        "hasOptions": false,
+        "label": "",
+        "name": "USE_REAL_CSAR",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": true,
+        "required": true
+      }
+    ],
+    "spelEvaluator": "v4",
+    "stages": [
+        {
+          "continuePipeline": false,
+          "failPipeline": true,
+          "job": "Get-Latest-ChartOrHelmfile",
+          "master": "oss-aispinn-fem5s11-eiffel052",
+          "name": "Get Latest Helmfile Version",
+          "parameters": {
+            "FUNCTIONAL_USER_SECRET": "reluser-user-creds",
+            "INT_CHART_NAME": "eric-eiae-helmfile",
+            "INT_CHART_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm",
+            "INT_CHART_VERSION": "${parameters.INT_CHART_VERSION}"
+          },
+          "propertyFile": "artifact.properties",
+          "refId": "Get Latest Helmfile Version",
+          "requisiteStageRefIds": [],
+          "stageEnabled": {
+            "expression": "parameters.INT_CHART_VERSION == '0.0.0'",
+            "type": "expression"
+          },
+          "type": "jenkins"
+        },
+        {
+          "continuePipeline": false,
+          "failPipeline": true,
+          "job": "DSC-DIT-Download-Document-As-Artifact",
+          "master": "oss-fem5s11-eiffel216",
+          "name": "Get Environment Details",
+          "parameters": {
+            "DIT_NAME_PARAMETER": "${parameters['ENV_NAME']}"
+          },
+          "propertyFile": "artifact.properties",
+          "refId": "Get Environment Details",
+          "requisiteStageRefIds": [
+            "Get Latest Helmfile Version"
+          ],
+          "stageEnabled": {
+            "expression": "#stage('Get Latest Helmfile Version')['status'] == \"SUCCEEDED\" or #stage('Get Latest Helmfile Version')['status'] == \"SKIPPED\"",
+            "type": "expression"
+          },
+          "type": "jenkins"
+        },
+        {
+          "completeOtherBranchesThenFail": false,
+          "continuePipeline": false,
+          "failOnFailedExpressions": true,
+          "failPipeline": true,
+          "name": "Evaluate Variables",
+          "refId": "Evaluate Variables",
+          "requisiteStageRefIds": [
+            "Get Environment Details"
+          ],
+          "stageEnabled": {
+            "expression": "#stage('Get Environment Details')['status'] == 'SUCCEEDED'",
+            "type": "expression"
+          },
+          "type": "evaluateVariables",
+          "variables": [
+            {
+              "key": "TO_STATE_SITE_VALUES_OVERRIDE_FILE",
+              "value": "${parameters['TO_STATE_SITE_VALUES_OVERRIDE_FILE'] != '' ? parameters['TO_STATE_SITE_VALUES_OVERRIDE_FILE'] : (#stage('Get Environment Details')['context']['TO_STATE_SITE_VALUES_OVERRIDE_FILE']== None ? 'NONE':#stage('Get Environment Details')['context']['TO_STATE_SITE_VALUES_OVERRIDE_FILE'])}"
+            },
+            {
+              "key": "TO_STATE_SITE_VALUES_FILE",
+              "value": "${parameters['TO_STATE_SITE_VALUE_FILE'] != '' ? parameters['TO_STATE_SITE_VALUE_FILE'] : (parameters['INT_CHART_VERSION'] == '0.0.0' ? 'site-values-latest.yaml':#stage(\"Get Environment Details\")[\"context\"]['TO_STATE_SITE_VALUES_FILE'])}"
+            },
+            {
+              "key": "SKIP_TESTS",
+              "value": "${(#stage(\"Get Environment Details\")[\"context\"]['SKIP_TESTS']== None)?  \"\":#stage(\"Get Environment Details\")[\"context\"]['SKIP_TESTS']}"
+            },
+            {
+              "key": "RUN_TESTS",
+              "value": "${(#stage(\"Get Environment Details\")[\"context\"]['RUN_TESTS']== None)? \"\":#stage(\"Get Environment Details\")[\"context\"]['RUN_TESTS']}"
+            },
+            {
+              "key": "ECM_HOSTNAME",
+              "value": "${(#stage(\"Get Environment Details\")[\"context\"]['ECM_HOST_REPLACE']== None)? \"\":#stage(\"Get Environment Details\")[\"context\"]['ECM_HOST_REPLACE']}"
+            },
+            {
+              "key": "ENM_HOSTNAME",
+              "value": "${(#stage(\"Get Environment Details\")[\"context\"]['ENM_HOST_REPLACE']== None)? \"\":#stage(\"Get Environment Details\")[\"context\"]['ENM_HOST_REPLACE']}"
+            },
+            {
+              "key": "INT_CHART_VERSION",
+              "value": "${parameters.INT_CHART_VERSION == '0.0.0' ? #stage('Get Latest Helmfile Version')['context']['INT_CHART_VERSION'] : parameters.INT_CHART_VERSION}"
+            }
+          ],
+          "waitForCompletion": true
+        },
+        {
+          "completeOtherBranchesThenFail": false,
+          "continuePipeline": true,
+          "failPipeline": false,
+          "job": "EIC_Release_SFTP_Server_Cleanup",
+          "master": "oss-aispinn-fem5s11-eiffel052",
+          "name": "SFTP Server Cleanup",
+          "parameters": {
+            "SFTP_CREDENTIALS_ID": "${#stage('Get Environment Details')['context']['SFTP_CREDENTIALS_ID']}",
+            "SFTP_SERVER_PATH": "${#stage('Get Environment Details')['context']['SFTP_SERVER_PATH']}"
+          },
+          "refId": "SFTP Server Cleanup",
+          "requisiteStageRefIds": [
+              "Evaluate Variables"
+          ],
+          "type": "jenkins"
+        },
+        {
+          "application": "SPINNAKER_APPLICATION_NAME",
+          "failPipeline": true,
+          "judgmentInputs": [],
+          "name": "Initial Install",
+          "notifications": [],
+          "pipeline": "903cef19-f589-4286-bb50-45ab52f92de0",
+          "pipelineParameters": {
+            "ADC_HOSTNAME": "${#stage('Get Environment Details')['context']['ADC_HOST_REPLACE']}",
+            "APPMGR_HOSTNAME": "${#stage('Get Environment Details')['context']['APPMGR_HOST_REPLACE']}",
+            "BDR_HOSTNAME": "${#stage('Get Environment Details')['context']['BDR_HOST_REPLACE']}",
+            "CLEANUP_TYPE": "${parameters['CLEANUP_TYPE']}",
+            "CONFIG_FILES": "${#stage('Get Environment Details')['context']['CONFIG_FILES']}",
+            "DDP_AUTO_UPLOAD": "${parameters['DDP_AUTO_UPLOAD']}",
+            "DEPLOYMENT_MANAGER_REPO": "${parameters['DEPLOYMENT_MANAGER_REPO']}",
+            "DEPLOYMENT_MANAGER_VERSION": "${parameters['DEPLOYMENT_MANAGER_VERSION']}",
+            "DEPLOYMENT_NAME": "${parameters['ENV_NAME']}",
+            "DOCKER_REGISTRY": "${#stage('Get Environment Details')['context']['DOCKER_REGISTRY']}",
+            "DOCKER_REGISTRY_CREDENTIALS": "${#stage('Get Environment Details')['context']['DOCKER_REGISTRY_CREDENTIALS']}",
+            "ECM_HOSTNAME": "${ECM_HOSTNAME}",
+            "EIC_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"EIC_HOST_REPLACE\"]}",
+            "ENM_HOSTNAME": "${ENM_HOSTNAME}",
+            "GAS_HOSTNAME": "${#stage('Get Environment Details')['context']['GAS_HOST_REPLACE']}",
+            "IAM_HOSTNAME": "${#stage('Get Environment Details')['context']['IAM_HOST_REPLACE']}",
+            "INT_CHART_VERSION": "${INT_CHART_VERSION}",
+            "K6_TESTWARE_VERSION": "${parameters['K6_TESTWARE_VERSION']}",
+            "KF_BO_HOSTNAME": "${#stage('Get Environment Details')['context']['KAFKA_BOOTSTRAP_HOST_REPLACE']}",
+            "KUBECONFIG_FILE": "${#stage('Get Environment Details')['context']['KUBE_CONFIG']}",
+            "KUBE_CONFIG_FILE_CREDENTIAL_ID": "${#stage('Get Environment Details')['context']['KUBE_CONFIG_FILE_CREDENTIAL_ID']}",
+            "NAMESPACE": "${#stage('Get Environment Details')['context']['NAMESPACE']}",
+            "RCF_TAG": "${parameters['RCF_TAG']}",
+            "RUN_ENM_INTEGRATION_TEST": "${parameters['RUN_ENM_INTEGRATION_TEST']}",
+            "RUN_TESTS": "${RUN_TESTS}",
+            "SITE_VALUES_FILE_NAME": "${TO_STATE_SITE_VALUES_FILE}",
+            "SITE_VALUES_OVERRIDE_FILE_NAME": "${TO_STATE_SITE_VALUES_OVERRIDE_FILE}",
+            "SITE_VALUE_FILE_BUCKET_NAME": "${(#stage(\"Evaluate Variables\")[\"context\"]['TO_STATE_SITE_VALUES_FILE'] == 'site-values-latest.yaml')? 'eic_site_values_template':'eic_site_values_versioned'}",
+            "SITE_VALUE_OVERRIDE_BUCKET_NAME": "eic_site_values_override",
+            "SKIP_TESTS": "${SKIP_TESTS}",
+            "SLAVE_LABEL": "${parameters['SLAVE_LABEL']}",
+            "TAGS": "${#stage('Get Environment Details')['context']['TAGS']}",
+            "TH_HOSTNAME": "${#stage('Get Environment Details')['context']['TH_HOST_REPLACE']}",
+            "USE_DM_PREPARE": "${parameters['USE_DM_PREPARE']}",
+            "USE_REAL_CSAR": "${parameters['USE_REAL_CSAR']}"
+          },
+          "refId": "Initial Install",
+          "requisiteStageRefIds": [
+            "SFTP Server Cleanup"
+          ],
+          "stageEnabled": {
+            "expression": "parameters['INSTALL_OR_UPGRADE'] == 'install'",
+            "type": "expression"
+          },
+          "type": "pipeline",
+          "waitForCompletion": true
+        },
+        {
+          "application": "SPINNAKER_APPLICATION_NAME",
+          "failPipeline": true,
+          "judgmentInputs": [],
+          "name": "Upgrade",
+          "notifications": [],
+          "pipeline": "e6c06ca6-1798-48ae-bc07-6406460db4a2",
+          "pipelineParameters": {
+            "ADC_HOSTNAME": "${#stage('Get Environment Details')['context']['ADC_HOST_REPLACE']}",
+            "APPMGR_HOSTNAME": "${#stage('Get Environment Details')['context']['APPMGR_HOST_REPLACE']}",
+            "BDR_HOSTNAME": "${#stage('Get Environment Details')['context']['BDR_HOST_REPLACE']}",
+            "CONFIG_FILES": "${#stage('Get Environment Details')['context']['CONFIG_FILES']}",
+            "DDP_AUTO_UPLOAD": "${parameters['DDP_AUTO_UPLOAD']}",
+            "DEPLOYMENT_MANAGER_REPO": "${parameters['DEPLOYMENT_MANAGER_REPO']}",
+            "DEPLOYMENT_MANAGER_VERSION": "${parameters['DEPLOYMENT_MANAGER_VERSION']}",
+            "DEPLOYMENT_NAME": "${parameters['ENV_NAME']}",
+            "DOCKER_REGISTRY": "${#stage('Get Environment Details')['context']['DOCKER_REGISTRY']}",
+            "DOCKER_REGISTRY_CREDENTIALS": "${#stage('Get Environment Details')['context']['DOCKER_REGISTRY_CREDENTIALS']}",
+            "ECM_HOSTNAME": "${ECM_HOSTNAME}",
+            "EIC_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"EIC_HOST_REPLACE\"]}",
+            "ENM_HOSTNAME": "${ENM_HOSTNAME}",
+            "GAS_HOSTNAME": "${#stage('Get Environment Details')['context']['GAS_HOST_REPLACE']}",
+            "IAM_HOSTNAME": "${#stage('Get Environment Details')['context']['IAM_HOST_REPLACE']}",
+            "INT_CHART_VERSION": "${INT_CHART_VERSION}",
+            "K6_TESTWARE_VERSION": "${parameters['K6_TESTWARE_VERSION']}",
+            "KF_BO_HOSTNAME": "${#stage('Get Environment Details')['context']['KAFKA_BOOTSTRAP_HOST_REPLACE']}",
+            "KUBECONFIG_FILE": "${#stage('Get Environment Details')['context']['KUBE_CONFIG']}",
+            "KUBE_CONFIG_FILE_CREDENTIAL_ID": "${#stage('Get Environment Details')['context']['KUBE_CONFIG_FILE_CREDENTIAL_ID']}",
+            "NAMESPACE": "${#stage('Get Environment Details')['context']['NAMESPACE']}",
+            "RCF_TAG": "${parameters['RCF_TAG']}",
+            "RUN_ENM_INTEGRATION_TEST": "${parameters['RUN_ENM_INTEGRATION_TEST']}",
+            "RUN_TESTS": "${RUN_TESTS}",
+            "SITE_VALUES_FILE_NAME": "${TO_STATE_SITE_VALUES_FILE}",
+            "SITE_VALUES_OVERRIDE_FILE_NAME": "${TO_STATE_SITE_VALUES_OVERRIDE_FILE}",
+            "SITE_VALUE_FILE_BUCKET_NAME": "${(#stage(\"Evaluate Variables\")[\"context\"]['TO_STATE_SITE_VALUES_FILE'] == 'site-values-latest.yaml')? 'eic_site_values_template':'eic_site_values_versioned'}",
+            "SITE_VALUE_OVERRIDE_BUCKET_NAME": "eic_site_values_override",
+            "SKIP_TESTS": "${SKIP_TESTS}",
+            "SLAVE_LABEL": "${parameters['SLAVE_LABEL']}",
+            "TAGS": "${#stage('Get Environment Details')['context']['TAGS']}",
+            "TH_HOSTNAME": "${#stage('Get Environment Details')['context']['TH_HOST_REPLACE']}",
+            "USE_DM_PREPARE": "${parameters['USE_DM_PREPARE']}",
+            "USE_REAL_CSAR": "${parameters['USE_REAL_CSAR']}"
+          },
+          "refId": "Upgrade",
+          "requisiteStageRefIds": [
+            "SFTP Server Cleanup"
+          ],
+          "stageEnabled": {
+            "expression": "parameters['INSTALL_OR_UPGRADE'] == 'upgrade'",
+            "type": "expression"
+          },
+          "type": "pipeline",
+          "waitForCompletion": true
+        },
+        {
+          "completeOtherBranchesThenFail": true,
+          "continuePipeline": false,
+          "failOnFailedExpressions": true,
+          "failPipeline": false,
+          "name": "Get OSS Deployment Manager Version",
+          "refId": "Get OSS Deployment Manager Version",
+          "requisiteStageRefIds": [
+            "Initial Install",
+            "Upgrade"
+          ],
+          "stageEnabled": {
+            "expression": "#stage('Initial Install')['status'] == \"SUCCEEDED\" or #stage('Upgrade')['status'] == \"SUCCEEDED\"",
+            "type": "expression"
+          },
+          "type": "evaluateVariables",
+          "variables": [
+            {
+              "key": "DEPLOYMENT_MANAGER_VERSION",
+              "value": "${#stage(\"Initial Install\")['outputs']['DEPLOYMENT_MANAGER_VERSION'] ?: #stage('Upgrade')['outputs']['DEPLOYMENT_MANAGER_VERSION']}"
+            }
+          ]
+        },
+        {
+          "application": "SPINNAKER_APPLICATION_NAME",
+          "failPipeline": true,
+          "judgmentInputs": [],
+          "name": "Backup",
+          "notifications": [],
+          "pipeline": "e1a4c214-54f8-49de-b6f9-2d9b4e14460a",
+          "pipelineParameters": {
+            "DEPLOYMENT_MANAGER_VERSION": "${#stage(\"Get OSS Deployment Manager Version\")[\"outputs\"][\"DEPLOYMENT_MANAGER_VERSION\"]}",
+            "DEPLOYMENT_NAME": "${parameters['ENV_NAME']}",
+            "GAS_HOSTNAME": "${#stage('Get Environment Details')['context']['GAS_HOST_REPLACE']}",
+            "INT_CHART_VERSION": "${INT_CHART_VERSION}",
+            "KUBECONFIG_FILE": "${#stage('Get Environment Details')['context']['KUBE_CONFIG']}",
+            "NAMESPACE": "${#stage('Get Environment Details')['context']['NAMESPACE']}",
+            "SFTP_CREDENTIALS_ID": "${#stage('Get Environment Details')['context']['SFTP_CREDENTIALS_ID']}",
+            "SFTP_SERVER_PATH": "${#stage('Get Environment Details')['context']['SFTP_SERVER_PATH']}",
+            "VNFM_HOSTNAME": "${#stage('Get Environment Details')['context']['VNFM_HOST_REPLACE']}"
+          },
+          "refId": "Backup",
+          "requisiteStageRefIds": [
+            "Get OSS Deployment Manager Version"
+          ],
+          "type": "pipeline",
+          "waitForCompletion": true
+        },
+        {
+          "application": "SPINNAKER_APPLICATION_NAME",
+          "failPipeline": true,
+          "judgmentInputs": [],
+          "name": "Initial Install (SKIP_K6_TEST)",
+          "notifications": [],
+          "pipeline": "903cef19-f589-4286-bb50-45ab52f92de0",
+          "pipelineParameters": {
+            "ADC_HOSTNAME": "${#stage('Get Environment Details')['context']['ADC_HOST_REPLACE']}",
+            "APPMGR_HOSTNAME": "${#stage('Get Environment Details')['context']['APPMGR_HOST_REPLACE']}",
+            "BDR_HOSTNAME": "${#stage('Get Environment Details')['context']['BDR_HOST_REPLACE']}",
+            "CLEANUP_TYPE": "${parameters['CLEANUP_TYPE']}",
+            "CONFIG_FILES": "${#stage('Get Environment Details')['context']['CONFIG_FILES']}",
+            "DDP_AUTO_UPLOAD": "${parameters['DDP_AUTO_UPLOAD']}",
+            "DEPLOYMENT_MANAGER_REPO": "${parameters['DEPLOYMENT_MANAGER_REPO']}",
+            "DEPLOYMENT_MANAGER_VERSION": "${#stage(\"Get OSS Deployment Manager Version\")[\"outputs\"][\"DEPLOYMENT_MANAGER_VERSION\"]}",
+            "DEPLOYMENT_NAME": "${parameters['ENV_NAME']}",
+            "DOCKER_REGISTRY": "${#stage('Get Environment Details')['context']['DOCKER_REGISTRY']}",
+            "DOCKER_REGISTRY_CREDENTIALS": "${#stage('Get Environment Details')['context']['DOCKER_REGISTRY_CREDENTIALS']}",
+            "ECM_HOSTNAME": "${ECM_HOSTNAME}",
+            "EIC_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"EIC_HOST_REPLACE\"]}",
+            "ENM_HOSTNAME": "${ENM_HOSTNAME}",
+            "GAS_HOSTNAME": "${#stage('Get Environment Details')['context']['GAS_HOST_REPLACE']}",
+            "IAM_HOSTNAME": "${#stage('Get Environment Details')['context']['IAM_HOST_REPLACE']}",
+            "INT_CHART_VERSION": "${INT_CHART_VERSION}",
+            "K6_TESTWARE_VERSION": "${parameters['K6_TESTWARE_VERSION']}",
+            "KF_BO_HOSTNAME": "${#stage('Get Environment Details')['context']['KAFKA_BOOTSTRAP_HOST_REPLACE']}",
+            "KUBECONFIG_FILE": "${#stage('Get Environment Details')['context']['KUBE_CONFIG']}",
+            "KUBE_CONFIG_FILE_CREDENTIAL_ID": "${#stage('Get Environment Details')['context']['KUBE_CONFIG_FILE_CREDENTIAL_ID']}",
+            "NAMESPACE": "${#stage('Get Environment Details')['context']['NAMESPACE']}",
+            "RCF_TAG": "${parameters['RCF_TAG']}",
+            "RUN_ENM_INTEGRATION_TEST": "${parameters['RUN_ENM_INTEGRATION_TEST']}",
+            "RUN_TESTS": "${RUN_TESTS}",
+            "SITE_VALUES_FILE_NAME": "${TO_STATE_SITE_VALUES_FILE}",
+            "SITE_VALUES_OVERRIDE_FILE_NAME": "${TO_STATE_SITE_VALUES_OVERRIDE_FILE}",
+            "SITE_VALUE_FILE_BUCKET_NAME": "${(#stage(\"Evaluate Variables\")[\"context\"]['TO_STATE_SITE_VALUES_FILE'] == 'site-values-latest.yaml')? 'eic_site_values_template':'eic_site_values_versioned'}",
+            "SITE_VALUE_OVERRIDE_BUCKET_NAME": "eic_site_values_override",
+            "SKIP_K6_TEST": "true",
+            "SKIP_TESTS": "${SKIP_TESTS}",
+            "SLAVE_LABEL": "${parameters['SLAVE_LABEL']}",
+            "TAGS": "${#stage('Get Environment Details')['context']['TAGS']}",
+            "TH_HOSTNAME": "${#stage('Get Environment Details')['context']['TH_HOST_REPLACE']}",
+            "USE_DM_PREPARE": "${parameters['USE_DM_PREPARE']}",
+            "USE_REAL_CSAR": "${parameters['USE_REAL_CSAR']}"
+          },
+          "refId": "Initial Install (SKIP_K6_TEST)",
+          "requisiteStageRefIds": [
+            "Backup"
+          ],
+          "type": "pipeline",
+          "waitForCompletion": true
+        },
+        {
+          "application": "SPINNAKER_APPLICATION_NAME",
+          "failPipeline": true,
+          "judgmentInputs": [],
+          "name": "Restore To State",
+          "notifications": [],
+          "pipeline": "577168a6-5bad-4f42-931a-61806f2b1d9e",
+          "pipelineParameters": {
+            "ADC_HOSTNAME": "${#stage('Get Environment Details')['context']['ADC_HOST_REPLACE']}",
+            "APPMGR_HOSTNAME": "${#stage('Get Environment Details')['context']['APPMGR_HOST_REPLACE']}",
+            "BDR_HOSTNAME": "${#stage('Get Environment Details')['context']['BDR_HOST_REPLACE']}",
+            "CLEANUP_SFTP": "${parameters['CLEANUP_SFTP']}",
+            "CONFIG_FILES": "${#stage('Get Environment Details')['context']['CONFIG_FILES']}",
+            "DEPLOYMENT_MANAGER_VERSION": "${#stage(\"Get OSS Deployment Manager Version\")[\"outputs\"][\"DEPLOYMENT_MANAGER_VERSION\"]}",
+            "DEPLOYMENT_NAME": "${parameters['ENV_NAME']}",
+            "ECM_HOSTNAME": "${ECM_HOSTNAME}",
+            "EIC_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"EIC_HOST_REPLACE\"]}",
+            "ENM_HOSTNAME": "${ENM_HOSTNAME}",
+            "GAS_HOSTNAME": "${#stage('Get Environment Details')['context']['GAS_HOST_REPLACE']}",
+            "IAM_HOSTNAME": "${#stage('Get Environment Details')['context']['IAM_HOST_REPLACE']}",
+            "INT_CHART_VERSION": "${INT_CHART_VERSION}",
+            "K6_TESTWARE_VERSION": "${parameters['K6_TESTWARE_VERSION']}",
+            "KF_BO_HOSTNAME": "${#stage('Get Environment Details')['context']['KAFKA_BOOTSTRAP_HOST_REPLACE']}",
+            "KUBECONFIG_FILE": "${#stage('Get Environment Details')['context']['KUBE_CONFIG']}",
+            "KUBE_CONFIG_FILE_CREDENTIAL_ID": "${#stage('Get Environment Details')['context']['KUBE_CONFIG_FILE_CREDENTIAL_ID']}",
+            "NAMESPACE": "${#stage('Get Environment Details')['context']['NAMESPACE']}",
+            "RUN_ENM_INTEGRATION_TEST": "${parameters['RUN_ENM_INTEGRATION_TEST']}",
+            "RUN_TESTS": "${RUN_TESTS}",
+            "SFTP_CREDENTIALS_ID": "${#stage('Get Environment Details')['context']['SFTP_CREDENTIALS_ID']}",
+            "SFTP_SERVER_PATH": "${#stage('Get Environment Details')['context']['SFTP_SERVER_PATH']}",
+            "SKIP_TESTS": "${SKIP_TESTS}",
+            "TH_HOSTNAME": "${#stage('Get Environment Details')['context']['TH_HOST_REPLACE']}",
+            "VNFM_HOSTNAME": "${#stage('Get Environment Details')['context']['VNFM_HOST_REPLACE']}"
+          },
+          "refId": "Restore To State",
+          "requisiteStageRefIds": [
+            "Initial Install (SKIP_K6_TEST)"
+          ],
+          "type": "pipeline",
+          "waitForCompletion": true
+        }
+      ],
+      "triggers": []
+  }

@@ -1,0 +1,3 @@
+SPINNAKER_APPLICATION_NAME,SPINNAKER_PIPELINE_NAME,RELEASE_TYPE,NOTIFICATION_ADDRESS,RELEASE_CERTM_VALUE_FROM_STATE,RELEASE_CERTM_VALUE_TO_STATE
+eic-release-e2e-cicd,eic-r2l-upgrade-flow,R2L,PDLIDUNREL@pdl.internal.ericsson.com,true,true
+eic-release-e2e-cicd,eic-s2l-upgrade-flow,S2L,PDLIDUNREL@pdl.internal.ericsson.com,true,true

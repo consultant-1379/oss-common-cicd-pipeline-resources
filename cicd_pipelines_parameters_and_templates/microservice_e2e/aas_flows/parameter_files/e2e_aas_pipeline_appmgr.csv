@@ -1,0 +1,10 @@
+SPINNAKER_APPLICATION_NAME,SPINNAKER_PIPELINE_NAME,EXECUTION_TIME
+idun-aas-e2e-cicd,eric-oss-app-lcm-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-oss-app-onboarding-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-lcm-helm-chart-registry-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-lcm-container-registry-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-appmgr-data-document-database-pg-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-lcm-helm-executor-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-appmgr-log-shipper-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-oss-pf-acm-runtime-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-oss-am-cnlcm-adaptor-AAS-E2E-Flow,21:00:00

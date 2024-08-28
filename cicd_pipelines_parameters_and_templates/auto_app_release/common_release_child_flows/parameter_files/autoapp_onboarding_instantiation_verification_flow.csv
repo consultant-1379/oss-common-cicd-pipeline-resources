@@ -1,0 +1,3 @@
+SPINNAKER_APPLICATION_NAME,SPINNAKER_PIPELINE_NAME,POST_INSTANTIATION_TESTING_PIPELINE_ID,PRE_ONBOARDING_TESTING_PIPELINE_ID
+autoapp-eacc-e2e-cicd,autoapp-eacc-onboard-instantiation-verification-Flow,e44b7f8d-a5d7-48b6-8d85-14be99d08ad1,ed02caac-0ceb-440f-a376-143e9cb0db87
+autoapp-pme-e2e-cicd,autoapp-pme-onboard-instantiation-verification-Flow,f4c1c8cf-027d-4fe4-b112-7b9e7142b563,d32382a2-11c1-4940-b6b0-086e4704770a

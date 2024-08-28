@@ -1,0 +1,721 @@
+{
+  "keepWaitingPipelines": false,
+  "limitConcurrent": false,
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "name": "SPINNAKER_PIPELINE_NAME",
+  "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten. Template name: eiap_release_refresh_flow.json in repo https://gerrit-gamma.gic.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources,branches",
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+    "ui": true
+  },
+  "notifications": [
+    {
+      "address": "NOTIFICATION_ADDRESS",
+      "level": "pipeline",
+      "message": {
+        "pipeline.failed": {
+          "text": "The pipeline has failed."
+        }
+      },
+      "type": "email",
+      "when": [
+        "pipeline.failed"
+      ]
+    }
+  ],
+  "parameterConfig": [
+    {
+      "default": "",
+      "description": "The fromState to be updated and used S2L and R2L loops",
+      "hasOptions": false,
+      "label": "",
+      "name": "NEW_FROM_STATE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Name of the deployment",
+      "hasOptions": false,
+      "label": "DEPLOYMENT_NAME",
+      "name": "DEPLOYMENT_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "false",
+      "description": "Option to use real CSAR. If false then dummy CSAR will be used",
+      "hasOptions": false,
+      "label": "",
+      "name": "USE_REAL_CSAR",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "List of tags for applications that have to be deployed",
+      "hasOptions": false,
+      "label": "",
+      "name": "NEW_FROM_STATE_TAGS",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "armdocker.rnd.ericsson.se",
+      "description": "",
+      "hasOptions": false,
+      "label": "",
+      "name": "DOCKER_REGISTRY",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "None",
+      "description": "",
+      "hasOptions": false,
+      "label": "",
+      "name": "DOCKER_REGISTRY_CREDENTIALS",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "oss-deploy",
+      "description": "",
+      "hasOptions": false,
+      "label": "",
+      "name": "NAMESPACE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Credentials for SFTP",
+      "hasOptions": false,
+      "label": "",
+      "name": "SFTP_CREDENTIALS_ID",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Server path of SFTP",
+      "hasOptions": false,
+      "label": "",
+      "name": "SFTP_SERVER_PATH",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "armdocker.rnd.ericsson.se/proj-eric-oss-drop/eric-oss-deployment-manager",
+      "description": "Deployment Manager Repository.",
+      "hasOptions": false,
+      "label": "",
+      "name": "DEPLOYMENT_MANAGER_REPO",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "latest",
+      "description": "Update the Deployment Manager From State.",
+      "hasOptions": false,
+      "label": "",
+      "name": "NEW_DM_FROM_STATE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Update the K6 From State.",
+      "hasOptions": false,
+      "label": "",
+      "name": "NEW_FROM_STATE_K6_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Install or upgrade deployment.",
+      "hasOptions": true,
+      "label": "",
+      "name": "DEPLOYMENT_TYPE",
+      "options": [
+        {
+          "value": "Install"
+        },
+        {
+          "value": "Upgrade"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "true",
+      "description": "When set to true uses the site values generated from the Deployment manager prepare command for the deployment.",
+      "hasOptions": false,
+      "label": "",
+      "name": "USE_DM_PREPARE",
+      "options": [
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Path within the Repo to the location of the site values file associated to the from state value. The content of this file will be added or will override the content in the FULL_PATH_TO_SITE_VALUES_FILE",
+      "hasOptions": false,
+      "label": "",
+      "name": "PATH_TO_FROM_STATE_SITE_VALUES_FILE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Path within the Repo to the location of the site values override file associated to the from state value. The content of this file will be added or will override the content in the FULL_PATH_TO_SITE_VALUES_FILE",
+      "hasOptions": false,
+      "label": "",
+      "name": "PATH_TO_FROM_STATE_SITE_VALUES_OVERRIDE_FILE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "true",
+      "description": "When set to true, enables the DDP auto upload",
+      "hasOptions": true,
+      "label": "",
+      "name": "DDP_AUTO_UPLOAD",
+      "options": [
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "PARTIAL",
+      "description": "The Type of cleanup that needs to be done. FULL will cleanup the deployment helm releases, crd helm releases, crd components, clusterroles, cluster rolebindings, namespaces (deployment and crd). Where as PARTIAL will only cleanup the deployment namespace. FULL cleanup option should NOT be used in such cases where single cluster is hosting multiple deployments.",
+      "hasOptions": true,
+      "label": "",
+      "name": "CLEANUP_TYPE",
+      "options": [
+        {
+          "value": "FULL"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "true",
+      "description": "When set to true, ENM integration tests will be run",
+      "hasOptions": true,
+      "label": "",
+      "name": "RUN_ENM_INTEGRATION_TEST",
+      "options": [
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    }
+  ],
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "RPT-RC_Update-Test-Environment-Status",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Update Env Status to Refreshing",
+      "parameters": {
+        "ENV_NAME": "${parameters['DEPLOYMENT_NAME']}",
+        "status": "Refreshing"
+      },
+      "refId": "Update Env Status to Refreshing",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "DSC-DIT-Download-Document-As-Artifact",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Get Environment Details",
+      "parameters": {
+        "DIT_NAME_PARAMETER": "${parameters['DEPLOYMENT_NAME']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Get Environment Details",
+      "requisiteStageRefIds": [
+        "Update Env Status to Refreshing"
+      ],
+      "type": "jenkins"
+    },
+    {
+      "failOnFailedExpressions": true,
+      "name": "Evaluate Variables",
+      "refId": "Evaluate Variables",
+      "requisiteStageRefIds": [
+        "Get Environment Details"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Get Environment Details')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "SKIP_TESTS",
+          "value": "${(#stage(\"Get Environment Details\")[\"context\"]['SKIP_TESTS']== None)?  \"\":#stage(\"Get Environment Details\")[\"context\"]['SKIP_TESTS']}"
+        },
+        {
+          "key": "RUN_TESTS",
+          "value": "${(#stage(\"Get Environment Details\")[\"context\"]['RUN_TESTS']== None)? \"\":#stage(\"Get Environment Details\")[\"context\"]['RUN_TESTS']}"
+        },
+        {
+          "key": "ECM_HOSTNAME",
+          "value": "${(#stage(\"Get Environment Details\")[\"context\"]['ECM_HOST_REPLACE']== None)? \"\":#stage(\"Get Environment Details\")[\"context\"]['ECM_HOST_REPLACE']}"
+        },
+        {
+          "key": "ENM_HOSTNAME",
+          "value": "${(#stage(\"Get Environment Details\")[\"context\"]['ENM_HOST_REPLACE']== None)? \"\":#stage(\"Get Environment Details\")[\"context\"]['ENM_HOST_REPLACE']}"
+        }
+      ]
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "isNew": true,
+      "job": "EIC_Release_SFTP_Server_Cleanup",
+      "master": "oss-aispinn-fem5s11-eiffel052",
+      "name": "SFTP Server Cleanup",
+      "parameters": {
+          "SFTP_CREDENTIALS_ID": "${parameters['SFTP_CREDENTIALS_ID']}",
+          "SFTP_SERVER_PATH": "${parameters['SFTP_SERVER_PATH']}"
+      },
+      "refId": "SFTP Server Cleanup",
+      "requisiteStageRefIds": [
+          "Evaluate Variables"
+      ],
+      "type": "jenkins"
+    },
+    {
+      "application": "eiap-release-e2e-cicd",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Upgrade to new fromState",
+      "pipeline": "59c0789e-51e9-4e5d-9387-53e276cda158",
+      "pipelineParameters": {
+        "ADC_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"ADC_HOST_REPLACE\"]}",
+        "APPMGR_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"APPMGR_HOST_REPLACE\"]}",
+        "BDR_HOSTNAME": "${#stage('Get Environment Details')['context']['BDR_HOST_REPLACE']}",
+        "CONFIG_FILES": "${#stage(\"Get Environment Details\")[\"context\"][\"CONFIG_FILES\"]}",
+        "DDP_AUTO_UPLOAD": "${parameters['DDP_AUTO_UPLOAD']}",
+        "DEPLOYMENT_MANAGER_REPO": "${parameters['DEPLOYMENT_MANAGER_REPO']}",
+        "DEPLOYMENT_MANAGER_VERSION": "${parameters['NEW_DM_FROM_STATE']}",
+        "DEPLOYMENT_NAME": "${parameters['DEPLOYMENT_NAME']}",
+        "DOCKER_REGISTRY": "${parameters['DOCKER_REGISTRY']}",
+        "DOCKER_REGISTRY_CREDENTIALS": "${parameters['DOCKER_REGISTRY_CREDENTIALS']}",
+        "ECM_HOSTNAME": "${ECM_HOSTNAME}",
+        "EIC_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"EIC_HOST_REPLACE\"]}",
+        "ENM_HOSTNAME": "${ENM_HOSTNAME}",
+        "ENV_CONFIG_FILE": "${#stage('Get Environment Details')['context']['ENV_CONFIG_FILE']}",
+        "FH_SNMP_ALARM_IP": "${#stage(\"Get Environment Details\")[\"context\"][\"FH_SNMP_ALARM_IP_REPLACE\"]}",
+        "FULL_PATH_TO_SITE_VALUES_FILE": "${parameters['PATH_TO_FROM_STATE_SITE_VALUES_FILE']}",
+        "GAS_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"GAS_HOST_REPLACE\"]}",
+        "IAM_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"IAM_HOST_REPLACE\"]}",
+        "INT_CHART_VERSION": "${parameters['NEW_FROM_STATE']}",
+        "K6_TESTWARE_VERSION": "${parameters['NEW_FROM_STATE_K6_VERSION']}",
+        "KF_BO_HOSTNAME": "${#stage('Get Environment Details')['context']['KAFKA_BOOTSTRAP_HOST_REPLACE']}",
+        "KUBECONFIG_FILE": "${#stage(\"Get Environment Details\")[\"context\"][\"KUBE_CONFIG_FILE_CREDENTIAL_ID\"]}",
+        "LA_HOSTNAME": "${#stage('Get Environment Details')['context']['LA_HOST_REPLACE']}",
+        "ML_HOSTNAME": "${#stage('Get Environment Details')['context']['ML_HOST_REPLACE']}",
+        "NAMESPACE": "${parameters['NAMESPACE']}",
+        "OS_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"OS_HOST_REPLACE\"]}",
+        "PATH_TO_CERTIFICATES_FILES": "${#stage(\"Get Environment Details\")[\"context\"][\"PATH_TO_CERTIFICATES_FILES\"]}",
+        "PATH_TO_SITE_VALUES_OVERRIDE_FILE": "${parameters['PATH_TO_FROM_STATE_SITE_VALUES_OVERRIDE_FILE']}",
+        "RUN_ENM_INTEGRATION_TEST": "${parameters['RUN_ENM_INTEGRATION_TEST']}",
+        "RUN_TESTS": "${RUN_TESTS}",
+        "SERVICE_MESH_IP": "${#stage(\"Get Environment Details\")[\"context\"][\"INGRESS_IP_REPLACE\"]}",
+        "SKIP_TESTS": "${SKIP_TESTS}",
+        "TAGS": "${parameters['NEW_FROM_STATE_TAGS']}",
+        "TA_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"TA_HOST_REPLACE\"]}",
+        "TH_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"TH_HOST_REPLACE\"]}",
+        "USE_CERTM": "true",
+        "USE_DM_PREPARE": "${parameters['USE_DM_PREPARE']}",
+        "USE_REAL_CSAR": "${parameters['USE_REAL_CSAR']}"
+      },
+      "refId": "Upgrade to new fromState",
+      "requisiteStageRefIds": [
+        "SFTP Server Cleanup"
+      ],
+      "stageEnabled": {
+        "expression": "${parameters['DEPLOYMENT_TYPE'] == 'Upgrade'}",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "DSC-DIT-Update-Key-Value-Pairs",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Update DIT fromState and dmFromState",
+      "parameters": {
+        "DIT_NAME_PARAMETER": "${parameters['DEPLOYMENT_NAME']}",
+        "KEY_VALUE_PAIRS": "DM_FROM_STATE=${parameters['NEW_DM_FROM_STATE']},FROM_STATE=${parameters['NEW_FROM_STATE']}"
+      },
+      "refId": "Update DIT fromState and dmFromState",
+      "requisiteStageRefIds": [
+        "Update From State details in DIT"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Update From State details in DIT')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "application": "eiap-release-e2e-cicd",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Backup and Export (external)",
+      "pipeline": "5b07fdbe-a832-4ff3-baa1-946a90c8b610",
+      "pipelineParameters": {
+        "DEPLOYMENT_MANAGER_VERSION": "${DEPLOYMENT_MANAGER_VERSION}",
+        "DEPLOYMENT_NAME": "${parameters['DEPLOYMENT_NAME']}",
+        "GAS_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"GAS_HOST_REPLACE\"]}",
+        "INT_CHART_VERSION": "${parameters['NEW_FROM_STATE']}",
+        "KUBECONFIG_FILE": "${#stage(\"Get Environment Details\")[\"context\"][\"KUBE_CONFIG_FILE_CREDENTIAL_ID\"]}",
+        "NAMESPACE": "${parameters['NAMESPACE']}",
+        "SFTP_CREDENTIALS_ID": "${parameters['SFTP_CREDENTIALS_ID']}",
+        "SFTP_SERVER_PATH": "${parameters['SFTP_SERVER_PATH']}",
+        "VNFM_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"VNFM_HOST_REPLACE\"]}"
+      },
+      "refId": "Backup and Export (external)",
+      "requisiteStageRefIds": [
+        "Get OSS Deployment Manager Version"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Upgrade to new fromState')['status']}\" == \"SUCCEEDED\" or \"${#stage('Install to new fromState')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failOnFailedExpressions": true,
+      "failPipeline": false,
+      "name": "Get OSS Deployment Manager Version",
+      "refId": "Get OSS Deployment Manager Version",
+      "requisiteStageRefIds": [
+        "Update DIT fromState and dmFromState"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Upgrade to new fromState')['status']}\" == \"SUCCEEDED\" or \"${#stage('Install to new fromState')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "DEPLOYMENT_MANAGER_VERSION",
+          "value": "${(parameters['DEPLOYMENT_TYPE'] == 'Install') ? #stage(\"Install to new fromState\")[\"outputs\"][\"DEPLOYMENT_MANAGER_VERSION\"] : #stage(\"Upgrade to new fromState\")[\"outputs\"][\"DEPLOYMENT_MANAGER_VERSION\"]}"
+        }
+      ]
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Post Flow Checks",
+      "preconditions": [
+        {
+          "context": {
+            "expression": "\"${#stage('Update Env Status to Refreshing')['status']}\" == \"SUCCEEDED\" or \"${#stage('Update Env Status to Refreshing')['status']}\" == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Get Environment Details')['status']}\" == \"SUCCEEDED\" or \"${#stage('Get Environment Details')['status']}\" == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Upgrade to new fromState')['status']}\" == \"SUCCEEDED\" or \"${#stage('Upgrade to new fromState')['status']}\" == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Get OSS Deployment Manager Version')['status']}\" == \"SUCCEEDED\" or \"${#stage('Get OSS Deployment Manager Version')['status']}\" == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Backup and Export (external)')['status']}\" == \"SUCCEEDED\" or \"${#stage('Backup and Export (external)')['status']}\" == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Update DIT fromState and dmFromState')['status']}\" == \"SUCCEEDED\" or \"${#stage('Update DIT fromState and dmFromState')['status']}\" == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Install to new fromState')['status']}\" == \"SUCCEEDED\" or \"${#stage('Install to new fromState')['status']}\" == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Update From State details in DIT')['status']}\" == \"SUCCEEDED\" or \"${#stage('Update From State details in DIT')['status']}\" == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        }
+      ],
+      "refId": "Post Flow Checks",
+      "requisiteStageRefIds": [
+        "Backup and Export (external)"
+      ],
+      "type": "checkPreconditions"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "RPT-RC_Quarantine-Environment",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Quarantine Environment",
+      "parameters": {
+        "ENV_NAME": "${parameters['DEPLOYMENT_NAME']}"
+      },
+      "refId": "Quarantine Environment",
+      "requisiteStageRefIds": [
+        "Post Flow Checks"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Post Flow Checks')['status']}\" != \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "RPT-RC_Update-Test-Environment-Status",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Update Env Status to Available",
+      "parameters": {
+        "ENV_NAME": "${parameters['DEPLOYMENT_NAME']}",
+        "status": "Available"
+      },
+      "refId": "Update Env Status to Available",
+      "requisiteStageRefIds": [
+        "Quarantine Environment"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Post Flow Checks')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "name": "End Flow",
+      "preconditions": [
+        {
+          "context": {
+            "stageName": "Post Flow Checks",
+            "stageStatus": "SUCCEEDED"
+          },
+          "failPipeline": true,
+          "type": "stageStatus"
+        }
+      ],
+      "refId": "End Flow",
+      "requisiteStageRefIds": [
+        "Update Env Status to Available"
+      ],
+      "type": "checkPreconditions"
+    },
+    {
+      "application": "eiap-release-e2e-cicd",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Install to new fromState",
+      "pipeline": "9586d39d-db4d-40d8-a691-1178c766f65c",
+      "pipelineParameters": {
+        "ADC_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"ADC_HOST_REPLACE\"]}",
+        "APPMGR_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"APPMGR_HOST_REPLACE\"]}",
+        "BDR_HOSTNAME": "${#stage('Get Environment Details')['context']['BDR_HOST_REPLACE']}",
+        "CLEANUP_TYPE": "${parameters['CLEANUP_TYPE']}",
+        "CONFIG_FILES": "${#stage(\"Get Environment Details\")[\"context\"][\"CONFIG_FILES\"]}",
+        "DDP_AUTO_UPLOAD": "${parameters['DDP_AUTO_UPLOAD']}",
+        "DEPLOYMENT_MANAGER_REPO": "${parameters['DEPLOYMENT_MANAGER_REPO']}",
+        "DEPLOYMENT_MANAGER_VERSION": "${parameters['NEW_DM_FROM_STATE']}",
+        "DEPLOYMENT_NAME": "${parameters['DEPLOYMENT_NAME']}",
+        "DOCKER_REGISTRY": "${parameters['DOCKER_REGISTRY']}",
+        "DOCKER_REGISTRY_CREDENTIALS": "${parameters['DOCKER_REGISTRY_CREDENTIALS']}",
+        "ECM_HOSTNAME": "${ECM_HOSTNAME}",
+        "EIC_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"EIC_HOST_REPLACE\"]}",
+        "ENM_HOSTNAME": "${ENM_HOSTNAME}",
+        "ENV_CONFIG_FILE": "${#stage('Get Environment Details')['context']['ENV_CONFIG_FILE']}",
+        "FH_SNMP_ALARM_IP": "${#stage(\"Get Environment Details\")[\"context\"][\"FH_SNMP_ALARM_IP_REPLACE\"]}",
+        "FULL_PATH_TO_SITE_VALUES_FILE": "${parameters['PATH_TO_FROM_STATE_SITE_VALUES_FILE']}",
+        "GAS_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"GAS_HOST_REPLACE\"]}",
+        "IAM_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"IAM_HOST_REPLACE\"]}",
+        "INT_CHART_VERSION": "${parameters['NEW_FROM_STATE']}",
+        "K6_TESTWARE_VERSION": "${parameters['NEW_FROM_STATE_K6_VERSION']}",
+        "KF_BO_HOSTNAME": "${#stage('Get Environment Details')['context']['KAFKA_BOOTSTRAP_HOST_REPLACE']}",
+        "KUBECONFIG_FILE": "${#stage(\"Get Environment Details\")[\"context\"][\"KUBE_CONFIG_FILE_CREDENTIAL_ID\"]}",
+        "LA_HOSTNAME": "${#stage('Get Environment Details')['context']['LA_HOST_REPLACE']}",
+        "ML_HOSTNAME": "${#stage('Get Environment Details')['context']['ML_HOST_REPLACE']}",
+        "NAMESPACE": "${parameters['NAMESPACE']}",
+        "OS_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"OS_HOST_REPLACE\"]}",
+        "PATH_TO_CERTIFICATES_FILES": "${#stage(\"Get Environment Details\")[\"context\"][\"PATH_TO_CERTIFICATES_FILES\"]}",
+        "PATH_TO_SITE_VALUES_OVERRIDE_FILE": "${parameters['PATH_TO_FROM_STATE_SITE_VALUES_OVERRIDE_FILE']}",
+        "RUN_ENM_INTEGRATION_TEST": "${parameters['RUN_ENM_INTEGRATION_TEST']}",
+        "RUN_TESTS": "${RUN_TESTS}",
+        "SERVICE_MESH_IP": "${#stage(\"Get Environment Details\")[\"context\"][\"INGRESS_IP_REPLACE\"]}",
+        "SKIP_TESTS": "${SKIP_TESTS}",
+        "TAGS": "${parameters['NEW_FROM_STATE_TAGS']}",
+        "TA_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"TA_HOST_REPLACE\"]}",
+        "TH_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"TH_HOST_REPLACE\"]}",
+        "USE_CERTM": "true",
+        "USE_DM_PREPARE": "${parameters['USE_DM_PREPARE']}",
+        "USE_REAL_CSAR": "${parameters['USE_REAL_CSAR']}"
+      },
+      "refId": "Install to new fromState",
+      "requisiteStageRefIds": [
+        "SFTP Server Cleanup"
+      ],
+      "stageEnabled": {
+        "expression": "${parameters['DEPLOYMENT_TYPE'] == 'Install'}",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "DSC-DIT-Update-Key-Value-Pairs",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Update From State details in DIT",
+      "parameters": {
+        "DIT_NAME_PARAMETER": "${parameters['DEPLOYMENT_NAME']}",
+        "KEY_VALUE_PAIRS": "FROM_STATE_TAGS=${parameters['NEW_FROM_STATE_TAGS']},K6_TESTWARE_VERSION=${parameters['NEW_FROM_STATE_K6_VERSION']},PATH_TO_FROM_STATE_SITE_VALUES_FILE=${parameters['PATH_TO_FROM_STATE_SITE_VALUES_FILE']},PATH_TO_FROM_STATE_SITE_VALUES_OVERRIDE_FILE=${parameters['PATH_TO_FROM_STATE_SITE_VALUES_OVERRIDE_FILE']}"
+      },
+      "refId": "Update From State details in DIT",
+      "requisiteStageRefIds": [
+        "Install to new fromState",
+        "Upgrade to new fromState"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Upgrade to new fromState')['status']}\" == \"SUCCEEDED\" or \"${#stage('Install to new fromState')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins",
+      "waitForCompletion": true
+    }
+  ],
+  "triggers": []
+}

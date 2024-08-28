@@ -1,0 +1,145 @@
+{
+    "application": "SPINNAKER_APPLICATION_NAME",
+    "disabled": true,
+    "name": "SPINNAKER_PIPELINE_NAME",
+    "limitConcurrent": true,
+    "spelEvaluator": "v4",
+    "stages": [
+      {
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": false,
+        "failPipeline": true,
+        "job": "APPLICATION_STAGING_JOB_NAME",
+        "master": "APPLICATION_STAGING_FEM_CONTROLLER",
+        "name": "APPLICATION_STAGING_NAME",
+        "notifications": [
+          {
+            "address": "${trigger.properties['GIT_AUTHOR_EMAIL']}",
+            "cc": "APPLICATION_STAGING_EMAIL_CC",
+            "level": "stage",
+            "message": {
+              "stage.complete": {
+                "text": "Stage successful"
+              },
+              "stage.failed": {
+                "text": "Please investigate this failure"
+              }
+            },
+            "type": "email",
+            "when": [
+              "stage.failed",
+              "stage.complete"
+            ]
+          }
+        ],
+        "parameters": {
+          "CHART_NAME": "${trigger.properties['CHART_NAME']}",
+          "CHART_REPO": "${trigger.properties['CHART_REPO']}",
+          "CHART_VERSION": "${trigger.properties['CHART_VERSION']}"
+        },
+        "propertyFile": "artifact.properties",
+        "refId": "1",
+        "requisiteStageRefIds": [],
+        "sendNotifications": true,
+        "stageTimeoutMs": 28800000,
+        "type": "jenkins"
+      },
+      {
+        "application": "eoapp",
+        "completeOtherBranchesThenFail": true,
+        "continuePipeline": false,
+        "failPipeline": false,
+        "name": "EO_Product_Staging",
+        "notifications": [
+          {
+            "address": "PDLAPPSTAG@pdl.internal.ericsson.com",
+            "level": "stage",
+            "message": {
+              "stage.failed": {
+                "text": "Please investigate this failure"
+              }
+            },
+            "type": "email",
+            "when": [
+              "stage.failed"
+            ]
+          }
+        ],
+        "pipeline": "fe9cb49d-cb50-4966-bcf5-2c51dd381399",
+        "pipelineParameters": {
+          "CHART_NAME": "${#stage(\"APPLICATION_STAGING_NAME\")[\"context\"][\"CHART_NAME\"]}",
+          "CHART_REPO": "${#stage(\"APPLICATION_STAGING_NAME\")[\"context\"][\"CHART_REPO\"]}",
+          "CHART_VERSION": "${#stage(\"APPLICATION_STAGING_NAME\")[\"context\"][\"CHART_VERSION\"]}"
+        },
+        "refId": "2",
+        "requisiteStageRefIds": [
+          "1"
+        ],
+        "sendNotifications": true,
+        "type": "pipeline",
+        "waitForCompletion": true
+      },
+      {
+        "application": "product-e2e-cicd",
+        "completeOtherBranchesThenFail": true,
+        "continuePipeline": false,
+        "failPipeline": false,
+        "name": "IDUN_Product_Staging",
+        "notifications": [
+          {
+            "address": "PDLAPPSTAG@pdl.internal.ericsson.com",
+            "level": "stage",
+            "message": {
+              "stage.failed": {
+                "text": "Please investigate this failure"
+              }
+            },
+            "type": "email",
+            "when": [
+              "stage.failed"
+            ]
+          }
+        ],
+        "pipeline": "d8e85bad-3d55-433b-b7db-d3d3567e2553",
+        "pipelineParameters": {
+          "CHART_NAME": "${#stage(\"APPLICATION_STAGING_NAME\")[\"context\"][\"CHART_NAME\"]}",
+          "CHART_REPO": "${#stage(\"APPLICATION_STAGING_NAME\")[\"context\"][\"CHART_REPO\"]}",
+          "CHART_VERSION": "${#stage(\"APPLICATION_STAGING_NAME\")[\"context\"][\"CHART_VERSION\"]}"
+        },
+        "refId": "3",
+        "requisiteStageRefIds": [
+          "1"
+        ],
+        "sendNotifications": true,
+        "type": "pipeline",
+        "waitForCompletion": true
+      },
+      {
+        "name": "Flow_Completed",
+        "preconditions": [
+          {
+            "context": {
+              "expression": "\"${#stage('EO_Product_Staging')['status']}\" == \"SUCCEEDED\" and \"${#stage('IDUN_Product_Staging')['status']}\" == \"SUCCEEDED\""
+            },
+            "failPipeline": true,
+            "type": "expression"
+          }
+        ],
+        "refId": "4",
+        "requisiteStageRefIds": [
+          "3",
+          "2"
+        ],
+        "type": "checkPreconditions"
+      }
+    ],
+    "triggers": [
+      {
+        "enabled": true,
+        "job": "TRIGGER_JOB_NAME",
+        "master": "TRIGGER_FEM_CONTROLLER",
+        "propertyFile": "artifact.properties",
+        "type": "jenkins"
+      }
+    ]
+  }

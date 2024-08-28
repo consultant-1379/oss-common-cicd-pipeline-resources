@@ -1,0 +1,116 @@
+{
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten. Template name: e2e_eo_idun_app_release_pipeline.json in repo https://gerrit.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources,branches",
+  "disabled": false,
+  "name": "SPINNAKER_PIPELINE_NAME",
+  "limitConcurrent": true,
+  "spelEvaluator": "v4",
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+    "ui": true
+  },
+  "stages": [
+    {
+      "application": "eoapp",
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "name": "EO_Product_Staging",
+      "notifications": [
+        {
+          "address": "PDLAPPSTAG@pdl.internal.ericsson.com",
+          "level": "stage",
+          "message": {
+            "stage.failed": {
+              "text": "Please investigate this failure"
+            }
+          },
+          "type": "email",
+          "when": [
+            "stage.failed"
+          ]
+        }
+      ],
+      "pipeline": "739eb6ce-eca1-44eb-a281-1dc5c23caa03",
+      "pipelineParameters": {
+        "CHART_NAME": "${trigger.properties['CHART_NAME']}",
+        "CHART_REPO": "${trigger.properties['CHART_REPO']}",
+        "CHART_VERSION": "${trigger.properties['CHART_VERSION']}"
+      },
+      "refId": "EO_Product_Staging",
+      "requisiteStageRefIds": [],
+      "sendNotifications": true,
+      "stageEnabled": {
+        "expression": "\"${trigger.properties[\"VALID_EO_DEPLOYMENT\"]}\" == \"true\"",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "application": "product-e2e-cicd",
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "name": "IDUN_Product_Staging",
+      "notifications": [
+        {
+          "address": "PDLAPPSTAG@pdl.internal.ericsson.com",
+          "level": "stage",
+          "message": {
+            "stage.failed": {
+              "text": "Please investigate this failure"
+            }
+          },
+          "type": "email",
+          "when": [
+            "stage.failed"
+          ]
+        }
+      ],
+      "pipeline": "d8e85bad-3d55-433b-b7db-d3d3567e2553",
+      "pipelineParameters": {
+        "CHART_NAME": "${trigger.properties['CHART_NAME']}",
+        "CHART_REPO": "${trigger.properties['CHART_REPO']}",
+        "CHART_VERSION": "${trigger.properties['CHART_VERSION']}"
+      },
+      "refId": "IDUN_Product_Staging",
+      "requisiteStageRefIds": [],
+      "sendNotifications": true,
+      "stageEnabled": {
+        "expression": "\"${trigger.properties[\"VALID_EO_DEPLOYMENT\"]}\" == \"true\"",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "name": "Flow_Completed",
+      "preconditions": [
+        {
+          "context": {
+            "expression": "\"${#stage('EO_Product_Staging')['status']}\" == \"SUCCEEDED\" and \"${#stage('IDUN_Product_Staging')['status']}\" == \"SUCCEEDED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        }
+      ],
+      "refId": "Flow_Completed",
+      "requisiteStageRefIds": [
+        "IDUN_Product_Staging",
+        "EO_Product_Staging"
+      ],
+      "type": "checkPreconditions"
+    }
+  ],
+  "triggers": [
+    {
+      "enabled": true,
+      "job": "TRIGGER_JOB_NAME",
+      "master": "TRIGGER_FEM_CONTROLLER",
+      "propertyFile": "artifact.properties",
+      "type": "jenkins"
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+SPINNAKER_APPLICATION_NAME,SPINNAKER_PIPELINE_NAME,AUTO_APP_CHART_NAME
+autoapp-eacc-e2e-cicd,autoapp-eacc-check-baseline-version-and-update-Flow,eric-oss-auto-config-consistency
+autoapp-pme-e2e-cicd,autoapp-pme-check-baseline-version-and-update-Flow,eric-oss-performance-monitoring-enabler

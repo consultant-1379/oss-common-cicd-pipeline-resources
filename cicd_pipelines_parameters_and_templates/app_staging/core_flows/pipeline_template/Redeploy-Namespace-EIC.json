@@ -1,0 +1,518 @@
+{
+  "appConfig": {},
+  "application": "common-e2e-cicd",
+  "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten.",
+  "keepWaitingPipelines": false,
+  "name": "Redeploy-Namespace-EIC",
+  "limitConcurrent": false,
+  "notifications": [],
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "Template name: Redeploy-Namespace-EIC.json (under app_staging/core_flows/) in repo https://gerrit.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources",
+    "ui": true
+  },
+  "parameterConfig": [
+    {
+      "default": "true",
+      "description": "If set to false, will restart the \"csi-cinder-controllerplugin\" pod on CCD environments in order to refresh the token towards cinder backend. Used to help mitigate stuck volumes.",
+      "hasOptions": false,
+      "label": "",
+      "name": "SKIP_TOKEN_REFRESH",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "default",
+      "description": "",
+      "hasOptions": false,
+      "label": "",
+      "name": "TAGS",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "eric-eo-helmfile",
+      "description": "",
+      "hasOptions": false,
+      "label": "",
+      "name": "INT_CHART_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "https://arm.seli.gic.ericsson.se/artifactory/proj-eo-drop-helm",
+      "description": "",
+      "hasOptions": false,
+      "label": "",
+      "name": "INT_CHART_REPO",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "0.0.0",
+      "description": "",
+      "hasOptions": false,
+      "label": "",
+      "name": "INT_CHART_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "site-values/ci/site-values-latest.yaml",
+      "description": "",
+      "hasOptions": false,
+      "label": "",
+      "name": "FULL_PATH_TO_SITE_VALUES_FILE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "site-values/app-staging/override_IDUN_site-values.yaml",
+      "description": "",
+      "hasOptions": false,
+      "label": "",
+      "name": "PATH_TO_SITE_VALUES_OVERRIDE_FILE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "evo_docker_engine",
+      "description": "Lable for Jenkins Agents",
+      "hasOptions": false,
+      "label": "",
+      "name": "SLAVE_LABEL",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "1800",
+      "description": "",
+      "hasOptions": false,
+      "label": "",
+      "name": "HELM_TIMEOUT",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "true",
+      "description": "Set to true to use the Deploymet Manager function \"prepare\" to generate the site values file",
+      "hasOptions": false,
+      "label": "",
+      "name": "USE_DM_PREPARE",
+      "options": [
+        {
+          "value": "false"
+        },
+        {
+          "value": "true"
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Name of the Environment to be unreserved. Lockable resourse name. You get that in Reserve Namespacce stage.",
+      "hasOptions": false,
+      "label": "",
+      "name": "ENV_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "true",
+      "description": "If \"false\" - then environment will be just cleaned and unreserved. No install will be performed after cleanup.",
+      "hasOptions": false,
+      "label": "",
+      "name": "PERFORM_REDEPLOY",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "true",
+      "description": "\"true\" or \"false\". Define if Unreserve stage has to be skipped",
+      "hasOptions": false,
+      "label": "",
+      "name": "UNRESERVE_ENVIRONMENT",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "ossapps100-arm-docker-auth-config",
+      "description": "",
+      "hasOptions": false,
+      "label": "",
+      "name": "ARMDOCKER_USER_SECRET",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "default",
+      "description": "",
+      "hasOptions": false,
+      "label": "",
+      "name": "ENV_CONFIG_FILE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "gas-user",
+      "description": "The value for the GAS user username",
+      "hasOptions": false,
+      "label": "",
+      "name": "GAS_USER_USERNAME",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "Ericsson123!",
+      "description": "The value for the GAS user password",
+      "hasOptions": false,
+      "label": "",
+      "name": "GAS_USER_PASSWORD",
+      "pinned": true,
+      "required": true
+    }
+  ],
+  "schema": "1",
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failOnFailedExpressions": true,
+      "failPipeline": false,
+      "name": "Evaluate Variables",
+      "refId": "Evaluate Variables",
+      "requisiteStageRefIds": [],
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "IS_APPMGR_NAMESPACE",
+          "value": "${trigger.parameters.TAGS.contains(\"appmgr\")}"
+        }
+      ]
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "OSS-Integration-Gather-Env-Details",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Get Env Details",
+      "parameters": {
+        "ENV_DETAILS_DIR": "oss-common-ci/ci-infrastructure/pooling/resources",
+        "ENV_NAME": "${parameters[\"ENV_NAME\"]}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Get Env Details",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "BASE-VERS_Retrieve_Baseline_Version",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Get Helmfile Version for II",
+      "parameters": {
+        "KEY_TO_RETRIEVE_BASELINE_VERSION_OF": "II_BASELINE_INT_CHART_VERSION",
+        "SLAVE": "evo_docker_engine",
+        "SPECIFIED_VERSION_FOR_PIPELINE": "${parameters['INT_CHART_VERSION']}",
+        "VERSIONS_FILENAME": "versions"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Get Helmfile Version for II",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "DDC_logs_upload_trigger",
+      "markUnstableAsSuccessful": false,
+      "master": "oss-fem8s11-eiffel052",
+      "name": "DDC_logs_upload",
+      "parameters": {
+        "KUBECONFIG_FILE": "${#stage(\"Get Env Details\")[\"context\"][\"KUBE_CONFIG\"]}",
+        "NAMESPACE": "${#stage(\"Get Env Details\")[\"context\"][\"NAMESPACE\"]}"
+      },
+      "refId": "DDC_logs_upload",
+      "requisiteStageRefIds": [
+        "Get Env Details",
+        "Evaluate Variables"
+      ],
+      "stageEnabled": {
+        "expression": "\"${parameters[\"UNRESERVE_ENVIRONMENT\"]}\" == \"true\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "OSS-Integration-Purge",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "NamespaceCleanup",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "ossapps100-arm-docker-auth-config",
+        "CLEANUP_TYPE": "PARTIAL",
+        "CRD_NAMESPACE": "eric-crd-ns",
+        "FUNCTIONAL_USER_SECRET": "ossapps100-user-creds",
+        "KUBECONFIG_FILE": "${#stage(\"Get Env Details\")[\"context\"][\"KUBE_CONFIG\"]}",
+        "NAMESPACE": "${#stage(\"Get Env Details\")[\"context\"][\"NAMESPACE\"]}",
+        "SLAVE_LABEL": "evo_docker_engine"
+      },
+      "refId": "NamespaceCleanup",
+      "requisiteStageRefIds": [
+        "DDC_logs_upload"
+      ],
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "Deployment_Namespace_Preparation_EIC_BP",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "NamespacePreparation",
+      "notifications": [
+        {
+          "address": "PDLAPPSTAG@pdl.internal.ericsson.com",
+          "level": "stage",
+          "message": {
+            "stage.failed": {
+              "text": "Recreate Namespace job failed!\nPlease check what is wrong with it"
+            }
+          },
+          "type": "email",
+          "when": [
+            "stage.failed"
+          ]
+        }
+      ],
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "ossapps100-arm-docker-auth-config",
+        "GAS_USER_PASSWORD_VALUE": "${trigger['parameters']['GAS_USER_PASSWORD']}",
+        "GAS_USER_USERNAME_VALUE": "${trigger['parameters']['GAS_USER_USERNAME']}",
+        "IS_APPMGR_NAMESPACE": "${IS_APPMGR_NAMESPACE}",
+        "KUBECONFIG_FILE": "${#stage(\"Get Env Details\")[\"context\"][\"KUBE_CONFIG\"]}",
+        "NAMESPACE": "${#stage(\"Get Env Details\")[\"context\"][\"NAMESPACE\"]}",
+        "SKIP_TOKEN_REFRESH": "${parameters[\"SKIP_TOKEN_REFRESH\"]}",
+        "SLAVE_LABEL": "${parameters[\"SLAVE_LABEL\"]}"
+      },
+      "refId": "NamespacePreparation",
+      "requisiteStageRefIds": [
+        "NamespaceCleanup"
+      ],
+      "restrictExecutionDuringTimeWindow": false,
+      "sendNotifications": false,
+      "stageEnabled": {
+        "expression": "\"${#stage('NamespaceCleanup')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "stageTimeoutMs": 1800000,
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "NeLS-simulator-installation",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "NELSSimInstall",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "cloudman-docker-auth-config",
+        "FUNCTIONAL_USER_CREDENTIALS": "cloudman-user-creds",
+        "KUBECONFIG_FILE": "${#stage(\"Get Env Details\")[\"context\"][\"KUBE_CONFIG\"]}",
+        "LICENSE_KEYS": "false",
+        "NAMESPACE": "${#stage(\"Get Env Details\")[\"context\"][\"NAMESPACE\"]}"
+      },
+      "refId": "NELSSimInstall",
+      "requisiteStageRefIds": [
+        "NamespacePreparation"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('NamespacePreparation')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "stageTimeoutMs": 600000,
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failOnFailedExpressions": false,
+      "failPipeline": false,
+      "job": "OSS-Integration-Helmfile-Deploy",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Helmfile-Deploy",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "${parameters[\"ARMDOCKER_USER_SECRET\"]}",
+        "CRD_NAMESPACE": "eric-crd-ns",
+        "DDP_AUTO_UPLOAD": "true",
+        "DEPLOY_ALL_CRDS": "true",
+        "ENV_CONFIG_FILE": "${parameters[\"ENV_CONFIG_FILE\"]}",
+        "FULL_PATH_TO_SITE_VALUES_FILE": "${parameters[\"FULL_PATH_TO_SITE_VALUES_FILE\"]}",
+        "FUNCTIONAL_USER_SECRET": "ossapps100-user-creds",
+        "HELM_TIMEOUT": "${parameters[\"HELM_TIMEOUT\"]}",
+        "INT_CHART_NAME": "${parameters[\"INT_CHART_NAME\"]}",
+        "INT_CHART_REPO": "${parameters[\"INT_CHART_REPO\"]}",
+        "INT_CHART_VERSION": "${#stage(\"Get Helmfile Version for II\")[\"context\"][\"II_BASELINE_INT_CHART_VERSION\"]}",
+        "KUBECONFIG_FILE": "${#stage(\"Get Env Details\")[\"context\"][\"KUBE_CONFIG\"]}",
+        "NAMESPACE": "${#stage(\"Get Env Details\")[\"context\"][\"NAMESPACE\"]}",
+        "PATH_TO_CERTIFICATES_FILES": "oss-common-ci/${#stage(\"Get Env Details\")[\"context\"][\"PATH_TO_CERTIFICATES_FILES\"]}",
+        "PATH_TO_SITE_VALUES_OVERRIDE_FILE": "${parameters[\"PATH_TO_SITE_VALUES_OVERRIDE_FILE\"]}",
+        "TAGS": "${parameters[\"TAGS\"]}",
+        "USE_CERTM": "true",
+        "USE_DM_PREPARE": "${parameters[\"USE_DM_PREPARE\"]}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Helmfile-Deploy",
+      "requisiteStageRefIds": [
+        "NELSSimInstall",
+        "Get Helmfile Version for II"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('NamespacePreparation')['status']}\" == \"SUCCEEDED\" and \"${#stage('NELSSimInstall')['status']}\" == \"SUCCEEDED\" and \"${parameters['PERFORM_REDEPLOY']}\" == \"true\" and \"${#stage('Get Helmfile Version for II')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "OSS-Integration-Unreserve-Environment",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "UnreserveNamespace",
+      "parameters": {
+        "ENV_NAME": "${parameters[\"ENV_NAME\"]}",
+        "SLAVE_LABEL": "${parameters[\"SLAVE_LABEL\"]}"
+      },
+      "refId": "UnreserveNamespace",
+      "requisiteStageRefIds": [
+        "Helmfile-Deploy"
+      ],
+      "stageEnabled": {
+        "expression": "\"${parameters[\"UNRESERVE_ENVIRONMENT\"]}\" == \"true\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "name": "Flow Completed",
+      "preconditions": [
+        {
+          "context": {
+            "expression": "\"${#stage('Helmfile-Deploy')['status']}\" == \"SUCCEEDED\" or \"${#stage('Helmfile-Deploy')['status']}\" == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "stageName": "NamespaceCleanup",
+            "stageStatus": "SUCCEEDED"
+          },
+          "failPipeline": true,
+          "type": "stageStatus"
+        },
+        {
+          "context": {
+            "stageName": "NamespacePreparation",
+            "stageStatus": "SUCCEEDED"
+          },
+          "failPipeline": true,
+          "type": "stageStatus"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('NELSSimInstall')['status']}\" == \"SUCCEEDED\" or \"${#stage('NELSSimInstall')['status']}\" == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        }
+      ],
+      "refId": "Flow Completed",
+      "requisiteStageRefIds": [
+        "UnreserveNamespace"
+      ],
+      "type": "checkPreconditions"
+    }
+  ],
+  "triggers": []
+}

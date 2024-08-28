@@ -1,0 +1,2 @@
+This template generates the aaS pipeline for each microservice in the respective application.
+Currently this is a temporary solution until In Service Update (ISU) is in place later this year.

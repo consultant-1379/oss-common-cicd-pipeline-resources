@@ -1,0 +1,261 @@
+{
+  "appConfig": {},
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "name": "SPINNAKER_PIPELINE_NAME",
+  "description": "Template name: TEST_PIPELINE-eic-connected-release-external-pre-operation-flow.json in repo https://gerrit-gamma.gic.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources,branches",
+  "disabled": true,
+  "keepWaitingPipelines": true,
+  "limitConcurrent": false,
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+    "ui": true
+  },
+  "parameterConfig": [
+    {
+      "default": "",
+      "description": "EIAE helmfile version",
+      "hasOptions": false,
+      "label": "",
+      "name": "INT_CHART_VERSION",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Path on server where CSAR packages will be downloaded. Please ensure the filesystem has space available for the path provided. E.g. /proj/cloudman",
+      "hasOptions": false,
+      "label": "",
+      "name": "CSAR_DOWNLOAD_LOCATION_PATH",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010192-R1A",
+      "description": "Please append the R-state to the default value in the field. For Testing purpose please use, the R-state is already appended to the parameter (R1A).",
+      "hasOptions": false,
+      "label": "",
+      "name": "EIAE_DEPLOYMENT_HELM_RELEASE_PACKAGE_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010186_1-R1A",
+      "description": "Please append the R-state to the default value in the field. For Testing purpose please use, the R-state is already appended to the parameter (R1A).",
+      "hasOptions": false,
+      "label": "",
+      "name": "ERIC_CLOUD_NATIVE_BASE_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010246_1-R1A",
+      "description": "Please append the R-state to the default value in the field. For Testing purpose please use, the R-state is already appended to the parameter (R1A).",
+      "hasOptions": false,
+      "label": "",
+      "name": "ERIC_CLOUD_NATIVE_SERVICE_MESH_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010334_1-R1A",
+      "description": "Please append the R-state to the default value in the field. For Testing purpose please use, the R-state is already appended to the parameter (R1A).",
+      "hasOptions": false,
+      "label": "",
+      "name": "ERIC_CNBASE_OSS_CONFIG_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010333_1-R1A",
+      "description": "Please append the R-state to the default value in the field. For Testing purpose please use, the R-state is already appended to the parameter (R1A).",
+      "hasOptions": false,
+      "label": "",
+      "name": "ERIC_CNCS_OSS_CONFIG_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010181_1-R1A",
+      "description": "Please append the R-state to the default value in the field. For Testing purpose please use, the R-state is already appended to the parameter (R1A).",
+      "hasOptions": false,
+      "label": "",
+      "name": "ERIC_OSS_ADC_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010183_1-R1A",
+      "description": "Please append the R-state to the default value in the field. For Testing purpose please use, the R-state is already appended to the parameter (R1A).",
+      "hasOptions": false,
+      "label": "",
+      "name": "ERIC_OSS_APP_MGR_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010188_1-R1A",
+      "description": "Please append the R-state to the default value in the field. For Testing purpose please use, the R-state is already appended to the parameter (R1A).",
+      "hasOptions": false,
+      "label": "",
+      "name": "ERIC_OSS_COMMON_BASE_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010184_1-R1A",
+      "description": "Please append the R-state to the default value in the field. For Testing purpose please use, the R-state is already appended to the parameter (R1A).",
+      "hasOptions": false,
+      "label": "",
+      "name": "ERIC_OSS_CONFIG_HANDLING_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010187_1-R1A",
+      "description": "Please append the R-state to the default value in the field. For Testing purpose please use, the R-state is already appended to the parameter (R1A).",
+      "hasOptions": false,
+      "label": "",
+      "name": "ERIC_OSS_DMM_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010182_1-R1A",
+      "description": "Please append the R-state to the default value in the field. For Testing purpose please use, the R-state is already appended to the parameter (R1A).",
+      "hasOptions": false,
+      "label": "",
+      "name": "ERIC_OSS_ERICSSON_ADAPTATION_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010222_1-R1A",
+      "description": "Please append the R-state to the default value in the field. For Testing purpose please use, the R-state is already appended to the parameter (R1A).",
+      "hasOptions": false,
+      "label": "",
+      "name": "ERIC_OSS_ORAN_SUPPORT_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010224_1-R1A",
+      "description": "Please append the R-state to the default value in the field. For Testing purpose please use, the R-state is already appended to the parameter (R1A).",
+      "hasOptions": false,
+      "label": "",
+      "name": "ERIC_OSS_TASK_AUTOMATION_AE_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010185_1-R1A",
+      "description": "Please append the R-state to the default value in the field. For Testing purpose please use, the R-state is already appended to the parameter (R1A).",
+      "hasOptions": false,
+      "label": "",
+      "name": "ERIC_TOPOLOGY_HANDLING_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "CXF1010193-R1A",
+      "description": "Please append the R-state to the default value in the field. For Testing purpose please use, the R-state is already appended to the parameter (R1A).",
+      "hasOptions": false,
+      "label": "",
+      "name": "OSS_DEPLOYMENT_MANAGER_RELEASE_PACKAGE_PRODUCT_NO",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "CSAR version to package",
+      "hasOptions": false,
+      "label": "",
+      "name": "OSS_DEPLOYMENT_MANAGER_RELEASE_VERSION",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Credential ID stored in Jenkins for the user (secret text). This user should have access to artifactory to download the packages. Eg: cloudman_basic_authorization",
+      "hasOptions": false,
+      "label": "",
+      "name": "USER_CREDENTIAL_ID",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Label of the Jenkins slave where this jenkins job should be executed.",
+      "hasOptions": false,
+      "label": "",
+      "name": "SLAVE_LABEL",
+      "pinned": true,
+      "required": true
+    }
+  ],
+  "schema": "1",
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "GetAppVersionFromHelmfile",
+      "master": "oss-aispinn-fem5s11-eiffel052",
+      "name": "Get App Version from HelmFile",
+      "parameters": {
+        "FUNCTIONAL_USER_SECRET": "reluser-user-creds",
+        "INT_CHART_VERSION": "${trigger['parameters']['INT_CHART_VERSION']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Get App Version from HelmFile",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "oss-idun-release-cicd_MANA_Internal_Testing_Pre_Operations",
+      "master": "oss-aispinn-fem5s11-eiffel052",
+      "name": "Pre-Operation",
+      "parameters": {
+        "CSAR_DOWNLOAD_LOCATION_PATH": "${trigger['parameters']['CSAR_DOWNLOAD_LOCATION_PATH']}",
+        "EIAE_DEPLOYMENT_HELM_RELEASE_PACKAGE_PRODUCT_NO": "${trigger['parameters']['EIAE_DEPLOYMENT_HELM_RELEASE_PACKAGE_PRODUCT_NO']}",
+        "EIAE_DEPLOYMENT_HELM_RELEASE_VERSION": "${trigger['parameters']['INT_CHART_VERSION']}",
+        "ERIC_CLOUD_NATIVE_BASE_PRODUCT_NO": "${trigger['parameters']['ERIC_CLOUD_NATIVE_BASE_PRODUCT_NO']}",
+        "ERIC_CLOUD_NATIVE_BASE_VERSION": "${#stage('Get App Version from HelmFile')['context']['eric-cloud-native-base']}",
+        "ERIC_CLOUD_NATIVE_SERVICE_MESH_PRODUCT_NO": "${trigger['parameters']['ERIC_CLOUD_NATIVE_SERVICE_MESH_PRODUCT_NO']}",
+        "ERIC_CLOUD_NATIVE_SERVICE_MESH_VERSION": "${#stage('Get App Version from HelmFile')['context']['eric-cloud-native-service-mesh']}",
+        "ERIC_CNBASE_OSS_CONFIG_PRODUCT_NO": "${trigger['parameters']['ERIC_CNBASE_OSS_CONFIG_PRODUCT_NO']}",
+        "ERIC_CNBASE_OSS_CONFIG_VERSION": "${#stage('Get App Version from HelmFile')['context']['eric-cnbase-oss-config']}",
+        "ERIC_CNCS_OSS_CONFIG_PRODUCT_NO": "${trigger['parameters']['ERIC_CNCS_OSS_CONFIG_PRODUCT_NO']}",
+        "ERIC_CNCS_OSS_CONFIG_VERSION": "${#stage('Get App Version from HelmFile')['context']['eric-cncs-oss-config']}",
+        "ERIC_OSS_ADC_PRODUCT_NO": "${trigger['parameters']['ERIC_OSS_ADC_PRODUCT_NO']}",
+        "ERIC_OSS_ADC_VERSION": "${#stage('Get App Version from HelmFile')['context']['eric-oss-adc']}",
+        "ERIC_OSS_APP_MGR_PRODUCT_NO": "${trigger['parameters']['ERIC_OSS_APP_MGR_PRODUCT_NO']}",
+        "ERIC_OSS_APP_MGR_VERSION": "${#stage('Get App Version from HelmFile')['context']['eric-oss-app-mgr']}",
+        "ERIC_OSS_COMMON_BASE_PRODUCT_NO": "${trigger['parameters']['ERIC_OSS_COMMON_BASE_PRODUCT_NO']}",
+        "ERIC_OSS_COMMON_BASE_VERSION": "${#stage('Get App Version from HelmFile')['context']['eric-oss-common-base']}",
+        "ERIC_OSS_CONFIG_HANDLING_PRODUCT_NO": "${trigger['parameters']['ERIC_OSS_CONFIG_HANDLING_PRODUCT_NO']}",
+        "ERIC_OSS_CONFIG_HANDLING_VERSION": "${#stage('Get App Version from HelmFile')['context']['eric-oss-config-handling']}",
+        "ERIC_OSS_DMM_PRODUCT_NO": "${trigger['parameters']['ERIC_OSS_DMM_PRODUCT_NO']}",
+        "ERIC_OSS_DMM_VERSION": "${#stage('Get App Version from HelmFile')['context']['eric-oss-dmm']}",
+        "ERIC_OSS_ERICSSON_ADAPTATION_PRODUCT_NO": "${trigger['parameters']['ERIC_OSS_ERICSSON_ADAPTATION_PRODUCT_NO']}",
+        "ERIC_OSS_ERICSSON_ADAPTATION_VERSION": "${#stage('Get App Version from HelmFile')['context']['eric-oss-ericsson-adaptation']}",
+        "ERIC_OSS_ORAN_SUPPORT_PRODUCT_NO": "${trigger['parameters']['ERIC_OSS_ORAN_SUPPORT_PRODUCT_NO']}",
+        "ERIC_OSS_ORAN_SUPPORT_VERSION": "${#stage('Get App Version from HelmFile')['context']['eric-oss-oran-support']}",
+        "ERIC_OSS_TASK_AUTOMATION_AE_PRODUCT_NO": "${trigger['parameters']['ERIC_OSS_TASK_AUTOMATION_AE_PRODUCT_NO']}",
+        "ERIC_OSS_TASK_AUTOMATION_AE_VERSION": "${#stage('Get App Version from HelmFile')['context']['eric-oss-task-automation-ae']}",
+        "ERIC_TOPOLOGY_HANDLING_PRODUCT_NO": "${trigger['parameters']['ERIC_TOPOLOGY_HANDLING_PRODUCT_NO']}",
+        "ERIC_TOPOLOGY_HANDLING_VERSION": "${#stage('Get App Version from HelmFile')['context']['eric-topology-handling']}",
+        "OSS_DEPLOYMENT_MANAGER_RELEASE_PACKAGE_PRODUCT_NO": "${trigger['parameters']['OSS_DEPLOYMENT_MANAGER_RELEASE_PACKAGE_PRODUCT_NO']}",
+        "OSS_DEPLOYMENT_MANAGER_RELEASE_VERSION": "${trigger['parameters']['OSS_DEPLOYMENT_MANAGER_RELEASE_VERSION']}",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+        "USER_CREDENTIAL_ID": "${trigger['parameters']['USER_CREDENTIAL_ID']}"
+      },
+      "refId": "Pre-Operation",
+      "requisiteStageRefIds": ["Get App Version from HelmFile"],
+      "type": "jenkins"
+    }
+  ],
+  "triggers": []
+}

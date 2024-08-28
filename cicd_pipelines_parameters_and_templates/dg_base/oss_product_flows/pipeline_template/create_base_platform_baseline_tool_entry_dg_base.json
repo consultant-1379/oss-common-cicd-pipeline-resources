@@ -1,0 +1,186 @@
+{
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "name": "SPINNAKER_PIPELINE_NAME",
+  "appConfig": {},
+  "description": "This spinnaker flow can be used to create an entry for the Base Platform version into the Baseline Tool (BLT)",
+  "keepWaitingPipelines": false,
+  "limitConcurrent": false,
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "This pipeline is maintained by Spinnaker as a code, any changes made through the UI will be overwritten. Please see https://gerrit-gamma.gic.ericsson.se/plugins/gitiles/OSS/com.ericsson.oss.aeonic/oss-integration-ci/+/refs/heads/master/docs/flows/Create-Base-Platform-Baseline-Tool-Entry.md for details",
+    "ui": true
+  },
+  "parameterConfig": [
+    {
+      "default": "",
+      "description": "Helmfile Name",
+      "hasOptions": false,
+      "label": "Helmfile Name",
+      "name": "II_INT_CHART_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Helmfile version",
+      "hasOptions": false,
+      "label": "Helmfile Version",
+      "name": "II_INT_CHART_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Helmfile repo",
+      "hasOptions": false,
+      "label": "HelmFile Repo",
+      "name": "II_INT_CHART_REPO",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Comma-separated dependency helm chart name list. E.g.: eric-pm-server, eric-data-document-database-pg",
+      "hasOptions": false,
+      "label": "Helm Chart Name",
+      "name": "CHART_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Comma-separated dependency helm chart version list. E.g.: 1.0.0+66, 2.3.0+57",
+      "hasOptions": false,
+      "label": "Helm Chart Version",
+      "name": "CHART_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "No JIRA - Automated upload",
+      "description": "Git message from the review under test",
+      "hasOptions": false,
+      "label": "Commit Message",
+      "name": "GIT_COMMIT_SUMMARY",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "Automated upload no URL available",
+      "description": "",
+      "hasOptions": false,
+      "label": "Gerrit Review URL",
+      "name": "GERRIT_CHANGE_URL",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    }
+  ],
+  "schema": "1",
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "failOnFailedExpressions": true,
+      "name": "Evaluate Parent Execution Variables",
+      "refId": "Evaluate Parent Execution Variables",
+      "requisiteStageRefIds": [],
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "name",
+          "value": "${trigger['parameters']['II_INT_CHART_NAME']}"
+        },
+        {
+          "key": "version",
+          "value": "${trigger['parameters']['II_INT_CHART_VERSION']}"
+        },
+        {
+          "key": "repo",
+          "value": "${trigger['parameters']['II_INT_CHART_REPO']}"
+        },
+        {
+          "key": "application_name",
+          "value": "${trigger['parameters']['CHART_NAME']}"
+        },
+        {
+          "key": "application_version",
+          "value": "${trigger['parameters']['CHART_VERSION']}"
+        },
+        {
+          "key": "ticket_number",
+          "value": "${trigger['parameters']['GIT_COMMIT_SUMMARY']}"
+        },
+        {
+          "key": "code_review_url",
+          "value": "${trigger['parameters']['GERRIT_CHANGE_URL']}"
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "name": "Create Baseline Tool Entry",
+      "payload": {
+        "changes": {
+          "${application_name}": "${application_version}"
+        },
+        "codeReview": "${code_review_url}",
+        "name": "${name}",
+        "repo": "${repo}",
+        "ticket": "${ticket_number}",
+        "version": "${version}"
+      },
+      "refId": "Create Baseline Tool Entry",
+      "requisiteStageRefIds": [
+        "Evaluate Parent Execution Variables"
+      ],
+      "stageEnabled": {
+        "expression": "version != '-'",
+        "type": "expression"
+      },
+      "statusUrlResolution": "getMethod",
+      "type": "webhook",
+      "url": "https://blt.ews.gic.ericsson.se/api/v1/products"
+    }
+  ],
+  "tags": [
+    {
+      "name": "BASE_PLATFORM",
+      "value": "Create-Base-Platform-Baseline-Tool-entry"
+    }
+  ],
+  "triggers": []
+}

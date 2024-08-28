@@ -1,0 +1,251 @@
+{
+  "appConfig": {},
+  "keepWaitingPipelines": false,
+  "limitConcurrent": true,
+  "maxConcurrentExecutions": 1,
+  "application": "base-platform-staging",
+  "name": "base-platform-stability-testing",
+  "description": "Template name: base-platform-stability-testing.json (base_platform/standalone_flows) in repo OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources",
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten.",
+    "ui": true
+  },
+  "parameterConfig": [
+    {
+      "default": "0.0.0",
+      "description": "Version of the EIC product will be used for the Initial Install. If 0.0.0 the latest green version will be used",
+      "hasOptions": false,
+      "label": "",
+      "name": "EIC_HELMFILE_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    }
+  ],
+  "schema": "1",
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "name": "Flow Completed",
+      "preconditions": [
+        {
+          "context": {
+            "expression": "\"${#stage('Install using Helmfile')['status']}\" == \"SUCCEEDED\" or \"${#stage('Install using Helmfile')['status']}\" == \"SKIPPED\"",
+            "failureMessage": "\"Install using Helmfile\" stage failed"
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Functional testing')['status']}\" == \"SUCCEEDED\" or \"${#stage('Functional testing')['status']}\" == \"SKIPPED\"",
+            "failureMessage": "\"Functional Testing\" stage failed"
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Check Deployment Status')['status']}\" == \"SUCCEEDED\" or \"${#stage('Check Deployment Status')['status']}\" == \"SKIPPED\"",
+            "failureMessage": "Failed in \"Check Deployment Status\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Get Env Details')['status']}\" == \"SUCCEEDED\"",
+            "failureMessage": "Failed in \"Get Env Details\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        }
+      ],
+      "refId": "35",
+      "requisiteStageRefIds": [
+        "106"
+      ],
+      "type": "checkPreconditions"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "OSS-Integration-Check-Helmfile-Deployment-Status",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Check Deployment Status",
+      "parameters": {
+        "FUNCTIONAL_USER_SECRET": "ossapps100-user-creds",
+        "INT_CHART_NAME": "eric-eiae-helmfile",
+        "INT_CHART_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm-local",
+        "INT_CHART_VERSION": "${#stage(\"Get Latest EIAP Helmfile Version\")[\"context\"][\"II_BASELINE_INT_CHART_VERSION\"]}",
+        "KUBECONFIG_FILE": "${#stage(\"Get Env Details\")[\"context\"][\"KUBE_CONFIG\"]}",
+        "NAMESPACE": "${#stage(\"Get Env Details\")[\"context\"][\"NAMESPACE\"]}",
+        "OPTIONAL_TAGS": "sef sep",
+        "PATH_TO_HELMFILE": "eric-eiae-helmfile/helmfile.yaml",
+        "SLAVE_LABEL": "evo_docker_engine_gic_IDUN",
+        "TAGS": "sef sep"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "94",
+      "requisiteStageRefIds": [
+        "96"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Get Env Details')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "OSS-Integration-Gather-Env-Details",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Get Env Details",
+      "parameters": {
+        "ENV_DETAILS_DIR": "oss-common-ci/ci-infrastructure/pooling/resources",
+        "ENV_NAME": "${#stage(\"Reserve Namespace\")[\"context\"][\"RESOURCE_NAME\"]}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "96",
+      "requisiteStageRefIds": [
+        "105"
+      ],
+      "type": "jenkins"
+    },
+    {
+      "application": "base-platform-e2e-cicd",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Install using Helmfile",
+      "pipeline": "08535c6d-871c-4b85-81bb-6f4f5c568969",
+      "pipelineParameters": {
+        "ARMDOCKER_USER_SECRET": "ossapps100-arm-docker-auth-config",
+        "DEPLOY_ALL_CRDS": "true",
+        "ENV_CONFIG_FILE": "oss-common-ci/ci-infrastructure/pooling/resources/${#stage(\"Reserve Namespace\")[\"context\"][\"RESOURCE_NAME\"]}.conf",
+        "FUNCTIONAL_USER_SECRET": "ossapps100-user-creds",
+        "HELM_TIMEOUT": "2000",
+        "INT_CHART_NAME": "eric-eiae-helmfile",
+        "INT_CHART_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm-local",
+        "INT_CHART_VERSION": "${#stage(\"Get Latest EIAP Helmfile Version\")[\"context\"][\"II_BASELINE_INT_CHART_VERSION\"]}",
+        "KUBE_CONFIG": "${#stage(\"Get Env Details\")[\"context\"][\"KUBE_CONFIG\"]}",
+        "NAMESPACE": "${#stage(\"Get Env Details\")[\"context\"][\"NAMESPACE\"]}",
+        "PATH_TO_CERTIFICATES_FILES": "oss-common-ci/${#stage('Get Env Details')['context']['PATH_TO_CERTIFICATES_FILES']}",
+        "PATH_TO_SITE_VALUES_FILE": "site-values/idun/ci/template/site-values-latest.yaml",
+        "PATH_TO_SITE_VALUES_OVERRIDE_FILE": "site-values/idun/ci/override/override-site-values-base-platform.yaml",
+        "SLAVE_LABEL": "evo_docker_engine_gic_IDUN",
+        "TAGS": "sef sep",
+        "USE_CERTM": "true",
+        "USE_DM_PREPARE": "true"
+      },
+      "refId": "99",
+      "requisiteStageRefIds": [
+        "94"
+      ],
+      "sendNotifications": false,
+      "stageEnabled": {
+        "expression": "${#stage(\"Check Deployment Status\")[\"context\"][\"SKIP_DELETION\"].contains(\"false\")} && \"${#stage('Check Deployment Status')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "application": "base-platform-e2e-cicd",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Functional testing",
+      "pipeline": "959b85f0-2c9f-4b95-a103-012b53c0b189",
+      "pipelineParameters": {
+        "BDR_HOSTNAME": "${#stage('Get Env Details')['context']['BDR_HOST_REPLACE'] ?: 'default' }",
+        "EIC_HOSTNAME": "${#stage('Get Env Details')['context']['EIC_HOST_REPLACE'] ?: 'default' }",
+        "GAS_HOSTNAME": "${#stage('Get Env Details')['context']['GAS_HOST_REPLACE'] ?: 'default' }",
+        "IAM_HOSTNAME": "${#stage('Get Env Details')['context']['EIC_HOST_REPLACE'] ?: 'default' }",
+        "KUBE_CONFIG": "${#stage('Get Env Details')['context']['KUBE_CONFIG']}",
+        "NAMESPACE": "${#stage('Get Env Details')['context']['NAMESPACE']}",
+        "RESOURCE_NAME": "${#stage('Reserve Namespace')['context']['RESOURCE_NAME']}"
+      },
+      "refId": "103",
+      "requisiteStageRefIds": [
+        "99"
+      ],
+      "stageEnabled": {
+        "expression": "('${#stage('Check Deployment Status')['status']}' == 'SUCCEEDED' or '${#stage('Check Deployment Status')['status']}' == 'SKIPPED') and (\"${#stage('Install using Helmfile')['status']}\" == \"SUCCEEDED\" or \"${#stage('Install using Helmfile')['status']}\" == \"SKIPPED\")",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "BASE-VERS_Retrieve_Baseline_Version",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Get Latest EIAP Helmfile Version",
+      "parameters": {
+        "KEY_TO_RETRIEVE_BASELINE_VERSION_OF": "II_BASELINE_INT_CHART_VERSION",
+        "SLAVE": "evo_docker_engine",
+        "SPECIFIED_VERSION_FOR_PIPELINE": "${parameters['EIC_HELMFILE_VERSION']}",
+        "VERSIONS_FILENAME": "versions"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "104",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "BP-Reserve_Namespace",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Reserve Namespace",
+      "parameters": {
+        "ENV_LABEL": "base-stability-testing",
+        "FLOW_URL": "https://spinnaker.rnd.gic.ericsson.se/#/applications/${execution['application']}/executions/details/${execution.id}",
+        "FLOW_URL_TAG": "Base Platform App Staging - Stability Testing",
+        "WAIT_TIME": "240"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "105",
+      "requisiteStageRefIds": [
+        "104"
+      ],
+      "stageTimeoutMs": 28800000,
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "OSS-Integration-Unreserve-Environment",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "UnreserveNamespace",
+      "parameters": {
+        "ENV_NAME": "${#stage(\"Reserve Namespace\")[\"context\"][\"RESOURCE_NAME\"]}"
+      },
+      "refId": "106",
+      "requisiteStageRefIds": [
+        "103"
+      ],
+      "type": "jenkins"
+    }
+  ],
+  "triggers": [
+    {
+      "cronExpression": "0 0 * ? * SAT,SUN *",
+      "enabled": true,
+      "id": "09f17d03-8378-4045-812e-2c58ac3d0d8b",
+      "type": "cron"
+    }
+  ],
+  "updateTs": "1709288472167"
+}

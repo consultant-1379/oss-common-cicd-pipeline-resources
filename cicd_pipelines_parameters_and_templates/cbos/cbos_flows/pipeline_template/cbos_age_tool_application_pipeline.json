@@ -1,0 +1,74 @@
+{
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten. Template name: cbos_age_tool_application_pipeline.json in repo https://gerrit.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources,branches. CBOS flow documention link : https://eteamspace.internal.ericsson.com/display/DGBase/CBOS+Age+Tool+Pipelines+and+Dashboard. For support contact team Regulus.",
+  "disabled": false,
+  "name": "SPINNAKER_PIPELINE_NAME",
+  "limitConcurrent": true,
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "OSS-Integration-Get-Latest-ChartOrHelmfile",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Get Latest Helmfile Version",
+      "parameters": {
+        "FUNCTIONAL_USER_SECRET": "ossapps100-user-creds",
+        "INT_CHART_NAME": "HELMFILE_INT_CHART_NAME_PARAM",
+        "INT_CHART_REPO": "HELMFILE_INT_CHART_REPO_PARAM",
+        "ARMDOCKER_USER_SECRET": "ossapps100-arm-docker-auth-config"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Get Latest Helmfile Version",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "OSS-Integration-Get-App-Version-From-Helmfile",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Get APPLICATION_ABBREVIATION Version From Helmfile",
+      "parameters": {
+        "FUNCTIONAL_USER_SECRET": "ossapps100-user-creds",
+        "INT_CHART_NAME": "HELMFILE_INT_CHART_NAME_PARAM",
+        "INT_CHART_REPO": "HELMFILE_INT_CHART_REPO_PARAM",
+        "PATH_TO_HELMFILE": "PATH_TO_HELMFILE_PARAM",
+        "STATE_VALUES_FILE": "STATE_VALUES_FILE_PARAM",
+        "INT_CHART_VERSION": "${#stage(\"Get Latest Helmfile Version\")[\"context\"][\"INT_CHART_VERSION\"]}",
+        "ARMDOCKER_USER_SECRET": "cloudman-docker-auth-config"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Get APPLICATION_ABBREVIATION Version From Helmfile",
+      "requisiteStageRefIds": [
+        "Get Latest Helmfile Version"
+      ],
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "Application_Run_CBOS_Age_Tool",
+      "master": "oss-fem4s11-eiffel216",
+      "name": "Run APPLICATION_ABBREVIATION CBOS Age Tool",
+      "parameters": {
+        "CHART_NAME": "CHART_NAME_PARAM",
+        "CHART_REPO": "CHART_REPO_PARAM",
+        "CHART_VERSION": "${#stage(\"Get APPLICATION_ABBREVIATION Version From Helmfile\")[\"context\"][\"CHART_NAME_PARAM\"]}",
+        "SLAVE": "SLAVE_PARAM"
+      },
+      "refId": "Run APPLICATION_ABBREVIATION CBOS Age Tool",
+      "requisiteStageRefIds": [
+        "Get APPLICATION_ABBREVIATION Version From Helmfile"
+      ],
+      "type": "jenkins"
+    }
+  ],
+  "triggers": [
+    {
+      "cronExpression": "0 0 RUN_TIME 1/1 * ? *",
+      "enabled": true,
+      "type": "cron"
+    }
+  ]
+}

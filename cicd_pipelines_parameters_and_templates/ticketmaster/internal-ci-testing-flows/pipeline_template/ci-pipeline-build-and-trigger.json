@@ -1,0 +1,498 @@
+{
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "name": "SPINNAKER_PIPELINE_NAME",
+  "appConfig": {},
+  "description": "The is a CI Release pipeline to be used by Team TicketMaster",
+  "disabled": false,
+  "keepWaitingPipelines": false,
+  "limitConcurrent": false,
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "This pipeline is maintained by Spinnaker as a code, any changes made through the UI will be overwritten. Please see https://gerrit-gamma.gic.ericsson.se/plugins/gitiles/OSS/com.ericsson.oss.aeonic/oss-integration-ci/+/refs/heads/master/docs/flows/Internal_CI_Test_Flow.md for details",
+    "ui": true
+  },
+  "notifications": [
+    {
+      "address": "john.mannion@ericsson.com",
+      "level": "pipeline",
+      "message": {
+        "pipeline.failed": {
+          "text": "The TicketMaster CI Release pipeline has failed on eiffel216"
+        }
+      },
+      "type": "email",
+      "when": [
+        "pipeline.failed"
+      ]
+    }
+  ],
+  "parameterConfig": [
+    {
+      "default": "ciloopman-docker-auth-config",
+      "description": "ARM Docker secret which holds the username and password to log into the ARM Docker repositories.",
+      "hasOptions": false,
+      "label": "ARM Docker Secret",
+      "name": "ARMDOCKER_USER_SECRET",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "ciloopman-user-creds",
+      "description": "Gerrit secret which holds the username and password to log into the Gerrit repositories.",
+      "hasOptions": false,
+      "label": "Gerrit User Secret",
+      "name": "GERRIT_USER_SECRET",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "eric-ci-helmfile",
+      "description": "Name of the integration chart which will be used for the Initial install",
+      "hasOptions": false,
+      "label": "",
+      "name": "HELMFILE_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "0.0.0",
+      "description": "Version of the Integration Chart which will be used for the Initial Install",
+      "hasOptions": false,
+      "label": "",
+      "name": "HELMFILE_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": " https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm-local",
+      "description": "Repo of the Integration Chart which will be used for the Initial Install",
+      "hasOptions": false,
+      "label": "",
+      "name": "HELMFILE_REPO",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "evo_docker_engine_gic",
+      "description": "Jenkins Agent to execute the flow against",
+      "hasOptions": false,
+      "label": "Jenkins Agent",
+      "name": "SLAVE_LABEL",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "armdocker.rnd.ericsson.se",
+      "description": "Registry that should be used for the deployment",
+      "hasOptions": false,
+      "label": "DOCKER_REGISTRY",
+      "name": "DOCKER_REGISTRY",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "None",
+      "description": "Docker Registry Credentials, Only should be populated if using the local registry",
+      "hasOptions": false,
+      "label": "DOCKER_REGISTRY_CREDENTIALS",
+      "name": "DOCKER_REGISTRY_CREDENTIALS",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "eo-integration-ci/honeypots/pooling/environments",
+      "description": "This is the directory within the Repo specified within the Gather-Env-Details Jenkins job where to find the pooling environment details",
+      "hasOptions": false,
+      "label": "",
+      "name": "ENV_DETAILS_DIR",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "ciloopman-user-creds",
+      "description": "Functional user for logging into armdocker",
+      "hasOptions": false,
+      "label": "",
+      "name": "FUNCTIONAL_USER_SECRET",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "1800",
+      "description": "Timeout for helmfile deploy",
+      "hasOptions": false,
+      "label": "",
+      "name": "HELM_TIMEOUT",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "site-values/idun/ci/template/site-values-latest.yaml",
+      "description": "The Path where all the necessary site values are located for the install/upgrade",
+      "hasOptions": false,
+      "label": "",
+      "name": "PATH_TO_SITE_VALUES_FILE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "site-values/idun/ci/override/override-site-values-ci-test.yaml",
+      "description": "PATH_TO_SITE_VALUES_OVERRIDE_FILE",
+      "hasOptions": false,
+      "label": "PATH_TO_SITE_VALUES_OVERRIDE_FILE",
+      "name": "PATH_TO_SITE_VALUES_OVERRIDE_FILE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "true",
+      "description": "Set this parameter to true if you wish for the environment to be quarantined if the deployment flow false",
+      "hasOptions": false,
+      "label": "",
+      "name": "QUARANTINE_ENV",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "appmgr",
+      "description": "Applications that should be switch on during deployment",
+      "hasOptions": false,
+      "label": "TAGS",
+      "name": "TAGS",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "120",
+      "description": "This is the time to wait for an Environment to become available. After the time expires the job will fail out",
+      "hasOptions": false,
+      "label": "",
+      "name": "WAIT_TIME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "eric-ci-helmfile/helmfile.yaml",
+      "description": "Path to the helmfile.yaml from the extracted helmfile.",
+      "hasOptions": false,
+      "label": "Path to the helmfile.yaml",
+      "name": "PATH_TO_HELMFILE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    }
+  ],
+  "schema": "1",
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "OSS-Integration-Release-CI",
+      "master": "CONTROLLER1",
+      "name": "Build Dev CI Docker image",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "${trigger['parameters']['ARMDOCKER_USER_SECRET']}",
+        "GERRIT_CHANGE_NUMBER": "${trigger['payload']['GERRIT_CHANGE_NUMBER']}",
+        "GERRIT_PATCHSET_NUMBER": "${trigger['payload']['GERRIT_PATCHSET_NUMBER']}",
+        "GERRIT_REFSPEC": "${trigger['payload']['GERRIT_REFSPEC']}",
+        "GERRIT_USER_SECRET": "${trigger['parameters']['GERRIT_USER_SECRET']}",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Build Dev CI Docker image",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "Gerrit-Notification",
+      "master": "CONTROLLER1",
+      "name": "Notification CI Flow Test Started",
+      "parameters": {
+        "GERRIT_CHANGE_NUMBER": "${trigger['payload']['GERRIT_CHANGE_NUMBER']}",
+        "GERRIT_PATCHSET_NUMBER": "${trigger['payload']['GERRIT_PATCHSET_NUMBER']}",
+        "Message": "CI Image Build Started, https://spinnaker.rnd.gic.ericsson.se/#/applications/${execution['application']}/executions/details/${execution['id']}"
+      },
+      "refId": "Notification CI Flow Test Started",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "eiffel052-ci-pipeline-release-main",
+      "pipeline": "EIFFEL052_CI_PIPELINE_RELEASE_MAIN_ID",
+      "pipelineParameters": {
+        "ARMDOCKER_USER_SECRET": "${trigger['parameters']['ARMDOCKER_USER_SECRET']}",
+        "CI_DOCKER_IMAGE": "${#stage('Build Dev CI Docker image')['context']['ERIC-OSS-CI-SCRIPTS_IMAGE_PATH']}:${#stage('Build Dev CI Docker image')['context']['ERIC-OSS-CI-SCRIPTS_VERSION']}",
+        "DOCKER_REGISTRY": "${trigger['parameters']['DOCKER_REGISTRY']}",
+        "DOCKER_REGISTRY_CREDENTIALS": "${trigger['parameters']['DOCKER_REGISTRY_CREDENTIALS']}",
+        "ENV_DETAILS_DIR": "\"${trigger['parameters']['ENV_DETAILS_DIR']}\"",
+        "ENV_LABEL_INSTALL": "ci_test_ticketmaster",
+        "ENV_LABEL_UPGRADE": "ci_test_upgrade_ticketmaster",
+        "FUNCTIONAL_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "GERRIT_CHANGE_NUMBER": "${trigger['payload']['GERRIT_CHANGE_NUMBER']}",
+        "GERRIT_PATCHSET_NUMBER": "${trigger['payload']['GERRIT_PATCHSET_NUMBER']}",
+        "GERRIT_PATCHSET_REVISION": "${trigger['payload']['GERRIT_PATCHSET_REVISION']}",
+        "GERRIT_REFSPEC": "${trigger['payload']['GERRIT_REFSPEC']}",
+        "GERRIT_USER_SECRET": "\"${trigger['parameters']['GERRIT_USER_SECRET']}\"",
+        "HELMFILE_NAME": "${trigger['parameters']['HELMFILE_NAME']}",
+        "HELMFILE_REPO": "${trigger['parameters']['HELMFILE_REPO']}",
+        "HELM_TIMEOUT": "\"${trigger['parameters']['HELM_TIMEOUT']}\"",
+        "PATH_TO_HELMFILE": "${trigger['parameters']['PATH_TO_HELMFILE']}",
+        "PATH_TO_SITE_VALUES_FILE": "${trigger['parameters']['PATH_TO_SITE_VALUES_FILE']}",
+        "PATH_TO_SITE_VALUES_OVERRIDE_FILE": "${trigger['parameters']['PATH_TO_SITE_VALUES_OVERRIDE_FILE']}",
+        "QUARANTINE_ENV": "${trigger['parameters']['QUARANTINE_ENV']}",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+        "TAGS": "${trigger['parameters']['TAGS']}",
+        "WAIT_TIME": "${trigger['parameters']['WAIT_TIME']}"
+      },
+      "refId": "eiffel052-ci-pipeline-release-main",
+      "requisiteStageRefIds": [
+        "Build Dev CI Docker image"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Build Dev CI Docker image')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "eiffel216-ci-pipeline-release-main",
+      "pipeline": "EIFFEL216_CI_PIPELINE_RELEASE_MAIN_ID",
+      "pipelineParameters": {
+        "ARMDOCKER_USER_SECRET": "${trigger['parameters']['ARMDOCKER_USER_SECRET']}",
+        "CI_DOCKER_IMAGE": "${#stage('Build Dev CI Docker image')['context']['ERIC-OSS-CI-SCRIPTS_IMAGE_PATH']}:${#stage('Build Dev CI Docker image')['context']['ERIC-OSS-CI-SCRIPTS_VERSION']}",
+        "DOCKER_REGISTRY": "${trigger['parameters']['DOCKER_REGISTRY']}",
+        "DOCKER_REGISTRY_CREDENTIALS": "${trigger['parameters']['DOCKER_REGISTRY_CREDENTIALS']}",
+        "ENV_DETAILS_DIR": "\"${trigger['parameters']['ENV_DETAILS_DIR']}\"",
+        "ENV_LABEL_INSTALL": "ci_test_eiffel216_ticketmaster",
+        "ENV_LABEL_UPGRADE": "ci_test_eiffel216_upgrade_ticketmaster",
+        "FUNCTIONAL_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "GERRIT_CHANGE_NUMBER": "${trigger['payload']['GERRIT_CHANGE_NUMBER']}",
+        "GERRIT_PATCHSET_NUMBER": "${trigger['payload']['GERRIT_PATCHSET_NUMBER']}",
+        "GERRIT_PATCHSET_REVISION": "${trigger['payload']['GERRIT_PATCHSET_REVISION']}",
+        "GERRIT_REFSPEC": "${trigger['payload']['GERRIT_REFSPEC']}",
+        "GERRIT_USER_SECRET": "\"${trigger['parameters']['GERRIT_USER_SECRET']}\"",
+        "HELMFILE_NAME": "${trigger['parameters']['HELMFILE_NAME']}",
+        "HELMFILE_REPO": "${trigger['parameters']['HELMFILE_REPO']}",
+        "HELM_TIMEOUT": "\"${trigger['parameters']['HELM_TIMEOUT']}\"",
+        "PATH_TO_HELMFILE": "${trigger['parameters']['PATH_TO_HELMFILE']}",
+        "PATH_TO_SITE_VALUES_FILE": "${trigger['parameters']['PATH_TO_SITE_VALUES_FILE']}",
+        "PATH_TO_SITE_VALUES_OVERRIDE_FILE": "${trigger['parameters']['PATH_TO_SITE_VALUES_OVERRIDE_FILE']}",
+        "QUARANTINE_ENV": "${trigger['parameters']['QUARANTINE_ENV']}",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+        "TAGS": "${trigger['parameters']['TAGS']}",
+        "WAIT_TIME": "${trigger['parameters']['WAIT_TIME']}"
+      },
+      "refId": "eiffel216-ci-pipeline-release-main",
+      "requisiteStageRefIds": [
+        "Build Dev CI Docker image"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Build Dev CI Docker image')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+     {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "Gerrit-Notification",
+      "master": "CONTROLLER1",
+      "name": "CI Flow Completed for eiffel052",
+      "parameters": {
+        "GERRIT_CHANGE_NUMBER": "${trigger['payload']['GERRIT_CHANGE_NUMBER']}",
+        "GERRIT_PATCHSET_NUMBER": "${trigger['payload']['GERRIT_PATCHSET_NUMBER']}",
+        "GERRIT_REFSPEC": "${trigger['payload']['GERRIT_REFSPEC']}",
+        "Message": "SUCCESS: CI Release Flow passed on eiffel052"
+      },
+      "refId": "CI Flow Completed for eiffel052",
+      "requisiteStageRefIds": [
+        "eiffel052-ci-pipeline-release-main"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('eiffel052-ci-pipeline-release-main')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "Gerrit-Notification",
+      "master": "CONTROLLER1",
+      "name": "CI Flow Completed for eiffel216",
+      "parameters": {
+        "GERRIT_CHANGE_NUMBER": "${trigger['payload']['GERRIT_CHANGE_NUMBER']}",
+        "GERRIT_PATCHSET_NUMBER": "${trigger['payload']['GERRIT_PATCHSET_NUMBER']}",
+        "GERRIT_REFSPEC": "${trigger['payload']['GERRIT_REFSPEC']}",
+        "Message": "SUCCESS: CI Release Flow passed on eiffel216"
+      },
+      "refId": "CI Flow Completed for eiffel216",
+      "requisiteStageRefIds": [
+        "eiffel216-ci-pipeline-release-main"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('eiffel216-ci-pipeline-release-main')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "Gerrit-Notification",
+      "master": "CONTROLLER1",
+      "name": "Notification CI Flow Test Failed for eiffel052",
+      "parameters": {
+        "GERRIT_CHANGE_NUMBER": "${trigger['payload']['GERRIT_CHANGE_NUMBER']}",
+        "GERRIT_PATCHSET_NUMBER": "${trigger['payload']['GERRIT_PATCHSET_NUMBER']}",
+        "GERRIT_REFSPEC": "${trigger['payload']['GERRIT_REFSPEC']}",
+        "Message": "FAILED: CI Release Flow on eiffel052",
+        "LABEL": "--label Verified=-1"
+      },
+      "refId": "Notification CI Flow Test Failed for eiffel052",
+      "requisiteStageRefIds": [
+        "eiffel052-ci-pipeline-release-main"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('eiffel052-ci-pipeline-release-main')['status']}\" == \"SKIPPED\" or \"${#stage('eiffel052-ci-pipeline-release-main')['status']}\" == \"FAILED\" or \"${#stage('eiffel052-ci-pipeline-release-main')['status']}\" == \"FAILED_CONTINUE\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "Gerrit-Notification",
+      "master": "CONTROLLER1",
+      "name": "Notification CI Flow Test Failed for eiffel216",
+      "parameters": {
+        "GERRIT_CHANGE_NUMBER": "${trigger['payload']['GERRIT_CHANGE_NUMBER']}",
+        "GERRIT_PATCHSET_NUMBER": "${trigger['payload']['GERRIT_PATCHSET_NUMBER']}",
+        "GERRIT_REFSPEC": "${trigger['payload']['GERRIT_REFSPEC']}",
+        "Message": "FAILED: CI Release Flow on eiffel216",
+        "LABEL": "--label Verified=-1"
+      },
+      "refId": "Notification CI Flow Test Failed for eiffel216",
+      "requisiteStageRefIds": [
+        "eiffel216-ci-pipeline-release-main"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('eiffel216-ci-pipeline-release-main')['status']}\" == \"SKIPPED\" or \"${#stage('eiffel216-ci-pipeline-release-main')['status']}\" == \"FAILED\" or \"${#stage('eiffel216-ci-pipeline-release-main')['status']}\" == \"FAILED_CONTINUE\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    }
+  ],
+  "tags": [
+    {
+      "name": "CONTROLLER1",
+      "value": "SPINNAKER_PIPELINE_NAME"
+    }
+  ],
+  "triggers": [
+    {
+      "enabled": true,
+      "source": "submit-ci-reviews",
+      "type": "webhook"
+    }
+  ]
+}

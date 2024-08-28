@@ -1,0 +1,7 @@
+SPINNAKER_APPLICATION_NAME,SPINNAKER_PIPELINE_NAME,EXECUTION_TIME
+idun-aas-e2e-cicd,eric-oss-ran-topology-adapter-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-oss-enm-notifcation-adapter-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-oss-enm-adapter-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-oss-enm-discovery-adapter-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-oss-enm-model-adapter-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-eas-data-document-database-pg-AAS-E2E-Flow,21:00:00

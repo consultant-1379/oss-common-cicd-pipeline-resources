@@ -1,0 +1,708 @@
+{
+  "appConfig": {},
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten. Template name: Baseline_Staging.json in repo https://gerrit-gamma.gic.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources",
+  "disabled": false,
+  "name": "APP_SHORT_NAME_UPPERCASE_Baseline_Staging",
+  "keepWaitingPipelines": true,
+  "limitConcurrent": false,
+  "notifications": [],
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+    "ui": true
+  },
+  "parameterConfig": [
+    {
+      "default": "APP_CHART_GERRIT_PROJECT_PARAMETER",
+      "description": "Link to Application chart repository",
+      "hasOptions": false,
+      "label": "",
+      "name": "APP_CHART_GERRIT_PROJECT",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "APP_CHART_NAME_PARAMETER",
+      "description": "Application chart name",
+      "hasOptions": false,
+      "label": "",
+      "name": "APP_CHART_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Name of the microservice chart within the integration chart",
+      "hasOptions": false,
+      "label": "",
+      "name": "CHART_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "",
+      "description": "Repo of the microservice chart within the integration chart",
+      "hasOptions": false,
+      "label": "",
+      "name": "CHART_REPO",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "",
+      "description": "Version of the microservice chart within the integration chart",
+      "hasOptions": false,
+      "label": "",
+      "name": "CHART_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "ENV_LABEL_PARAMETER",
+      "description": "This is the label to search for that is attached to the environments in the Lockable Resource Plugin on Jenkins",
+      "hasOptions": false,
+      "label": "",
+      "name": "ENV_LABEL",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "master",
+      "description": "Gerrit Branch is used by Inca to pull down a code review to build a new OSS Common Base",
+      "hasOptions": false,
+      "label": "",
+      "name": "GERRIT_BRANCH",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "",
+      "description": "URL associated with the gerrit change",
+      "hasOptions": false,
+      "label": "",
+      "name": "GERRIT_CHANGE_URL",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "",
+      "description": "Revision string for the gerrit review. Example: Ieec3b0b65fcdf30872befa2e9ace06e96cd487b4 ",
+      "hasOptions": false,
+      "label": "",
+      "name": "GERRIT_PATCHSET_REVISION",
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "",
+      "description": "Gerrit REF Spec is used by Inca to pull down a code review to build a new OSS Common Base",
+      "hasOptions": false,
+      "label": "",
+      "name": "GERRIT_REFSPEC",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "",
+      "description": "Summary of the GIT commit",
+      "hasOptions": false,
+      "label": "",
+      "name": "GIT_COMMIT_SUMMARY",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "HELM_TIMEOUT_PARAMETER",
+      "description": "Timeout for helmfile deploy",
+      "hasOptions": false,
+      "label": "",
+      "name": "HELM_TIMEOUT",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "0.0.0",
+      "description": "Version of the Integration Chart which will be used for the Initial Install",
+      "hasOptions": false,
+      "label": "",
+      "name": "II_INT_CHART_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "PATH_TO_SITE_VALUES_OVERRIDE_FILE_PARAMETER",
+      "description": "Path within the Repo to the location of the site values override file. Content of this file will override the content for the site values set in the FULL_PATH_TO_SITE_VALUES_FILE paramater.",
+      "hasOptions": false,
+      "label": "",
+      "name": "PATH_TO_SITE_VALUES_OVERRIDE_FILE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "false",
+      "description": "Set this parameter to true if you wish for the environment to be quarantined if the deployment flow false",
+      "hasOptions": false,
+      "label": "",
+      "name": "QUARANTINE_ENV",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "App_Staging",
+      "description": "RCR Tag is used to identify the environment by Report Center Registration Stage",
+      "hasOptions": false,
+      "label": "",
+      "name": "RCR_TAG",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "false",
+      "description": "If set to true - new Application chart will not be released.  We can use that when ADP dependent chart version comes with \"-\" and we want to include in chart only \"+\" drops",
+      "hasOptions": true,
+      "label": "",
+      "name": "SKIP_CHART_RELEASE",
+      "options": [
+        {
+          "value": "true"
+        },
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "SKIP_PRE_TESTING_PARAMETER",
+      "description": "",
+      "hasOptions": true,
+      "label": "",
+      "name": "SKIP_PRE_TESTING",
+      "options": [
+        {
+          "value": "false"
+        },
+        {
+          "value": "true"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "TAGS_PARAMETERS",
+      "description": "Site values tags which has to be set to true during deployment",
+      "hasOptions": false,
+      "label": "",
+      "name": "TAGS",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "false",
+      "description": "If set to true, it uses the dependency cache directory within /local/cachedir to push and pull dependency from",
+      "hasOptions": false,
+      "label": "",
+      "name": "USE_DEPENDENCY_CACHE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    }
+  ],
+  "schema": "1",
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "BASE-VERS_Retrieve_Baseline_Version",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Get Helmfile Version for II",
+      "parameters": {
+        "KEY_TO_RETRIEVE_BASELINE_VERSION_OF": "II_BASELINE_INT_CHART_VERSION",
+        "SLAVE": "evo_docker_engine",
+        "SPECIFIED_VERSION_FOR_PIPELINE": "${parameters['II_INT_CHART_VERSION']}",
+        "VERSIONS_FILENAME": "versions"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "51",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "OSS-Integration-Fetch-Build-Upload-Using-ADP-Inca",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Helmfile Fetch Build Upload Snapshot",
+      "parameters": {
+        "ALLOW_DOWNGRADE": "false",
+        "APP_NAME": "",
+        "ARMDOCKER_USER_SECRET": "ossapps100-arm-docker-auth-config",
+        "CHART_NAME": "${#stage(\"Check For CRDs\")[\"context\"][\"CHART_NAME\"]}",
+        "CHART_PATH": "helmfile",
+        "CHART_REPO": "${#stage(\"Check For CRDs\")[\"context\"][\"CHART_REPO\"]}",
+        "CHART_VERSION": "${#stage(\"Check For CRDs\")[\"context\"][\"CHART_VERSION\"]}",
+        "GERRIT_PROJECT": "OSS/com.ericsson.oss.eiae/eiae-helmfile",
+        "GERRIT_USER_SECRET": "ossapps100-user-creds",
+        "GIT_REPO_URL": "https://gerrit-gamma.gic.ericsson.se/a/OSS/com.ericsson.oss.eiae/eiae-helmfile.git",
+        "HELM_DROP_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm-local",
+        "HELM_INTERNAL_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-ci-internal-helm-local",
+        "HELM_RELEASED_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-released-helm-local",
+        "HELM_REPO_CREDENTIALS_ID": "ossapps100_helm_repository_creds_file",
+        "SPINNAKER_PIPELINE_ID": "${execution['id']}",
+        "STATE_VALUES_FILE": "site-values/idun/ci/override/override-site-values-helmfile-template.yaml",
+        "VCS_BRANCH": "${#stage(\"Get Helmfile Version for II\")[\"context\"][\"II_BASELINE_INT_CHART_VERSION\"]}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "69",
+      "requisiteStageRefIds": [
+        "105"
+      ],
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "OSS-Integration-Common-Testing",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Pre Code Test",
+      "notifications": [
+        {
+          "address": "${trigger.parentExecution.stages.?[ name == 'APP_SHORT_NAME_UPPERCASE_Application_Staging' ][0].context.notifications[0].address}",
+          "level": "stage",
+          "message": {
+            "stage.failed": {
+              "text": "Please check failed PreCode job: ${#stage('Pre Code Test').context.buildInfo.url}"
+            }
+          },
+          "type": "email",
+          "when": [
+            "stage.failed"
+          ]
+        }
+      ],
+      "parameters": {
+        "APP_NAME": "${parameters['APP_CHART_NAME']}",
+        "ARMDOCKER_USER_SECRET": "ossapps100-arm-docker-auth-config",
+        "CHART_NAME": "${parameters['CHART_NAME']}",
+        "CHART_PATH": "charts/${parameters['APP_CHART_NAME']}",
+        "CHART_REPO": "${parameters['CHART_REPO']}",
+        "CHART_VERSION": "${parameters['CHART_VERSION']}",
+        "GERRIT_PATCHSET_REVISION": "${parameters['GERRIT_PATCHSET_REVISION']}",
+        "GERRIT_PROJECT": "${parameters['APP_CHART_GERRIT_PROJECT']}",
+        "GERRIT_REFSPEC": "${parameters['GERRIT_REFSPEC']}",
+        "GERRIT_USER_SECRET": "ossapps100-user-creds",
+        "GIT_REPO_URL": "https://gerrit-gamma.gic.ericsson.se/a/${parameters['APP_CHART_GERRIT_PROJECT']}.git",
+        "HELM_REPO_CREDENTIALS_ID": "ossapps100_helm_repository_creds_file",
+        "VCS_BRANCH": "${parameters['GERRIT_BRANCH']}"
+      },
+      "propertyFile": "",
+      "refId": "77",
+      "requisiteStageRefIds": [],
+      "sendNotifications": true,
+      "stageTimeoutMs": 1200000,
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "OSS-Integration-Package-Chart-Using-CIHelm",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Fetch Build Upload APP Snapshot",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "ossapps100-arm-docker-auth-config",
+        "CHART_NAME": "${parameters['CHART_NAME']}",
+        "CHART_PATH": "charts/${parameters['APP_CHART_NAME']}",
+        "CHART_REPO": "${parameters['CHART_REPO']}",
+        "CHART_VERSION": "${parameters['CHART_VERSION']}",
+        "DEPENDENCY_CACHE_DIRECTORY": "/local/cachedir",
+        "FUNCTIONAL_USER_TOKEN": "eo-helm-repo-api-token",
+        "GERRIT_PROJECT": "${parameters['APP_CHART_GERRIT_PROJECT']}",
+        "GERRIT_REFSPEC": "${parameters['GERRIT_REFSPEC']}",
+        "GERRIT_USER_SECRET": "ossapps100-user-creds",
+        "GIT_REPO_URL": "https://gerrit-gamma.gic.ericsson.se/a/${parameters['APP_CHART_GERRIT_PROJECT']}.git",
+        "HELM_INTERNAL_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-ci-internal-helm-local",
+        "HELM_REPO_CREDENTIALS_ID": "ossapps100_helm_repository_creds_file",
+        "SLAVE_LABEL": "evo_docker_cached_chart_build",
+        "USE_DEPENDENCY_CACHE": "${parameters['USE_DEPENDENCY_CACHE']}",
+        "VCS_BRANCH": "${parameters['GERRIT_BRANCH']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "78",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "OSS-Integration-Release-Using-ADP-Inca",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Fetch Build Upload Release",
+      "parameters": {
+        "ALLOW_DOWNGRADE": "false",
+        "ALWAYS_RELEASE": "true",
+        "APP_NAME": "${parameters['APP_CHART_NAME']}",
+        "ARMDOCKER_USER_SECRET": "ossapps100-arm-docker-auth-config",
+        "AUTOMATIC_RELEASE": "false",
+        "CHART_NAME": "${parameters['CHART_NAME']}",
+        "CHART_PATH": "charts/${parameters['APP_CHART_NAME']}",
+        "CHART_REPO": "${parameters['CHART_REPO']}",
+        "CHART_VERSION": "${parameters['CHART_VERSION']}",
+        "CI_HELM": "true",
+        "GERRIT_PREPARE_OR_PUBLISH": "publish",
+        "GERRIT_REFSPEC": "${parameters['GERRIT_REFSPEC']}",
+        "GERRIT_USER_SECRET": "ossapps100-user-creds",
+        "GIT_REPO_URL": "https://gerrit-gamma.gic.ericsson.se/a/${parameters['APP_CHART_GERRIT_PROJECT']}.git",
+        "HELM_DROP_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm-local",
+        "HELM_INTERNAL_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-ci-internal-helm-local",
+        "HELM_RELEASED_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm-local",
+        "HELM_REPO_API_TOKEN": "eo-helm-repo-api-token",
+        "HELM_REPO_CREDENTIALS_ID": "ossapps100_helm_repository_creds_file",
+        "STATE_VALUES_FILE": "site-values/idun/ci/override/override-site-values-helmfile-template.yaml",
+        "VCS_BRANCH": "${parameters['GERRIT_BRANCH']}",
+        "VERSION_STEP_STRATEGY_DEPENDENCY": "MINOR",
+        "VERSION_STEP_STRATEGY_MANUAL": "MINOR",
+        "WAIT_SUBMITTABLE_BEFORE_PUBLISH": "false"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "81",
+      "requisiteStageRefIds": [
+        "116"
+      ],
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "Staging-Report-Register",
+      "master": "oss-fem4s11-eiffel216",
+      "name": "Report Center Registration",
+      "parameters": {
+        "EXEC_ID": "${execution.id}"
+      },
+      "refId": "Report_Center_Registration",
+      "requisiteStageRefIds": [],
+      "type": "jenkins",
+      "waitForCompletion": false
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "method": "POST",
+      "name": "Create Pipeline Execution Dashboard Entry",
+      "notifications": [
+        {
+          "address": "2d8c65d4.ericsson.onmicrosoft.com@emea.teams.ms",
+          "level": "stage",
+          "type": "email",
+          "when": [
+            "stage.failed"
+          ]
+        }
+      ],
+      "payload": {
+        "applicationName": "${execution.trigger.parameters.APP_CHART_NAME}",
+        "chartReleaseSkipped": "${execution.trigger.parameters.SKIP_CHART_RELEASE.toString()}",
+        "executionId": "${execution.id}",
+        "gitCommitSummary": "${execution.trigger.parameters.GIT_COMMIT_SUMMARY.toString()}",
+        "links": [
+          {
+            "href": "https://spinnaker.rnd.gic.ericsson.se/#/applications/${execution.application}/executions/details/${execution.id}",
+            "rel": "Spinnaker Execution"
+          },
+          {
+            "href": "${execution.trigger.parameters.GERRIT_CHANGE_URL.contains('https://') ? execution.trigger.parameters.GERRIT_CHANGE_URL : 'https://'+execution.trigger.parameters.GERRIT_CHANGE_URL}",
+            "rel": "${execution.trigger.parameters.GERRIT_CHANGE_URL.contains('https://') ? 'Gerrit Commit URL' : 'Invalid Gerrit Commit URL'}"
+          }
+        ],
+        "microserviceName": "${(execution.trigger.parameters.CHART_NAME != '') and (execution.trigger.parameters.CHART_NAME != 'None') ? execution.trigger.parameters.CHART_NAME : 'N/A'}",
+        "microserviceVersion": "${(execution.trigger.parameters.CHART_VERSION != '') and (execution.trigger.parameters.CHART_VERSION != 'None') ? execution.trigger.parameters.CHART_VERSION : 'N/A'}",
+        "pipelineExecutionProperties": {
+          "executionType": "${execution.trigger.parameters.SKIP_CHART_RELEASE.toString()=='false'?'Release Loop':'Non-Release Loop'}"
+        },
+        "productName": "N/A",
+        "productVersion": "N/A",
+        "spinnakerApplication": "${execution.application}",
+        "spinnakerPipelineName": "${execution.name}",
+        "stagingArea": "APPLICATION",
+        "start": "${new java.text.SimpleDateFormat(\"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'\").format(new java.util.Date(execution['startTime']))}",
+        "status": "${execution.status}",
+        "testwareVersion": "N/A"
+      },
+      "refId": "Create Pipeline Execution Dashboard Entry",
+      "requisiteStageRefIds": [],
+      "statusUrlResolution": "getMethod",
+      "type": "webhook",
+      "url": "https://ped.ews.gic.ericsson.se/api/v1/pipeline-executions"
+    },
+    {
+      "application": "baselinetoolapp",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Create Baseline Tool Microservice Entry",
+      "pipeline": "1f36b9d9-5eff-4304-8a46-61e5a558fc34",
+      "pipelineParameters": {
+        "codeReview": "${execution.trigger.parameters.GERRIT_CHANGE_URL}",
+        "name": "${execution.trigger.parameters.CHART_NAME}",
+        "ticket": "${execution.trigger.parameters.GIT_COMMIT_SUMMARY}",
+        "version": "${execution.trigger.parameters.CHART_VERSION}"
+      },
+      "refId": "103",
+      "requisiteStageRefIds": [],
+      "stageEnabled": {
+        "expression": "execution.trigger.parameters['CHART_NAME'] != '' && execution.trigger.parameters['CHART_VERSION'] != '' && !execution.trigger.parameters['SKIP_CHART_RELEASE']",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": false
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "OSS-Integration-Check-For-CRDS",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Check For CRDs",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "ossapps100-arm-docker-auth-config",
+        "CHART_NAME": "${#stage(\"Fetch Build Upload APP Snapshot\")[\"context\"][\"INT_CHART_NAME\"]}",
+        "CHART_REPO": "${#stage(\"Fetch Build Upload APP Snapshot\")[\"context\"][\"INT_CHART_REPO\"]}",
+        "CHART_VERSION": "${#stage(\"Fetch Build Upload APP Snapshot\")[\"context\"][\"INT_CHART_VERSION\"]}",
+        "FUNCTIONAL_USER_SECRET": "ossapps100-user-creds",
+        "HELMFILE_CHART_VERSION": "${#stage(\"Get Helmfile Version for II\")[\"context\"][\"II_BASELINE_INT_CHART_VERSION\"]}",
+        "SPINNAKER_PIPELINE_ID": "${execution.id}"
+      },
+      "propertyFile": "crd_details_artifact.properties",
+      "refId": "105",
+      "requisiteStageRefIds": [
+        "78",
+        "51",
+        "117"
+      ],
+      "type": "jenkins"
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Upgrade_flow",
+      "pipeline": "DEPLOYMENT_VERIFICATION_PIPELINE_ID",
+      "pipelineParameters": {
+        "APP_CHART_GERRIT_PROJECT": "${parameters['APP_CHART_GERRIT_PROJECT']}",
+        "ENV_LABEL": "${parameters.ENV_LABEL}",
+        "FLOW_URL_TAG": "APP_SHORT_NAME_UPPERCASE_${#currentStage().name}",
+        "HELMFILE_FOR_TESTING_REPO": "${#stage(\"Helmfile Fetch Build Upload Snapshot\")[\"context\"][\"INT_CHART_REPO\"]}",
+        "HELMFILE_FOR_TESTING_VERSION": "${#stage(\"Helmfile Fetch Build Upload Snapshot\")[\"context\"][\"INT_CHART_VERSION\"]}",
+        "HELM_TIMEOUT": "${parameters.HELM_TIMEOUT}",
+        "II_HELMFILE_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm-local",
+        "II_HELMFILE_VERSION": "${#stage(\"Get Helmfile Version for II\")[\"context\"][\"II_BASELINE_INT_CHART_VERSION\"]}",
+        "NEEDS_INSTALL_TESTING": "false",
+        "NEEDS_UPGRADE_TESTING": "true",
+        "PATH_TO_SITE_VALUES_OVERRIDE_FILE": "${parameters.PATH_TO_SITE_VALUES_OVERRIDE_FILE}",
+        "QUARANTINE_ENV": "${parameters.QUARANTINE_ENV}",
+        "SKIP_PRE_TESTING": "${parameters.SKIP_PRE_TESTING}",
+        "TAGS": "${parameters.TAGS}"
+      },
+      "refId": "114",
+      "requisiteStageRefIds": [
+        "69",
+        "77"
+      ],
+      "stageEnabled": {
+        "expression": "${TRIGGER_UPGRADE_FLOW}",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Install_flow",
+      "pipeline": "DEPLOYMENT_VERIFICATION_PIPELINE_ID",
+      "pipelineParameters": {
+        "APP_CHART_GERRIT_PROJECT": "${parameters['APP_CHART_GERRIT_PROJECT']}",
+        "ENV_LABEL": "shared",
+        "FLOW_URL_TAG": "APP_SHORT_NAME_UPPERCASE_${#currentStage().name}",
+        "HELMFILE_FOR_TESTING_REPO": "${#stage(\"Helmfile Fetch Build Upload Snapshot\")[\"context\"][\"INT_CHART_REPO\"]}",
+        "HELMFILE_FOR_TESTING_VERSION": "${#stage(\"Helmfile Fetch Build Upload Snapshot\")[\"context\"][\"INT_CHART_VERSION\"]}",
+        "HELM_TIMEOUT": "${parameters.HELM_TIMEOUT}",
+        "II_HELMFILE_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm-local",
+        "II_HELMFILE_VERSION": "${#stage(\"Get Helmfile Version for II\")[\"context\"][\"II_BASELINE_INT_CHART_VERSION\"]}",
+        "NEEDS_INSTALL_TESTING": "true",
+        "NEEDS_UPGRADE_TESTING": "false",
+        "PATH_TO_SITE_VALUES_OVERRIDE_FILE": "${parameters.PATH_TO_SITE_VALUES_OVERRIDE_FILE}",
+        "QUARANTINE_ENV": "${parameters.QUARANTINE_ENV}",
+        "SKIP_PRE_TESTING": "${parameters.SKIP_PRE_TESTING}",
+        "TAGS": "${parameters.TAGS}"
+      },
+      "refId": "115",
+      "requisiteStageRefIds": [
+        "69",
+        "77"
+      ],
+      "stageEnabled": {
+        "expression": "${TRIGGER_INSTALL_FLOW}",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "name": "Check Release Preconditions",
+      "preconditions": [
+        {
+          "context": {
+            "expression": "\"${#stage('Upgrade_flow')['status']}\" == \"SUCCEEDED\" OR \"${#stage('Upgrade_flow')['status']}\" == \"SKIPPED\"",
+            "failureMessage": "Upgrade_flow stage failed"
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Install_flow')['status']}\" == \"SUCCEEDED\" OR \"${#stage('Install_flow')['status']}\" == \"SKIPPED\"",
+            "failureMessage": "Install_flow stage failed"
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${parameters['SKIP_CHART_RELEASE']}\" == \"false\"",
+            "failureMessage": "SKIP_CHART_RELEASE parameter set to \"true\""
+          },
+          "failPipeline": false,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${ parameters['CHART_NAME'].contains('eric-oss-common-topology-svc')}\" == \"false\"",
+            "failureMessage": "Skip chart release for \"eric-oss-common-topology-svc\" microservice deliveries"
+          },
+          "failPipeline": false,
+          "type": "expression"
+        }
+      ],
+      "refId": "116",
+      "requisiteStageRefIds": [
+        "114",
+        "115"
+      ],
+      "type": "checkPreconditions"
+    },
+    {
+      "failOnFailedExpressions": true,
+      "name": "Evaluate Variables",
+      "refId": "117",
+      "requisiteStageRefIds": [],
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "TRIGGER_INSTALL_FLOW",
+          "value": "${ parameters.CHART_NAME == 'eric-oss-common-topology-svc' || (parameters.APP_CHART_NAME == 'eric-topology-handling' && parameters.CHART_NAME == '')}"
+        },
+        {
+          "key": "TRIGGER_UPGRADE_FLOW",
+          "value": "true"
+        }
+      ]
+    }
+  ],
+  "triggers": []
+}

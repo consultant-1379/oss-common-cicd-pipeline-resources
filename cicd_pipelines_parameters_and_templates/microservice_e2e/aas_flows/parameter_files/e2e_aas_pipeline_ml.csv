@@ -1,0 +1,4 @@
+SPINNAKER_APPLICATION_NAME,SPINNAKER_PIPELINE_NAME,EXECUTION_TIME
+idun-aas-e2e-cicd,eric-ml-data-document-database-pg-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-aiml-model-lcm-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-aiml-model-lcm-crd-AAS-E2E-Flow,21:00:00

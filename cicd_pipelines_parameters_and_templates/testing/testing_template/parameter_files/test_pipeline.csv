@@ -1,0 +1,3 @@
+SPINNAKER_APPLICATION_NAME,SPINNAKER_PIPELINE_NAME,TRIGGER_JOB_NAME,TRIGGER_FEM_CONTROLLER,APPLICATION_STAGING_NAME,APPLICATION_STAGING_JOB_NAME,APPLICATION_STAGING_FEM_CONTROLLER,APPLICATION_STAGING_EMAIL_CC,AAS_FEM_CONTROLLER
+thunderbeetest,eric-oss-apex-E2E-Flow,apex_Release,oss-aispinn-fem2s11-eiffel052,PF_Application_Staging,PF_baseline_Staging,oss-aispinn-fem2s11-eiffel052,PDLGITOSCA@pdl.internal.ericsson.com,oss-aeonic-fem2s11
+thunderbeetest,eric-oss-mariadb-E2E-Flow,Maria_DB_Release,oss-aispinn-fem2s11-eiffel052,PF_Application_Staging,PF_baseline_Staging,oss-aispinn-fem2s11-eiffel052,PDLGITOSCA@pdl.internal.ericsson.com,oss-aeonic-fem2s11

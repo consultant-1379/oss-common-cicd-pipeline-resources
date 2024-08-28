@@ -1,0 +1,592 @@
+{
+  "appConfig": {},
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten. Template name: Deployment_verification.json in repo https://gerrit.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources",
+  "disabled": false,
+  "name": "Deployment_verification",
+  "keepWaitingPipelines": true,
+  "limitConcurrent": false,
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+    "ui": true
+  },
+  "notifications": [],
+  "parameterConfig": [
+    {
+      "default": "APP_CHART_GERRIT_PROJECT_PARAMETER",
+      "description": "Link to Application chart repository",
+      "hasOptions": false,
+      "label": "",
+      "name": "APP_CHART_GERRIT_PROJECT",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "ENV_LABEL_PARAMETER",
+      "description": "This is the label to search for that is attached to the environments in the Lockable Resource Plugin on Jenkins",
+      "hasOptions": false,
+      "label": "",
+      "name": "ENV_LABEL",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "APP_SHORT_NAME_UPPERCASE Staging",
+      "description": "Flow URL Tag is used when locking the environment to add a tag to describe what has locked the environment for easier tracking",
+      "hasOptions": false,
+      "label": "",
+      "name": "FLOW_URL_TAG",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "eric-eiae-helmfile",
+      "description": "",
+      "hasOptions": false,
+      "label": "",
+      "name": "HELMFILE_NAME",
+      "options": [],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-ci-internal-helm-local",
+      "description": "Repo for helmfile which contains a change that has to be tested (with Upgrade or Install). Usually point to helmfile snapshot repository.",
+      "hasOptions": false,
+      "label": "",
+      "name": "HELMFILE_FOR_TESTING_REPO",
+      "options": [],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Version of helmfile which contains a change that has to be tested (with Upgrade or Install).",
+      "hasOptions": false,
+      "label": "",
+      "name": "HELMFILE_FOR_TESTING_VERSION",
+      "options": [
+        {
+          "value": "false"
+        },
+        {
+          "value": "true"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "HELM_TIMEOUT_PARAMETER",
+      "description": "Timeout for helmfile deploy",
+      "hasOptions": false,
+      "label": "",
+      "name": "HELM_TIMEOUT",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm-local",
+      "description": "Usually stable, drop helmfile repo",
+      "hasOptions": false,
+      "label": "",
+      "name": "II_HELMFILE_REPO",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Version from which upgrade has to be tested. Should be a valid version",
+      "hasOptions": false,
+      "label": "",
+      "name": "II_HELMFILE_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "false",
+      "description": "Set to \"true\" if change has to be tested with installation",
+      "hasOptions": true,
+      "label": "",
+      "name": "NEEDS_INSTALL_TESTING",
+      "options": [
+        {
+          "value": "true"
+        },
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "true",
+      "description": "Check if change(helmfile snapshot) has to be tested with upgrade",
+      "hasOptions": true,
+      "label": "",
+      "name": "NEEDS_UPGRADE_TESTING",
+      "options": [
+        {
+          "value": "true"
+        },
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "PATH_TO_SITE_VALUES_FILE_PARAMETER",
+      "description": "The Path where all the necessary site values are located for the install/upgrade",
+      "hasOptions": false,
+      "label": "",
+      "name": "PATH_TO_SITE_VALUES_FILE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "PATH_TO_SITE_VALUES_OVERRIDE_FILE_PARAMETER",
+      "description": "Path within the Repo to the location of the site values override file. Content of this file will override the content for the site values set in the FULL_PATH_TO_SITE_VALUES_FILE paramater.",
+      "hasOptions": false,
+      "label": "",
+      "name": "PATH_TO_SITE_VALUES_OVERRIDE_FILE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "false",
+      "description": "Set this parameter to true if you wish for the environment to be quarantined if the deployment flow false",
+      "hasOptions": true,
+      "label": "",
+      "name": "QUARANTINE_ENV",
+      "options": [
+        {
+          "value": "true"
+        },
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "SKIP_PRE_TESTING_PARAMETER",
+      "description": "",
+      "hasOptions": true,
+      "label": "",
+      "name": "SKIP_PRE_TESTING",
+      "options": [
+        {
+          "value": "false"
+        },
+        {
+          "value": "true"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "TAGS_PARAMETERS",
+      "description": "Site values tags which has to be set to true during deployment",
+      "hasOptions": false,
+      "label": "",
+      "name": "TAGS",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "120",
+      "description": "This is the time to wait for an Environment to become available. After the time expires the \"Reserve Namespace\" job will fail out",
+      "hasOptions": false,
+      "label": "",
+      "name": "WAIT_TIME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "App_Staging_Child_Flow",
+      "description": "RCR Tag is used to identify the environment by Report Center Registration Stage",
+      "hasOptions": false,
+      "label": "",
+      "name": "RCR_TAG",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "gas-user",
+      "description": "The value for the GAS user username",
+      "hasOptions": false,
+      "label": "",
+      "name": "GAS_USER_USERNAME",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "Ericsson123!",
+      "description": "The value for the GAS user password",
+      "hasOptions": false,
+      "label": "",
+      "name": "GAS_USER_PASSWORD",
+      "pinned": true,
+      "required": true
+    }
+  ],
+  "schema": "1",
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failPipeline": true,
+      "name": "Post Upgrade Testing",
+      "pipeline": "POST_UPGRADE_TESTING_PIPELINE_ID",
+      "pipelineParameters": {
+        "GAS_HOSTNAME": "${#stage('Get Env Details')['context']['GAS_HOST_REPLACE']}",
+        "IAM_HOSTNAME": "${#stage('Get Env Details')['context']['IAM_HOST_REPLACE']}",
+        "KUBE_CONFIG": "${#stage('Get Env Details')['context']['KUBE_CONFIG']}",
+        "NAMESPACE": "${#stage('Get Env Details')['context']['NAMESPACE']}",
+        "RESOURCE_NAME": "${#stage('Reserve Namespace')['context']['RESOURCE_NAME']}"
+      },
+      "refId": "Post Upgrade Testing",
+      "requisiteStageRefIds": [
+        "Upgrade using Helmfile"
+      ],
+      "stageTimeoutMs": 12600000,
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "APP_SHORT_NAME_UPPERCASE-Reserve_Namespace",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Reserve Namespace",
+      "parameters": {
+        "ENV_LABEL": "${parameters['ENV_LABEL']}",
+        "FLOW_URL": "https://spinnaker.rnd.gic.ericsson.se/#/applications/${execution['application']}/executions/details/${execution.id}",
+        "FLOW_URL_TAG": "${parameters['FLOW_URL_TAG']}",
+        "WAIT_TIME": "${parameters['WAIT_TIME']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Reserve Namespace",
+      "requisiteStageRefIds": [],
+      "stageTimeoutMs": 14400000,
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failOnFailedExpressions": false,
+      "failPipeline": true,
+      "job": "OSS-Integration-Helmfile-Deploy",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Upgrade using Helmfile",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "ossapps100-arm-docker-auth-config",
+        "CRD_NAMESPACE": "eric-crd-ns",
+        "DDP_AUTO_UPLOAD": "${DDP_AUTO_UPLOAD}",
+        "DEPLOYMENT_TYPE": "upgrade",
+        "DEPLOY_ALL_CRDS": "true",
+        "ENV_CONFIG_FILE": "oss-common-ci/ci-infrastructure/pooling/resources/${#stage(\"Reserve Namespace\")[\"context\"][\"RESOURCE_NAME\"]}.conf",
+        "FULL_PATH_TO_SITE_VALUES_FILE": "${parameters['PATH_TO_SITE_VALUES_FILE']}",
+        "FUNCTIONAL_USER_SECRET": "ossapps100-user-creds",
+        "HELM_TIMEOUT": "${parameters['HELM_TIMEOUT']}",
+        "INT_CHART_NAME": "${parameters.HELMFILE_NAME}",
+        "INT_CHART_REPO": "${parameters.HELMFILE_FOR_TESTING_REPO}",
+        "INT_CHART_VERSION": "${parameters.HELMFILE_FOR_TESTING_VERSION}",
+        "KUBECONFIG_FILE": "${#stage(\"Get Env Details\")[\"context\"][\"KUBE_CONFIG\"]}",
+        "NAMESPACE": "${#stage(\"Get Env Details\")[\"context\"][\"NAMESPACE\"]}",
+        "PATH_TO_CERTIFICATES_FILES": "oss-common-ci/${#stage('Get Env Details')['context']['PATH_TO_CERTIFICATES_FILES']}",
+        "PATH_TO_SITE_VALUES_OVERRIDE_FILE": "${parameters['PATH_TO_SITE_VALUES_OVERRIDE_FILE']}",
+        "TAGS": "${parameters['TAGS']}",
+        "USE_CERTM": "true",
+        "USE_DM_PREPARE": "true",
+        "USE_SKIP_UPGRADE_FOR_UNCHANGED_RELEASES": "true"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Upgrade using Helmfile",
+      "requisiteStageRefIds": [
+        "Pre Upgrade Steps"
+      ],
+      "stageEnabled": {
+        "expression": "${parameters.NEEDS_UPGRADE_TESTING} == true",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failPipeline": true,
+      "name": "Pre Upgrade Testing",
+      "pipeline": "PRE_UPGRADE_TESTING_PIPELINE_ID",
+      "pipelineParameters": {
+        "GAS_HOSTNAME": "${#stage('Get Env Details')['context']['GAS_HOST_REPLACE']}",
+        "IAM_HOSTNAME": "${#stage('Get Env Details')['context']['IAM_HOST_REPLACE']}",
+        "KUBE_CONFIG": "${#stage('Get Env Details')['context']['KUBE_CONFIG']}",
+        "NAMESPACE": "${#stage('Get Env Details')['context']['NAMESPACE']}",
+        "RESOURCE_NAME": "${#stage('Reserve Namespace')['context']['RESOURCE_NAME']}"
+      },
+      "refId": "Pre Upgrade Testing",
+      "requisiteStageRefIds": [
+        "NeLS installation verification"
+      ],
+      "stageEnabled": {
+        "expression": "${parameters['SKIP_PRE_TESTING']} == false",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "comments": "We need that stage for upgrades only, to check if deployment in namespace can be used to perform upgrade from it.",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "OSS-Integration-Check-Helmfile-Deployment-Status",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Check Deployment Status",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "ossapps100-arm-docker-auth-config",
+        "CHECK_FULL_VERSION": "false",
+        "FUNCTIONAL_USER_SECRET": "ossapps100-user-creds",
+        "INT_CHART_REPO": "${parameters.II_HELMFILE_REPO}",
+        "INT_CHART_VERSION": "${parameters.II_HELMFILE_VERSION}",
+        "KUBECONFIG_FILE": "${#stage(\"Get Env Details\")[\"context\"][\"KUBE_CONFIG\"]}",
+        "NAMESPACE": "${#stage(\"Get Env Details\")[\"context\"][\"NAMESPACE\"]}",
+        "OPTIONAL_TAGS": "${parameters['TAGS']}",
+        "PATH_TO_HELMFILE": "${parameters.HELMFILE_NAME}/helmfile.yaml",
+        "TAGS": "${parameters['TAGS']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Check Deployment Status",
+      "requisiteStageRefIds": [
+        "Get Env Details"
+      ],
+      "stageEnabled": {
+        "expression": "${parameters.NEEDS_UPGRADE_TESTING} == true",
+        "type": "expression"
+      },
+      "type": "jenkins",
+      "waitForCompletion": true
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "OSS-Integration-Gather-Env-Details",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Get Env Details",
+      "parameters": {
+        "ENV_DETAILS_DIR": "oss-common-ci/ci-infrastructure/pooling/resources",
+        "ENV_NAME": "${#stage(\"Reserve Namespace\")[\"context\"][\"RESOURCE_NAME\"]}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Get Env Details",
+      "requisiteStageRefIds": [
+        "Reserve Namespace"
+      ],
+      "type": "jenkins"
+    },
+    {
+      "application": "common-e2e-cicd",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failPipeline": true,
+      "name": "Install",
+      "pipeline": "4ec4b5df-b15b-4b90-afaf-4bf96ccf1a7c",
+      "pipelineParameters": {
+        "ARMDOCKER_USER_SECRET": "ossapps100-arm-docker-auth-config",
+        "ENV_CONFIG_FILE": "oss-common-ci/ci-infrastructure/pooling/resources/${#stage(\"Reserve Namespace\")[\"context\"][\"RESOURCE_NAME\"]}.conf",
+        "ENV_NAME": "${#stage(\"Reserve Namespace\")[\"context\"][\"RESOURCE_NAME\"]}",
+        "FULL_PATH_TO_SITE_VALUES_FILE": "${parameters['PATH_TO_SITE_VALUES_FILE']}",
+        "GAS_USER_PASSWORD": "${trigger['parameters']['GAS_USER_PASSWORD']}",
+        "GAS_USER_USERNAME": "${trigger['parameters']['GAS_USER_USERNAME']}",
+        "HELM_TIMEOUT": "${parameters['HELM_TIMEOUT']}",
+        "INT_CHART_NAME": "${parameters.HELMFILE_NAME}",
+        "INT_CHART_REPO": "${HELMFILE_REPO_FOR_INSTALLATION}",
+        "INT_CHART_VERSION": "${HELMFILE_VERSION_FOR_INSTALLATION}",
+        "PATH_TO_SITE_VALUES_OVERRIDE_FILE": "${parameters['PATH_TO_SITE_VALUES_OVERRIDE_FILE']}",
+        "PERFORM_REDEPLOY": "true",
+        "TAGS": "${parameters['TAGS']}",
+        "UNRESERVE_ENVIRONMENT": "false",
+        "USE_DM_PREPARE": "true"
+      },
+      "refId": "Install",
+      "requisiteStageRefIds": [
+        "Evaluate variables"
+      ],
+      "sendNotifications": false,
+      "stageEnabled": {
+        "expression": "${NEED_FRESH_INSTALL}",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failOnFailedExpressions": true,
+      "failPipeline": false,
+      "name": "Evaluate variables",
+      "refId": "Evaluate variables",
+      "requisiteStageRefIds": [
+        "Check Deployment Status"
+      ],
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "DDP_AUTO_UPLOAD",
+          "value": "${DDP_ID!=null and DDP_ACCOUNT !=null and DDP_PASSWORD !=null ? \"true\": \"false\" }"
+        },
+        {
+          "key": "DDP_URL",
+          "value": "https://ddpi.athtem.eei.ericsson.se/php/index.php?site=${ DDP_ID.replace('lmi_', 'LMI_') }&oss=generic"
+        },
+        {
+          "key": "HELMFILE_REPO_FOR_INSTALLATION",
+          "value": "${ (parameters.NEEDS_UPGRADE_TESTING == \"true\") ? parameters.II_HELMFILE_REPO: parameters.HELMFILE_FOR_TESTING_REPO }"
+        },
+        {
+          "key": "HELMFILE_VERSION_FOR_INSTALLATION",
+          "value": "${ (parameters.NEEDS_UPGRADE_TESTING == \"true\") ? parameters.II_HELMFILE_VERSION: parameters.HELMFILE_FOR_TESTING_VERSION }"
+        },
+        {
+          "key": "PARAMETERS",
+          "value": "${parameters}"
+        },
+        {
+          "key": "NEED_FRESH_INSTALL",
+          "value": "${ (parameters.NEEDS_UPGRADE_TESTING == \"false\")? \"true\" : (!SKIP_DELETION ?: \"false\")}"
+        }
+      ]
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "NeLS-simulator-installation",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "NeLS installation verification",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "ossapps100-arm-docker-auth-config",
+        "FUNCTIONAL_USER_CREDENTIALS": "ossapps100-user-creds",
+        "KUBECONFIG_FILE": "${#stage(\"Get Env Details\")[\"context\"][\"KUBE_CONFIG\"]}",
+        "LICENSE_KEYS": "false",
+        "NAMESPACE": "${#stage(\"Get Env Details\")[\"context\"][\"NAMESPACE\"]}"
+      },
+      "propertyFile": "",
+      "refId": "NeLS installation verification",
+      "requisiteStageRefIds": [
+        "Install"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Install using Helmfile')['status']}\" == \"SKIPPED\" and \"${parameters['SKIP_PRE_TESTING']}\" == \"true\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "Staging-Report-Register-Child-Flow",
+      "master": "oss-fem4s11-eiffel216",
+      "name": "Report Center Registration",
+      "parameters": {
+        "EXEC_ID": "${execution.id}"
+      },
+      "refId": "Report Center Registration",
+      "requisiteStageRefIds": [],
+      "type": "jenkins",
+      "waitForCompletion": false
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "Deployment_Pre_Upgrade_Steps_EIC_BP",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Pre Upgrade Steps",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "ossapps100-arm-docker-auth-config",
+        "GAS_USER_PASSWORD_VALUE": "${trigger['parameters']['GAS_USER_PASSWORD']}",
+        "GAS_USER_USERNAME_VALUE": "${trigger['parameters']['GAS_USER_USERNAME']}",
+        "KUBECONFIG_FILE": "${#stage(\"Get Env Details\")[\"context\"][\"KUBE_CONFIG\"]}",
+        "NAMESPACE": "${#stage(\"Get Env Details\")[\"context\"][\"NAMESPACE\"]}"
+      },
+      "refId": "Pre Upgrade Steps",
+      "requisiteStageRefIds": [
+        "Pre Upgrade Testing"
+      ],
+      "stageEnabled": {
+        "expression": "${parameters.NEEDS_UPGRADE_TESTING} == true",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    }
+  ],
+  "triggers": []
+}

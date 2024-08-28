@@ -1,0 +1,440 @@
+{
+  "appConfig": {},
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "name": "SPINNAKER_PIPELINE_NAME",
+  "description": "Template name: eic_real_csar_upgrade_flow.json in repo https://gerrit-gamma.gic.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources,branches",
+  "keepWaitingPipelines": true,
+  "limitConcurrent": false,
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+    "ui": true
+  },
+  "parameterConfig": [
+    {
+      "default": "fem5dockerslave8",
+      "description": "Specify the Jenkins agent that you want the job to run on",
+      "hasOptions": false,
+      "name": "JENKINS_AGENT",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Leave this blank if you want to use the latest INT Chart Version. ",
+      "hasOptions": false,
+      "name": "INT_CHART_VERSION",
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "true",
+      "description": "When set to true the script will try to download the officially Released CSARs relation to the version of the applications within the helmfile being deployed.",
+      "hasOptions": false,
+      "name": "USE_REAL_CSAR",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "List of tags for applications that have to be deployed",
+      "hasOptions": false,
+      "name": "TAGS",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "AKS_2",
+      "description": "",
+      "hasOptions": false,
+      "name": "TEST_ENVIRONMENT",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "oss-deploy",
+      "description": "",
+      "hasOptions": false,
+      "name": "NAMESPACE",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "armdocker.rnd.ericsson.se/proj-eric-oss-drop/eric-oss-deployment-manager",
+      "description": "Deployment Manager Repository.",
+      "hasOptions": false,
+      "label": "",
+      "name": "DEPLOYMENT_MANAGER_REPO",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "default",
+      "description": "Deployment Manager version.",
+      "hasOptions": false,
+      "name": "DEPLOYMENT_MANAGER_VERSION",
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "eic_site_values_template",
+      "description": "Name of the bucket that is storing the site values that is stored in object store. Defaults to eic_site_values_template.",
+      "hasOptions": false,
+      "label": "",
+      "name": "SITE_VALUE_FILE_BUCKET_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "site-values-latest.yaml",
+      "description": "Name of the site values file stored in OST.",
+      "hasOptions": false,
+      "name": "TO_SITE_VALUES_FILE",
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "false",
+      "description": "When set to true uses the site values generated from the Deployment manager prepare command for the deployment.",
+      "hasOptions": true,
+      "label": "",
+      "name": "USE_DM_PREPARE",
+      "options": [
+        {
+          "value": "true"
+        },
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "Release_Staging",
+      "description": "RSR Tag is used to identify the environment by Report Center Registration Stage for Release stage",
+      "hasOptions": false,
+      "label": "",
+      "name": "RSR_TAG",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "true",
+      "description": "When set to true, enables the DDP auto upload",
+      "hasOptions": true,
+      "label": "",
+      "name": "DDP_AUTO_UPLOAD",
+      "options": [
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "refs/tags/live-release",
+      "description": "The version of the K6 testware to be used.",
+      "hasOptions": false,
+      "label": "",
+      "name": "K6_TESTWARE_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "true",
+      "description": "When set to true, the clean docker registry job will run",
+      "hasOptions": true,
+      "label": "",
+      "name": "CLEAN_DOCKER_REGISTRY",
+      "options": [
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "true",
+      "description": "When set to true, ENM integration tests will be run",
+      "hasOptions": true,
+      "label": "",
+      "name": "RUN_ENM_INTEGRATION_TEST",
+      "options": [
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": true,
+      "required": true
+    }
+  ],
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "oss-idun-release-cicd_Jenkins_Agent_Cleanup",
+      "master": "oss-aispinn-fem5s11-eiffel052",
+      "name": "Jenkins Agent Cleanup",
+      "parameters": {
+        "SLAVE": "${parameters['JENKINS_AGENT']}"
+      },
+      "refId": "Jenkins Agent Cleanup",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "DSC-DIT-Download-Document-As-Artifact",
+      "master": "oss-fem5s11-eiffel216",
+      "name": "Get Environment Details",
+      "parameters": {
+        "DIT_NAME_PARAMETER": "${parameters['TEST_ENVIRONMENT']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Get Environment Details",
+      "requisiteStageRefIds": [
+        "Jenkins Agent Cleanup"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Jenkins Agent Cleanup')['status'] == 'SUCCEEDED'",
+        "type": "expression"
+      },
+      "type": "jenkins",
+      "waitForCompletion": true
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failOnFailedExpressions": true,
+      "failPipeline": true,
+      "name": "Evaluate Variables",
+      "refId": "Evaluate Variables",
+      "requisiteStageRefIds": [
+        "Get Environment Details"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Get Environment Details')['status'] == 'SUCCEEDED'",
+        "type": "expression"
+      },
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "TO_STATE_SITE_VALUES_OVERRIDE_FILE",
+          "value": "${(#stage('Get Environment Details')['context']['TO_STATE_SITE_VALUES_OVERRIDE_FILE']== None)? 'NONE':#stage('Get Environment Details')['context']['TO_STATE_SITE_VALUES_OVERRIDE_FILE']}"
+        },
+        {
+          "key": "SKIP_TESTS",
+          "value": "${(#stage(\"Get Environment Details\")[\"context\"]['SKIP_TESTS']== None)?  \"\":#stage(\"Get Environment Details\")[\"context\"]['SKIP_TESTS']}"
+        },
+        {
+          "key": "RUN_TESTS",
+          "value": "${(#stage(\"Get Environment Details\")[\"context\"]['RUN_TESTS']== None)? \"\":#stage(\"Get Environment Details\")[\"context\"]['RUN_TESTS']}"
+        },
+        {
+          "key": "ECM_HOSTNAME",
+          "value": "${(#stage(\"Get Environment Details\")[\"context\"]['ECM_HOST_REPLACE']== None)? \"\":#stage(\"Get Environment Details\")[\"context\"]['ECM_HOST_REPLACE']}"
+        },
+        {
+          "key": "ENM_HOSTNAME",
+          "value": "${(#stage(\"Get Environment Details\")[\"context\"]['ENM_HOST_REPLACE']== None)? \"\":#stage(\"Get Environment Details\")[\"context\"]['ENM_HOST_REPLACE']}"
+        }
+      ],
+      "waitForCompletion": true
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "Get-Latest-ChartOrHelmfile",
+      "master": "oss-aispinn-fem5s11-eiffel052",
+      "name": "Get Latest Helmfile Version",
+      "parameters": {
+        "FUNCTIONAL_USER_SECRET": "reluser-user-creds",
+        "INT_CHART_NAME": "eric-eiae-helmfile",
+        "INT_CHART_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm",
+        "SLAVE_LABEL": "${parameters['JENKINS_AGENT']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "Get Latest Helmfile Version",
+      "requisiteStageRefIds": [
+        "Jenkins Agent Cleanup"
+      ],
+      "stageEnabled": {
+        "expression": "parameters['INT_CHART_VERSION'] == '' and #stage('Jenkins Agent Cleanup')['status'] == 'SUCCEEDED'",
+        "type": "expression"
+      },
+      "type": "jenkins",
+      "waitForCompletion": true
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failOnFailedExpressions": true,
+      "failPipeline": true,
+      "name": "Set INT Chart Version",
+      "refId": "Set INT Chart Version",
+      "requisiteStageRefIds": [
+        "Get Latest Helmfile Version"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Get Latest Helmfile Version')['status'] == 'SUCCEEDED' || #stage('Get Latest Helmfile Version')['status'] == 'SKIPPED'",
+        "type": "expression"
+      },
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "INT_CHART_VERSION",
+          "value": "${parameters['INT_CHART_VERSION'] == '' ? #stage('Get Latest Helmfile Version')['context']['INT_CHART_VERSION'] : parameters['INT_CHART_VERSION']}"
+        }
+      ],
+      "waitForCompletion": true
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "Staging-Report-Register",
+      "master": "oss-fem4s11-eiffel216",
+      "name": "Report Center Registration",
+      "parameters": {
+        "EXEC_ID": "${execution.id}"
+      },
+      "refId": "Report Center Registration",
+      "requisiteStageRefIds": [],
+      "type": "jenkins",
+      "waitForCompletion": false
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failPipeline": true,
+      "name": "CSAR Build",
+      "pipeline": "7a7c372b-a633-4c03-a4fe-ee5f08c433bd",
+      "pipelineParameters": {
+        "INT_CHART_VERSION": "${#stage('Set INT Chart Version')['context']['INT_CHART_VERSION']}"
+      },
+      "refId": "CSAR Build",
+      "requisiteStageRefIds": [
+        "Set INT Chart Version",
+        "Evaluate Variables"
+      ],
+      "stageEnabled": {
+        "expression": "#stage('Evaluate Variables')['status'] == 'SUCCEEDED' and #stage('Set INT Chart Version')['status'] == 'SUCCEEDED'",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "oss-idun-release-cicd_Clean_Images_In_Docker_Registry",
+      "master": "oss-aispinn-fem5s11-eiffel052",
+      "name": "Clean Registry",
+      "parameters": {
+        "ENV_FILES_BUCKET_NAME": "${parameters['TEST_ENVIRONMENT']}_files",
+        "FUNCTIONAL_USER_SECRET": "cloudman-user-creds",
+        "KUBE_CONFIG": "${#stage(\"Get Environment Details\")[\"context\"]['KUBE_CONFIG']}",
+        "NAMESPACE": "${parameters['NAMESPACE']}",
+        "REGISTRY_CREDENTIALS": "${#stage('Get Environment Details')['context']['DOCKER_REGISTRY_CREDENTIALS']}",
+        "SLAVE_LABEL": "${parameters['JENKINS_AGENT']}"
+      },
+      "refId": "Clean Registry",
+      "requisiteStageRefIds": [
+        "CSAR Build"
+      ],
+      "stageEnabled": {
+        "expression": "parameters['CLEAN_DOCKER_REGISTRY'] == 'true' and #stage('CSAR Build')['status'] == 'SUCCEEDED'",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failPipeline": true,
+      "name": "Upgrade to Latest",
+      "pipeline": "e6c06ca6-1798-48ae-bc07-6406460db4a2",
+      "pipelineParameters": {
+        "ADC_HOSTNAME": "${#stage('Get Environment Details')['context']['ADC_HOST_REPLACE']}",
+        "APPMGR_HOSTNAME": "${#stage('Get Environment Details')['context']['APPMGR_HOST_REPLACE']}",
+        "BDR_HOSTNAME": "${#stage('Get Environment Details')['context']['BDR_HOST_REPLACE']}",
+        "CONFIG_FILES": "${#stage('Get Environment Details')['context']['CONFIG_FILES']}",
+        "DDP_AUTO_UPLOAD": "${parameters['DDP_AUTO_UPLOAD']}",
+        "DEPLOYMENT_MANAGER_REPO": "${parameters['DEPLOYMENT_MANAGER_REPO']}",
+        "DEPLOYMENT_MANAGER_VERSION": "${parameters['DEPLOYMENT_MANAGER_VERSION']}",
+        "DEPLOYMENT_NAME": "${parameters['TEST_ENVIRONMENT']}",
+        "DOCKER_REGISTRY": "${#stage('Get Environment Details')['context']['DOCKER_REGISTRY']}",
+        "DOCKER_REGISTRY_CREDENTIALS": "${#stage('Get Environment Details')['context']['DOCKER_REGISTRY_CREDENTIALS']}",
+        "ECM_HOSTNAME": "${ECM_HOSTNAME}",
+        "EIC_HOSTNAME": "${#stage(\"Get Environment Details\")[\"context\"][\"EIC_HOST_REPLACE\"]}",
+        "ENM_HOSTNAME": "${ENM_HOSTNAME}",
+        "GAS_HOSTNAME": "${#stage('Get Environment Details')['context']['GAS_HOST_REPLACE']}",
+        "IAM_HOSTNAME": "${#stage('Get Environment Details')['context']['IAM_HOST_REPLACE']}",
+        "INT_CHART_VERSION": "${#stage('Set INT Chart Version')['context']['INT_CHART_VERSION']}",
+        "K6_TESTWARE_VERSION": "${parameters['K6_TESTWARE_VERSION']}",
+        "KF_BO_HOSTNAME": "${#stage('Get Environment Details')['context']['KAFKA_BOOTSTRAP_HOST_REPLACE']}",
+        "KUBECONFIG_FILE": "${#stage('Get Environment Details')['context']['KUBE_CONFIG']}",
+        "KUBE_CONFIG_FILE_CREDENTIAL_ID": "${#stage('Get Environment Details')['context']['KUBE_CONFIG_FILE_CREDENTIAL_ID']}",
+        "NAMESPACE": "${parameters['NAMESPACE']}",
+        "RUN_ENM_INTEGRATION_TEST": "${parameters['RUN_ENM_INTEGRATION_TEST']}",
+        "RUN_TESTS": "${RUN_TESTS}",
+        "SITE_VALUES_FILE_NAME": "${parameters['TO_SITE_VALUES_FILE']}",
+        "SITE_VALUES_OVERRIDE_FILE_NAME": "${#stage('Evaluate Variables')['context']['TO_STATE_SITE_VALUES_OVERRIDE_FILE']}",
+        "SITE_VALUE_FILE_BUCKET_NAME": "${parameters['SITE_VALUE_FILE_BUCKET_NAME']}",
+        "SKIP_TESTS": "${SKIP_TESTS}",
+        "SLAVE_LABEL": "${parameters['JENKINS_AGENT']}",
+        "TAGS": "${parameters['TAGS']}",
+        "TH_HOSTNAME": "${#stage('Get Environment Details')['context']['TH_HOST_REPLACE']}",
+        "USE_CERTM": "true",
+        "USE_REAL_CSAR": "${parameters['USE_REAL_CSAR']}"
+      },
+      "refId": "Upgrade to Latest",
+      "requisiteStageRefIds": [
+        "Clean Registry"
+      ],
+      "stageEnabled": {
+        "expression": "(#stage('CSAR Build')['status'] == 'SUCCEEDED' and parameters['CLEAN_DOCKER_REGISTRY'] == 'false') or (#stage('Clean Registry')['status'] == 'SUCCEEDED' and parameters['CLEAN_DOCKER_REGISTRY'] == 'true')",
+        "type": "expression"
+      },
+      "stageTimeoutMs": 18000000,
+      "type": "pipeline",
+      "waitForCompletion": true
+    }
+  ],
+  "triggers": [
+    {
+      "cronExpression": "0 10 9 ? * MON-FRI *",
+      "enabled": false,
+      "type": "cron"
+    }
+  ]
+}

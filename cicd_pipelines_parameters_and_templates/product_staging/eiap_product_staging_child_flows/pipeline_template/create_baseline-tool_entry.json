@@ -1,0 +1,126 @@
+{
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten. Template name: create_baseline-tool_entry.json in repo https://gerrit-gamma.gic.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources",
+  "disabled": false,
+  "name": "SPINNAKER_PIPELINE_NAME",
+  "keepWaitingPipelines": false,
+  "limitConcurrent": true,
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+    "ui": true
+  },
+  "notifications": [
+    {
+      "address": "NOTIFICATION_ADDRESS,TB_TEAMS_EMAIL",
+      "level": "pipeline",
+      "message": {
+        "pipeline.failed": {
+          "text": "The SPINNAKER_PIPELINE_NAME pipeline has failed"
+        }
+      },
+      "type": "email",
+      "when": ["pipeline.failed"]
+    }
+  ],
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "failOnFailedExpressions": true,
+      "name": "Evaluate Parent Execution Variables",
+      "refId": "Evaluate Parent Execution Variables",
+      "requisiteStageRefIds": [],
+      "type": "evaluateVariables",
+      "stageEnabled": {
+        "expression": "trigger.parentExecution.stages.?[name == 'Helmfile Fetch Build Upload Release'][0]['status']=='SUCCEEDED' OR trigger.parentExecution.stages.?[name == 'Helmfile Fetch Build Upload Release from Ref Spec'][0]['status']=='SUCCEEDED'",
+        "type": "expression"
+      },
+      "variables": [
+        {
+          "key": "name",
+          "value": "${trigger.parentExecution.trigger.parameters.II_INT_CHART_NAME}"
+        },
+        {
+          "key": "version",
+          "value": "${trigger.parentExecution.stages.?[name == 'EIAP_map_eiap_testware_versions'][0]['context']['parameters']['EIAP_VERSION']}"
+        },
+        {
+          "key": "repo",
+          "value": "${trigger.parentExecution.trigger.parameters.II_INT_CHART_REPO}"
+        },
+        {
+          "key": "changes_name",
+          "value": "${!trigger.parentExecution.trigger.parameters.CHART_NAME.matches('^$|None')? trigger.parentExecution.trigger.parameters.CHART_NAME: name}"
+        },
+        {
+          "key": "changes_version",
+          "value": "${!trigger.parentExecution.trigger.parameters.CHART_VERSION.matches('^$|None')? trigger.parentExecution.trigger.parameters.CHART_VERSION: version}"
+        },
+        {
+          "key": "ticket",
+          "value": "${trigger.parentExecution.trigger.parameters.GIT_COMMIT_SUMMARY}"
+        },
+        {
+          "key": "code_review",
+          "value": "${trigger.parentExecution.trigger.parameters.GERRIT_CHANGE_URL}"
+        },
+        {
+          "key": "base_platform_version",
+          "value": "${trigger.parentExecution.trigger.parameters.BASE_PLATFORM_BASELINE_VERSION}"
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "name": "Create Baseline Tool Entry",
+      "payload": {
+        "changes": {
+          "${changes_name}": "${changes_version}"
+        },
+        "codeReview": "${code_review}",
+        "name": "${name}",
+        "repo": "${repo}",
+        "ticket": "${ticket}",
+        "version": "${version}"
+      },
+      "refId": "Create Baseline Tool Entry",
+      "requisiteStageRefIds": ["Evaluate Parent Execution Variables"],
+      "statusUrlResolution": "getMethod",
+      "type": "webhook",
+      "stageEnabled": {
+        "expression": "#stage('Evaluate Parent Execution Variables')['status'] == 'SUCCEEDED'",
+        "type": "expression"
+      },
+      "url": "BLT_URL/products"
+    },
+    {
+      "method": "PATCH",
+      "name": "Add additional details to BLT for a Base Platform delivery",
+      "payload": {
+        "additionalProperties": {
+          "basePlatformBaselineVersion": "${base_platform_version}"
+        }
+      },
+      "refId": "Add additional details to BLT for a Base Platform delivery",
+      "requisiteStageRefIds": [
+        "Create Baseline Tool Entry"
+      ],
+      "stageEnabled": {
+        "expression": "base_platform_version != '' and #stage('Create Baseline Tool Entry')['status'] == 'SUCCEEDED'",
+        "type": "expression"
+      },
+      "statusUrlResolution": "getMethod",
+      "type": "webhook",
+      "url": "BLT_URL/products/${name}/${version}"
+    }
+  ],
+  "triggers": [
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "enabled": true,
+      "pipeline": "d8e85bad-3d55-433b-b7db-d3d3567e2553",
+      "status": ["successful", "failed", "canceled"],
+      "type": "pipeline"
+    }
+  ]
+}

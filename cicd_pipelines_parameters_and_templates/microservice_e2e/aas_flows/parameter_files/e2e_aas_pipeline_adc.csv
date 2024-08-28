@@ -1,0 +1,12 @@
+SPINNAKER_APPLICATION_NAME,SPINNAKER_PIPELINE_NAME,EXECUTION_TIME
+idun-aas-e2e-cicd,eric-oss-pmcounter-filetrans-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-oss-5gpmevent-filetrans-proc-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-oss-csm-p-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-oss-enm-fns-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-oss-3gpp-pm-xml-ran-parser-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-oss-ves-collector-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-oss-3gpp-pm-xml-core-parser-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-oss-stats-parser-configurator-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-oss-4g-pm-event-parser-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-oss-4gpmevent-filetrans-proc-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-oss-enm-alarm-collector-AAS-E2E-Flow,21:00:00

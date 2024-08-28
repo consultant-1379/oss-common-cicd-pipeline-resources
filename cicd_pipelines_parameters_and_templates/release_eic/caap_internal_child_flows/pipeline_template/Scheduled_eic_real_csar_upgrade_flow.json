@@ -1,0 +1,366 @@
+{
+    "appConfig": {},
+    "application": "SPINNAKER_APPLICATION_NAME",
+    "name": "SPINNAKER_PIPELINE_NAME",
+    "description": "Template name: Scheduled_eic_real_csar_upgrade_flow.json in repo https://gerrit-gamma.gic.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources,branches",
+    "keepWaitingPipelines": true,
+    "limitConcurrent": false,
+    "locked": {
+        "allowUnlockUi": true,
+        "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+        "ui": true
+    },
+    "parameterConfig": [
+      {
+        "default": "",
+        "description": "Name of the deployment",
+        "hasOptions": false,
+        "label": "",
+        "name": "ENV_NAME",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "true",
+        "description": "When set to true, enables the DDP auto upload",
+        "hasOptions": true,
+        "label": "",
+        "name": "DDP_AUTO_UPLOAD",
+        "options": [
+          {
+            "value": "false"
+          }
+        ],
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "armdocker.rnd.ericsson.se/proj-eric-oss-drop/eric-oss-deployment-manager",
+        "description": "Deployment Manager Repository (for internal Upgrade only).",
+        "hasOptions": false,
+        "label": "",
+        "name": "DEPLOYMENT_MANAGER_REPO",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "latest",
+        "description": "The version of Deployment Manager to use.",
+        "hasOptions": false,
+        "label": "",
+        "name": "OSS_DEPLOYMENT_MANAGER_VERSION",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "fem5dockerslave7",
+        "description": "Specify the internal Jenkins agent that you want the job to run on",
+        "hasOptions": false,
+        "label": "",
+        "name": "INTERNAL_AGENT_NAME",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": true,
+        "required": true
+      },
+      {
+        "default": "eric-eiae-helmfile",
+        "description": "Name of the integration chart which will be used for the Initial install",
+        "hasOptions": false,
+        "label": "",
+        "name": "INT_CHART_NAME",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": false,
+        "required": true
+      },
+      {
+        "default": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm-local",
+        "description": "Repo of the Integration Chart which will be used for the Initial Install",
+        "hasOptions": false,
+        "label": "",
+        "name": "INT_CHART_REPO",
+        "options": [
+          {
+            "value": ""
+          }
+        ],
+        "pinned": true,
+        "required": true
+      }
+    ],
+    "schema": "1",
+    "spelEvaluator": "v4",
+    "stages": [
+      {
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": true,
+        "failPipeline": false,
+        "job": "RPT-RC_Update-Test-Environment-Status",
+        "master": "oss-fem5s11-eiffel216",
+        "name": "Update Env Status to Reserved",
+        "parameters": {
+          "ENV_NAME": "${parameters['ENV_NAME']}",
+          "status": "Reserved"
+        },
+        "refId": "Update Env Status to Reserved",
+        "requisiteStageRefIds": [],
+        "type": "jenkins"
+      },
+      {
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": true,
+        "failPipeline": false,
+        "job": "DSC-DIT-Download-Document-As-Artifact",
+        "master": "oss-fem5s11-eiffel216",
+        "name": "Get Environment Details",
+        "parameters": {
+          "DIT_NAME_PARAMETER": "${parameters['ENV_NAME']}"
+        },
+        "propertyFile": "artifact.properties",
+        "refId": "Get Environment Details",
+        "requisiteStageRefIds": [
+          "Update Env Status to Reserved"
+        ],
+        "stageEnabled": {
+          "expression": "#stage('Update Env Status to Reserved')['status'] == \"SUCCEEDED\"",
+          "type": "expression"
+        },
+        "type": "jenkins"
+      },
+      {
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": true,
+        "failPipeline": false,
+        "job": "Get-Latest-ChartOrHelmfile",
+        "master": "oss-aispinn-fem5s11-eiffel052",
+        "name": "Get Latest Helmfile Version",
+        "parameters": {
+          "FUNCTIONAL_USER_SECRET": "reluser-user-creds",
+          "INT_CHART_NAME": "${parameters['INT_CHART_NAME']}",
+          "INT_CHART_REPO": "${parameters['INT_CHART_REPO']}",
+          "INT_CHART_VERSION": "${#stage('Get Environment Details')['context']['TO_STATE']}",
+          "SLAVE_LABEL": "evo_docker_engine_gic_IDUN"
+        },
+        "propertyFile": "artifact.properties",
+        "refId": "Get Latest Helmfile Version",
+        "requisiteStageRefIds": [
+          "Get Environment Details"
+        ],
+        "stageEnabled": {
+          "expression": "#stage('Get Environment Details')['status'] == \"SUCCEEDED\"",
+          "type": "expression"
+        },
+        "type": "jenkins"
+      },
+      {
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": true,
+        "failPipeline": false,
+        "job": "BASE-VERS_Compare_Version_With_Baseline_Version",
+        "master": "oss-fem5s11-eiffel216",
+        "name": "Compare Versions",
+        "parameters": {
+          "BASELINE_VERSION_IN_REPO": "${#stage(\"Get Latest Helmfile Version\")[\"context\"][\"INT_CHART_VERSION\"]}",
+          "VERSION_FOR_COMPARISON": "${#stage('Get Environment Details')['context']['VERSION']}"
+        },
+        "propertyFile": "artifact.properties",
+        "refId": "Compare Versions",
+        "requisiteStageRefIds": [
+          "Get Latest Helmfile Version"
+        ],
+        "stageEnabled": {
+          "expression": "#stage('Get Latest Helmfile Version')['status'] == \"SUCCEEDED\"",
+          "type": "expression"
+        },
+        "type": "jenkins"
+      },
+      {
+        "application": "SPINNAKER_APPLICATION_NAME",
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": true,
+        "failPipeline": false,
+        "name": "Upgrade",
+        "pipeline": "a7d518a3-f0ab-4a20-b68f-932f645f5d33",
+        "pipelineParameters": {
+          "DDP_AUTO_UPLOAD": "${parameters['DDP_AUTO_UPLOAD']}",
+          "DEPLOYMENT_MANAGER_REPO": "${parameters['DEPLOYMENT_MANAGER_REPO']}",
+          "DEPLOYMENT_MANAGER_VERSION": "${parameters['OSS_DEPLOYMENT_MANAGER_VERSION']}",
+          "INT_CHART_VERSION": "${#stage(\"Get Latest Helmfile Version\")[\"context\"][\"INT_CHART_VERSION\"]}",
+          "JENKINS_AGENT": "${parameters['INTERNAL_AGENT_NAME']}",
+          "K6_TESTWARE_VERSION": "${#stage('Get Environment Details')['context']['TO_STATE_K6_TESTWARE_VERSION']}",
+          "NAMESPACE": "${#stage('Get Environment Details')['context']['NAMESPACE']}",
+          "TAGS": "${#stage('Get Environment Details')['context']['TAGS']}",
+          "TEST_ENVIRONMENT": "${parameters['ENV_NAME']}"
+        },
+        "refId": "Upgrade",
+        "requisiteStageRefIds": [
+          "Compare Versions"
+        ],
+        "stageEnabled": {
+          "expression": "#stage('Get Latest Helmfile Version')['status'] == \"SUCCEEDED\" and #stage(\"Compare Versions\")[\"context\"][\"RESULT_OF_COMPARISON\"].contains(\"lower\")",
+          "type": "expression"
+        },
+        "type": "pipeline",
+        "waitForCompletion": true
+      },
+      {
+        "application": "SPINNAKER_APPLICATION_NAME",
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": true,
+        "failPipeline": false,
+        "name": "Update Version in RPT and DIT to Latest Candidate Version",
+        "pipeline": "c2ef3a0e-65be-45a1-91ac-d8661170dd30",
+        "pipelineParameters": {
+          "ENVIRONMENT_NAME": "${parameters['ENV_NAME']}",
+          "INT_CHART_VERSION": "${#stage(\"Get Latest Helmfile Version\")[\"context\"][\"INT_CHART_VERSION\"]}"
+        },
+        "refId": "Update Version in RPT and DIT to Latest Candidate Version",
+        "requisiteStageRefIds": [
+          "Upgrade"
+        ],
+        "stageEnabled": {
+          "expression": "#stage('Upgrade')['status'] == \"SUCCEEDED\"",
+          "type": "expression"
+        },
+        "type": "pipeline",
+        "waitForCompletion": true
+      },
+      {
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": true,
+        "failPipeline": false,
+        "name": "Post Flow Checks",
+        "preconditions": [
+          {
+            "context": {
+              "expression": "#stage('Update Env Status to Reserved')['status'] == \"SUCCEEDED\" or #stage('Update Env Status to Reserved')['status'] == \"SKIPPED\""
+            },
+            "failPipeline": true,
+            "type": "expression"
+          },
+          {
+            "context": {
+              "expression": "#stage('Get Environment Details')['status'] == \"SUCCEEDED\" or #stage('Get Environment Details')['status'] == \"SKIPPED\""
+            },
+            "failPipeline": true,
+            "type": "expression"
+          },
+          {
+            "context": {
+              "expression": "#stage('Get Latest Helmfile Version')['status'] == \"SUCCEEDED\" or #stage('Get Latest Helmfile Version')['status'] == \"SKIPPED\""
+            },
+            "failPipeline": true,
+            "type": "expression"
+          },
+          {
+            "context": {
+              "expression": "#stage('Compare Versions')['status'] == \"SUCCEEDED\" or #stage('Compare Versions')['status'] == \"SKIPPED\""
+            },
+            "failPipeline": true,
+            "type": "expression"
+          },
+          {
+            "context": {
+              "expression": "#stage('Upgrade')['status'] == \"SUCCEEDED\" or #stage('Upgrade')['status'] == \"SKIPPED\""
+            },
+            "failPipeline": true,
+            "type": "expression"
+          },
+          {
+            "context": {
+              "expression": "#stage('Update Version in RPT and DIT to Latest Candidate Version')['status'] == \"SUCCEEDED\" or #stage('Update Version in RPT and DIT to Latest Candidate Version')['status'] == \"SKIPPED\""
+            },
+            "failPipeline": true,
+            "type": "expression"
+          }
+        ],
+        "refId": "Post Flow Checks",
+        "requisiteStageRefIds": [
+          "Update Version in RPT and DIT to Latest Candidate Version"
+        ],
+        "type": "checkPreconditions"
+      },
+      {
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": true,
+        "failPipeline": false,
+        "job": "RPT-RC_Unreserve-Environment",
+        "master": "oss-fem5s11-eiffel216",
+        "name": "Unreserve Environment",
+        "parameters": {
+          "ENV_NAME": "${parameters['ENV_NAME']}"
+        },
+        "refId": "Unreserve Environment",
+        "requisiteStageRefIds": [
+          "Post Flow Checks"
+        ],
+        "stageEnabled": {
+          "expression": "#stage('Post Flow Checks')['status'] == \"SUCCEEDED\"",
+          "type": "expression"
+        },
+        "type": "jenkins"
+      },
+      {
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": true,
+        "failPipeline": false,
+        "job": "RPT-RC_Quarantine-Environment",
+        "master": "oss-fem5s11-eiffel216",
+        "name": "Quarantine Environment",
+        "parameters": {
+          "ENV_NAME": "${parameters['ENV_NAME']}"
+        },
+        "refId": "Quarantine Environment",
+        "requisiteStageRefIds": [
+          "Post Flow Checks"
+        ],
+        "stageEnabled": {
+          "expression": "#stage('Post Flow Checks')['status'] != \"SUCCEEDED\"",
+          "type": "expression"
+        },
+        "type": "jenkins"
+      },
+      {
+        "name": "End Flow",
+        "preconditions": [
+          {
+            "context": {
+              "stageName": "Post Flow Checks",
+              "stageStatus": "SUCCEEDED"
+            },
+            "failPipeline": true,
+            "type": "stageStatus"
+          }
+        ],
+        "refId": "End Flow",
+        "requisiteStageRefIds": [
+          "Unreserve Environment",
+          "Quarantine Environment"
+        ],
+        "type": "checkPreconditions"
+      }
+    ],
+    "triggers": []
+  }

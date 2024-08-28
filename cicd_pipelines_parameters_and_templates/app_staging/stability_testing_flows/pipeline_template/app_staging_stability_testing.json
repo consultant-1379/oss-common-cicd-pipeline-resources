@@ -1,0 +1,305 @@
+{
+  "appConfig": {},
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten. Template name: app_staging_stability_testing.json in repo https://gerrit.ericsson.se/#/admin/projects/OSS/com.ericsson.oss.cicd/oss-common-cicd-pipeline-resources",
+  "disabled": false,
+  "name": "APP_SHORT_NAME_UPPERCASE-Stability-Testing",
+  "keepWaitingPipelines": false,
+  "limitConcurrent": true,
+  "maxConcurrentExecutions": 0,
+  "notifications": [],
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "This pipeline is maintained by spinnaker as a code, any changes made through the ui will be overwritten",
+    "ui": true
+  },
+  "parameterConfig": [
+    {
+      "default": "0.0.0",
+      "description": "Version of the EIC product will be used for the Initial Install. If 0.0.0 the latest green version will be used",
+      "hasOptions": false,
+      "label": "",
+      "name": "EIC_HELMFILE_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Specific version of testware chart.  If empty the latest version is used. E.g. \"1.0.441\".",
+      "hasOptions": false,
+      "label": "",
+      "name": "TESTWARE_VERSION",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    }
+  ],
+  "schema": "1",
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "name": "Flow Completed",
+      "preconditions": [
+        {
+          "context": {
+            "expression": "\"${#stage('Install using Helmfile')['status']}\" == \"SUCCEEDED\" or \"${#stage('Install using Helmfile')['status']}\" == \"SKIPPED\"",
+            "failureMessage": "\"Install using Helmfile\" stage failed"
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Functional testing')['status']}\" == \"SUCCEEDED\" or \"${#stage('Functional testing')['status']}\" == \"SKIPPED\"",
+            "failureMessage": "\"Functional Testing\" stage failed"
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Check Deployment Status')['status']}\" == \"SUCCEEDED\" or \"${#stage('Check Deployment Status')['status']}\" == \"SKIPPED\"",
+            "failureMessage": "Failed in \"Check Deployment Status\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Get Env Details')['status']}\" == \"SUCCEEDED\"",
+            "failureMessage": "Failed in \"Get Env Details\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        }
+      ],
+      "refId": "35",
+      "requisiteStageRefIds": [
+        "106"
+      ],
+      "type": "checkPreconditions"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "OSS-Integration-Check-Helmfile-Deployment-Status",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Check Deployment Status",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "ossapps100-arm-docker-auth-config",
+        "CHECK_FULL_VERSION": "false",
+        "CHECK_TAGS": "TAGS_PARAMETERS",
+        "OPTIONAL_TAGS": "TAGS_PARAMETERS",
+        "FUNCTIONAL_USER_SECRET": "ossapps100-user-creds",
+        "INT_CHART_VERSION": "${#stage(\"Get Helmfile Version for II\")[\"context\"][\"II_BASELINE_INT_CHART_VERSION\"]}",
+        "KUBECONFIG_FILE": "${#stage(\"Get Env Details\")[\"context\"][\"KUBE_CONFIG\"]}",
+        "NAMESPACE": "${#stage(\"Get Env Details\")[\"context\"][\"NAMESPACE\"]}",
+        "PATH_TO_HELMFILE": "eric-eiae-helmfile/helmfile.yaml",
+        "TAGS": "TAGS_PARAMETERS"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "94",
+      "requisiteStageRefIds": [
+        "96"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Get Env Details')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "OSS-Integration-Gather-Env-Details",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Get Env Details",
+      "parameters": {
+        "ENV_DETAILS_DIR": "oss-common-ci/ci-infrastructure/pooling/resources",
+        "ENV_NAME": "${#stage(\"Reserve Namespace\")[\"context\"][\"RESOURCE_NAME\"]}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "96",
+      "requisiteStageRefIds": [
+        "105"
+      ],
+      "type": "jenkins"
+    },
+    {
+      "application": "common-e2e-cicd",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Install using Helmfile",
+      "pipeline": "4ec4b5df-b15b-4b90-afaf-4bf96ccf1a7c",
+      "pipelineParameters": {
+        "ARMDOCKER_USER_SECRET": "ossapps100-arm-docker-auth-config",
+        "DDP_AUTO_UPLOAD": "${DDP_AUTO_UPLOAD}",
+        "DEPLOY_ALL_CRDS": "true",
+        "ENV_CONFIG_FILE": "oss-common-ci/ci-infrastructure/pooling/resources/${#stage(\"Reserve Namespace\")[\"context\"][\"RESOURCE_NAME\"]}.conf",
+        "ENV_NAME": "${#stage(\"Reserve Namespace\")[\"context\"][\"RESOURCE_NAME\"]}",
+        "FULL_PATH_TO_SITE_VALUES_FILE": "PATH_TO_SITE_VALUES_FILE_PARAMETER",
+        "HELM_TIMEOUT": "HELM_TIMEOUT_PARAMETER",
+        "INT_CHART_NAME": "eric-eiae-helmfile",
+        "INT_CHART_REPO": "https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-drop-helm-local",
+        "INT_CHART_VERSION": "${#stage(\"Get Helmfile Version for II\")[\"context\"][\"II_BASELINE_INT_CHART_VERSION\"]}",
+        "KUBECONFIG_FILE": "${#stage(\"Get Env Details\")[\"context\"][\"KUBE_CONFIG\"]}",
+        "NAMESPACE": "${#stage(\"Get Env Details\")[\"context\"][\"NAMESPACE\"]}",
+        "PATH_TO_CERTIFICATES_FILES": "oss-common-ci/${#stage('Get Env Details')['context']['PATH_TO_CERTIFICATES_FILES']}",
+        "PATH_TO_SITE_VALUES_OVERRIDE_FILE": "PATH_TO_SITE_VALUES_OVERRIDE_FILE_PARAMETER",
+        "PERFORM_REDEPLOY": "true",
+        "TAGS": "TAGS_PARAMETERS",
+        "UNRESERVE_ENVIRONMENT": "false",
+        "USE_CERTM": "true",
+        "USE_DM_PREPARE": "true"
+      },
+      "refId": "99",
+      "requisiteStageRefIds": [
+        "100"
+      ],
+      "sendNotifications": false,
+      "stageEnabled": {
+        "expression": "${#stage(\"Check Deployment Status\")[\"context\"][\"SKIP_DELETION\"].contains(\"false\")} && \"${#stage('Check Deployment Status')['status']}\" == \"SUCCEEDED\" && \"${#stage('Set DDP Details')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failOnFailedExpressions": true,
+      "failPipeline": false,
+      "name": "Set DDP Details",
+      "refId": "100",
+      "requisiteStageRefIds": [
+        "94"
+      ],
+      "stageEnabled": {
+        "expression": "\"${#stage('Get Env Details')['status']}\" == \"SUCCEEDED\" && ${#stage(\"Check Deployment Status\")[\"context\"][\"SKIP_DELETION\"].contains(\"false\")} && \"${#stage('Check Deployment Status')['status']}\" == \"SUCCEEDED\"",
+        "type": "expression"
+      },
+      "type": "evaluateVariables",
+      "variables": [
+        {
+          "key": "DDP_AUTO_UPLOAD",
+          "value": "${#stage(\"Get Env Details\")[\"context\"][\"DDP_ID\"]!=null and #stage(\"Get Env Details\")[\"context\"][\"DDP_ACCOUNT\"]!=null  and #stage(\"Get Env Details\")[\"context\"][\"DDP_PASSWORD\"]!=null ? \"true\": \"false\" }"
+        },
+        {
+          "key": "DDP_ID",
+          "value": "${#stage(\"Get Env Details\")[\"context\"][\"DDP_ID\"] }"
+        },
+        {
+          "key": "DDP_ACCOUNT",
+          "value": "${#stage(\"Get Env Details\")[\"context\"][\"DDP_ACCOUNT\"] }"
+        },
+        {
+          "key": "DDP_PASSWORD",
+          "value": "${#stage(\"Get Env Details\")[\"context\"][\"DDP_PASSWORD\"] }"
+        },
+        {
+          "key": "DDP_URL",
+          "value": "https://ddpi.athtem.eei.ericsson.se/php/index.php?site=${#stage(\"Get Env Details\")[\"context\"][\"DDP_ID\"]}&oss=generic"
+        }
+      ]
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Functional testing",
+      "pipeline": "${#pipelineId(\"APP_SHORT_NAME_UPPERCASE_Post_Upgrade_Testing\")}",
+      "pipelineParameters": {
+        "GAS_HOSTNAME": "${#stage('Get Env Details')['context']['GAS_HOST_REPLACE'] ?: 'default' }",
+        "IAM_HOSTNAME": "${#stage('Get Env Details')['context']['IAM_HOST_REPLACE'] ?: 'default' }",
+        "KUBE_CONFIG": "${#stage('Get Env Details')['context']['KUBE_CONFIG']}",
+        "NAMESPACE": "${#stage('Get Env Details')['context']['NAMESPACE']}",
+        "RESOURCE_NAME": "${#stage('Reserve Namespace')['context']['RESOURCE_NAME']}",
+        "TESTWARE_VERSION": "${parameters['TESTWARE_VERSION']}"
+      },
+      "refId": "103",
+      "requisiteStageRefIds": [
+        "99"
+      ],
+      "stageEnabled": {
+        "expression": "('${#stage('Check Deployment Status')['status']}' == 'SUCCEEDED' or '${#stage('Check Deployment Status')['status']}' == 'SKIPPED') and (\"${#stage('Install using Helmfile')['status']}\" == \"SUCCEEDED\" or \"${#stage('Install using Helmfile')['status']}\" == \"SKIPPED\")",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "BASE-VERS_Retrieve_Baseline_Version",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Get Helmfile Version for II",
+      "parameters": {
+        "KEY_TO_RETRIEVE_BASELINE_VERSION_OF": "II_BASELINE_INT_CHART_VERSION",
+        "SLAVE": "evo_docker_engine",
+        "SPECIFIED_VERSION_FOR_PIPELINE": "${parameters['EIC_HELMFILE_VERSION']}",
+        "VERSIONS_FILENAME": "versions",
+        "SPINNAKER_PIPELINE_ID": "${execution['id']}"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "104",
+      "requisiteStageRefIds": [],
+      "type": "jenkins"
+    },
+    {
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "APP_SHORT_NAME_UPPERCASE-Reserve_Namespace",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "Reserve Namespace",
+      "parameters": {
+        "ENV_LABEL": "ENV_LABEL_PARAMETER",
+        "FLOW_URL": "https://spinnaker.rnd.gic.ericsson.se/#/applications/${execution['application']}/executions/details/${execution.id}",
+        "FLOW_URL_TAG": "APP_SHORT_NAME_UPPERCASE App Staging - Stability Testing",
+        "WAIT_TIME": "120"
+      },
+      "propertyFile": "artifact.properties",
+      "refId": "105",
+      "requisiteStageRefIds": [
+        "104"
+      ],
+      "stageTimeoutMs": 14400000,
+      "type": "jenkins"
+    },
+    {
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failPipeline": true,
+      "job": "OSS-Integration-Unreserve-Environment",
+      "master": "oss-fem8s11-eiffel052",
+      "name": "UnreserveNamespace",
+      "parameters": {
+        "ENV_NAME": "${#stage(\"Reserve Namespace\")[\"context\"][\"RESOURCE_NAME\"]}"
+      },
+      "refId": "106",
+      "requisiteStageRefIds": [
+        "103"
+      ],
+      "type": "jenkins"
+    }
+  ],
+  "triggers": [
+    {
+      "cronExpression": "CRON_EXPRESSION",
+      "enabled": "CRON_ENABLED",
+      "type": "cron"
+    }
+  ]
+}

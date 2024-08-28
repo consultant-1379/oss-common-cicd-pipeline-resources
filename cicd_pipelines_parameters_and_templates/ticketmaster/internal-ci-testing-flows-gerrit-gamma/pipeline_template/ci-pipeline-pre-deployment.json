@@ -1,0 +1,755 @@
+{
+  "application": "SPINNAKER_APPLICATION_NAME",
+  "name": "SPINNAKER_PIPELINE_NAME",
+  "appConfig": {},
+  "description": "The is a CI Release pipeline to be used by Team TicketMaster",
+  "keepWaitingPipelines": false,
+  "limitConcurrent": false,
+  "locked": {
+    "allowUnlockUi": true,
+    "description": "This pipeline is maintained by Spinnaker as a code, any changes made through the UI will be overwritten. Please see https://gerrit-gamma.gic.ericsson.se/plugins/gitiles/OSS/com.ericsson.oss.aeonic/oss-integration-ci/+/refs/heads/master/docs/flows/Internal_CI_Test_Flow.md for details",
+    "ui": true
+  },
+  "parameterConfig": [
+    {
+      "default": "oss-deploy",
+      "description": "Namespace to be used to execute deployment against on the kubernetes system",
+      "hasOptions": false,
+      "label": "Namespace",
+      "name": "NAMESPACE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "crd-namespace",
+      "description": "CRD Namespace to be used to execute the CRD deployment against on the kubernetes system",
+      "hasOptions": false,
+      "label": "CRD Namespace",
+      "name": "CRD_NAMESPACE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "Kubeconfig file id stored in the Jenkins secret area",
+      "hasOptions": false,
+      "label": "Kubernetes Config File ID",
+      "name": "KUBECONFIG_FILE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": true
+    },
+    {
+      "default": "admin",
+      "description": "Key Cloak Admin User (--from-literal=kcadminid=<KC_ADMIN_ID>)",
+      "hasOptions": false,
+      "label": "Key Cloak Admin User ",
+      "name": "KC_ADMIN_ID",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "Ericsson123!",
+      "description": "Key Cloak Admin Password (--from-literal=kcpasswd=<KC_PASSWORD>)",
+      "hasOptions": false,
+      "label": "Key Cloak Admin Password",
+      "name": "KC_PASSWORD",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "admin",
+      "description": "Key Cloak Postgres Admin User (--from-literal=pguserid=<PG_USER_ID>)",
+      "hasOptions": false,
+      "label": "Key Cloak Postgres Admin User",
+      "name": "PG_USER_ID",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "Ericsson-pw123!",
+      "description": "Key Cloak Postgres Admin Password (--from-literal=pgpasswd=<PG_PASSWORD>) ",
+      "hasOptions": false,
+      "label": "Key Cloak Postgres Admin Password",
+      "name": "PG_PASSWORD",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "eo_user",
+      "description": "Postgres Custom user used in the creation of the generic secret (--from-literal=custom-user=<CUSTOM_USER_ID>)",
+      "hasOptions": false,
+      "label": "Postgres Custom User",
+      "name": "CUSTOM_USER_ID",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "customuser",
+      "description": "Postgres Custom user used in the creation of the generic secret for app mgr (--from-literal=custom-user=<CUSTOM_USER_ID>)",
+      "hasOptions": false,
+      "label": "Postgres Custom User",
+      "name": "APRMGR_CUSTOM_USER_ID",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "Postgres123!",
+      "description": "Postgres Custom Password  used in the creation of the generic secret (--from-literal=custom-pwd=<CUSTOM_PASSWORD>)",
+      "hasOptions": false,
+      "label": "Postgres Custom Password",
+      "name": "CUSTOM_PASSWORD",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "exporter",
+      "description": "Postgres Metric User used in the creation of the generic secret (--from-literal=metrics-user=<METRICS_USER_ID>)",
+      "hasOptions": false,
+      "label": "Postgres Metrics User",
+      "name": "METRICS_USER_ID",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "Postgres123!",
+      "description": "Postgres Metric Password  used in the creation of the generic secret (--from-literal=metrics-pwd=<METRICS_PASSWORD>)",
+      "hasOptions": false,
+      "label": "Postgres Metrics Password",
+      "name": "METRICS_PASSWORD",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "replica",
+      "description": "Postgres Replica User used in the creation of the generic secret (--from-literal=replica-user=<REPLICA_USER_ID>)",
+      "hasOptions": false,
+      "label": "Postgres Replica User ID",
+      "name": "REPLICA_USER_ID",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "Postgres123!",
+      "description": "Postgres Replica Password used in the creation of the generic secret (--from-literal=replica-pwd=<REPLICA_PASSWORD>)",
+      "hasOptions": false,
+      "label": "Postgres Replica Password",
+      "name": "REPLICA_PASSWORD",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "postgres",
+      "description": "Postgres Super User used in the creation of the generic secret (--from-literal=super-user=<SUPER_USER_ID>)",
+      "hasOptions": false,
+      "label": "Postgres Super User ID",
+      "name": "SUPER_USER_ID",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "Postgres123!",
+      "description": "Postgres Super User Password used in the creation of the generic secret (--from-literal=super-pwd=<SUPER_PASSWORD>)",
+      "hasOptions": false,
+      "label": "Postgres Super User Password",
+      "name": "SUPER_PASSWORD",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "true",
+      "description": "Used to Create a custom cluster role, should be used in conjunction with the site values when the  \"global.createClusterRoles=false\" is set.",
+      "hasOptions": true,
+      "label": "Create Custom Cluster Role",
+      "name": "CUSTOM_CLUSTER_ROLE",
+      "options": [
+        {
+          "value": "true"
+        },
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "eric-oss-common-base",
+      "description": "This is the release or project name i.e. eric-eo or  eric-oss-common-base. It is used to set the releas within the custom cluster role if the option is turned on ( metadata:   name: <RELEASE_NAME>-<NAMESPACE_NAME>-allowed-use-privileged-policy",
+      "hasOptions": false,
+      "label": "Cluster Role Binding Release Name",
+      "name": "CLUSTER_ROLE_BINDING_RELEASE_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "refs/heads/master",
+      "description": "Gerrit RefSpec to be able to test the flow against a review before merge. Use with caution",
+      "hasOptions": false,
+      "label": "Gerrit Ref Spec",
+      "name": "GERRIT_REFSPEC",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "cloudman-docker-auth-config",
+      "description": "Arm Docker User secret to log into dock to be able to pull images",
+      "hasOptions": false,
+      "label": "ARMDOCKER USER SECRET",
+      "name": "ARMDOCKER_USER_SECRET",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "evo_docker_engine_athlone",
+      "description": "Jenkins Slave where this flow should be executed from",
+      "hasOptions": false,
+      "label": "SLAVE LABEL",
+      "name": "SLAVE_LABEL",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "no",
+      "description": "Option to choose to execute the App Mgr Pre deployment step which are part of IDUN",
+      "hasOptions": true,
+      "label": "App Mgr Specific Pre Deployment",
+      "name": "EXECUTE_AM_PREDEPLOYMENT_STEP",
+      "options": [
+        {
+          "value": "yes"
+        },
+        {
+          "value": "no"
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "armdocker.rnd.ericsson.se/proj-eric-oss-drop/eric-oss-ci-scripts:latest",
+      "description": "Docker image details to use for CI ",
+      "hasOptions": false,
+      "label": "Ci Image to use",
+      "name": "CI_DOCKER_IMAGE",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "0.0.0.0",
+      "description": "ENM Master Service IP (grep -w scripting_service_IPs /ericsson/tor/data/global.properties)",
+      "hasOptions": false,
+      "label": "ENM_MASTER SERVICE IP",
+      "name": "ENM_MASTER_SERVICE_IP",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "0.0.0.0",
+      "description": "ENM Notification Service IP (grep -w visinamingnb_service_IPv6_IPs /ericsson/tor/data/global.properties)",
+      "hasOptions": false,
+      "label": "ENM NOTIFICATION SERVICE IP",
+      "name": "ENM_NOTIFICATION_SERVICE_IP",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "masterservice",
+      "description": "ENM Master Server Hostname",
+      "hasOptions": false,
+      "label": "ENM MASTER SERVER HOSTNAME",
+      "name": "ENM_MASTER_SERVER_HOSTNAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "notificationservice",
+      "description": "ENM Notification Service Hostname",
+      "hasOptions": false,
+      "label": "ENM NOTIFICATION SERVICE HOSTNAME",
+      "name": "ENM_NOTIFICATION_SERVICE_HOSTNAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "oss-secret",
+      "description": "ENM VM EVNFM secret name to be created",
+      "hasOptions": false,
+      "label": "",
+      "name": "ENM_VM_SECRET_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": true
+    },
+    {
+      "default": "None",
+      "description": "Bucket in OST that stores the environemtn files i.e. kube_config.yaml",
+      "hasOptions": false,
+      "label": "",
+      "name": "ENV_FILES_BUCKET_NAME",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "None",
+      "description": "functional user secret credentials fro jenkins credentials manager",
+      "hasOptions": false,
+      "label": "",
+      "name": "FUNCTIONAL_USER_SECRET",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "http://api.app-staging-report.ews.gic.ericsson.se/api",
+      "description": "The API URL for the Testware resource",
+      "hasOptions": false,
+      "label": "TESTWARE_API_URL",
+      "name": "TESTWARE_API_URL",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "postgresql://testware_user:testware@kroto018.rnd.gic.ericsson.se:30004/staging",
+      "description": "The Database URL for the Testware resource",
+      "hasOptions": false,
+      "label": "TESTWARE_DATABASE_URL",
+      "name": "TESTWARE_DATABASE_URL",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "http://gui.app-staging-report.ews.gic.ericsson.se/staging-reports",
+      "description": "The GUI URL for the Testware resource",
+      "hasOptions": false,
+      "label": "TESTWARE_K6_TOOL_GUI_URL",
+      "name": "TESTWARE_K6_TOOL_GUI_URL",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    }
+  ],
+  "schema": "1",
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "name": "Check Secret & Cluster Role Creation",
+      "preconditions": [
+        {
+          "context": {
+            "stageName": "OSS Common Pre Deployment",
+            "stageStatus": "SUCCEEDED"
+          },
+          "failPipeline": true,
+          "type": "stageStatus"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Cluster Role Binding : App Mgr Specific')['status']}\" == \"SUCCEEDED\" or \"${#stage('Cluster Role Binding : App Mgr Specific')['status']}\" == \"SKIPPED\"",
+            "failureMessage": ""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Secret : eric-appmgr-data-document-db-credentials')['status']}\" == \"SUCCEEDED\" or \"${#stage('Secret : eric-appmgr-data-document-db-credentials')['status']}\" == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "expression": "\"${#stage('Secret : testware-resources')['status']}\" == \"SUCCEEDED\" or \"${#stage('Secret : testware-resources')['status']}\" == \"SKIPPED\""
+          },
+          "failPipeline": true,
+          "type": "expression"
+        },
+        {
+          "context": {
+            "stageName": "EVNFM Pre Deployment",
+            "stageStatus": "SUCCEEDED"
+          },
+          "failPipeline": true,
+          "type": "stageStatus"
+        }
+      ],
+      "refId": "Check Secret & Cluster Role Creation",
+      "requisiteStageRefIds": [
+        "Secret : eric-appmgr-data-document-db-credentials",
+        "OSS Common Pre Deployment",
+        "Cluster Role Binding : App Mgr Specific",
+        "Secret : testware-resources",
+        "EVNFM Pre Deployment"
+      ],
+      "type": "checkPreconditions"
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "CI-Test-predeploy-database-pg-secret-Gerrit-Gamma",
+      "master": "CONTROLLER1",
+      "name": "Secret : eric-appmgr-data-document-db-credentials",
+      "parameters": {
+        "CI_DOCKER_IMAGE": "${trigger['parameters']['CI_DOCKER_IMAGE']}",
+        "CUSTOM_PASSWORD": "${trigger['parameters']['CUSTOM_PASSWORD']}",
+        "CUSTOM_USER_ID": "${trigger['parameters']['APRMGR_CUSTOM_USER_ID']}",
+        "ENV_FILES_BUCKET_NAME": "${trigger['parameters']['ENV_FILES_BUCKET_NAME']}",
+        "FUNCTIONAL_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "GERRIT_REFSPEC": "${trigger['parameters']['GERRIT_REFSPEC']}",
+        "KUBECONFIG_FILE": "${trigger['parameters']['KUBECONFIG_FILE']}",
+        "METRICS_PASSWORD": "${trigger['parameters']['CUSTOM_PASSWORD']}",
+        "METRICS_USER_ID": "${trigger['parameters']['METRICS_USER_ID']}",
+        "NAMESPACE": "${trigger['parameters']['NAMESPACE']}",
+        "REPLICA_PASSWORD": "${trigger['parameters']['REPLICA_PASSWORD']}",
+        "REPLICA_USER_ID": "${trigger['parameters']['REPLICA_USER_ID']}",
+        "SECRET_NAME": "eric-appmgr-data-document-db-credentials",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+        "SUPER_PASSWORD": "${trigger['parameters']['SUPER_PASSWORD']}",
+        "SUPER_USER_ID": "${trigger['parameters']['SUPER_USER_ID']}"
+      },
+      "refId": "Secret : eric-appmgr-data-document-db-credentials",
+      "requisiteStageRefIds": [
+        "Create Namespaces"
+      ],
+      "stageEnabled": {
+        "expression": "'${#stage('Create Namespaces')['status']}' == 'SUCCEEDED' and '${trigger['parameters']['EXECUTE_AM_PREDEPLOYMENT_STEP']}' == 'yes'",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "CI-Test-predeploy-testware-resources-secret-Gerrit-Gamma",
+      "master": "CONTROLLER1",
+      "name": "Secret : testware-resources",
+      "parameters": {
+        "CI_DOCKER_IMAGE": "${trigger['parameters']['CI_DOCKER_IMAGE']}",
+        "ENV_FILES_BUCKET_NAME": "${trigger['parameters']['ENV_FILES_BUCKET_NAME']}",
+        "FUNCTIONAL_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "GERRIT_REFSPEC": "${trigger['parameters']['GERRIT_REFSPEC']}",
+        "KUBECONFIG_FILE": "${trigger['parameters']['KUBECONFIG_FILE']}",
+        "NAMESPACE": "${trigger['parameters']['NAMESPACE']}",
+        "SECRET_NAME": "testware-resources-secret",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+        "TESTWARE_API_URL": "${trigger['parameters']['TESTWARE_API_URL']}",
+        "TESTWARE_DATABASE_URL": "${trigger['parameters']['TESTWARE_DATABASE_URL']}",
+        "TESTWARE_K6_TOOL_GUI_URL": "${trigger['parameters']['TESTWARE_K6_TOOL_GUI_URL']}"
+      },
+      "refId": "Secret : testware-resources",
+      "requisiteStageRefIds": [
+        "Create Namespaces"
+      ],
+      "stageEnabled": {
+        "expression": "'${#stage('Create Namespaces')['status']}' == 'SUCCEEDED' and '${trigger['parameters']['TESTWARE_API_URL']}' != null and '${trigger['parameters']['TESTWARE_API_URL']}' != '' and '${trigger['parameters']['TESTWARE_DATABASE_URL']}' != null and '${trigger['parameters']['TESTWARE_DATABASE_URL']}' != '' and '${trigger['parameters']['TESTWARE_K6_TOOL_GUI_URL']}' != null and '${trigger['parameters']['TESTWARE_K6_TOOL_GUI_URL']}' != ''",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "CI-Test-predeploy-am-specific-role-binding-Gerrit-Gamma",
+      "master": "CONTROLLER1",
+      "name": "Cluster Role Binding : App Mgr Specific",
+      "parameters": {
+        "CI_DOCKER_IMAGE": "${trigger['parameters']['CI_DOCKER_IMAGE']}",
+        "ENV_FILES_BUCKET_NAME": "${trigger['parameters']['ENV_FILES_BUCKET_NAME']}",
+        "FUNCTIONAL_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "GERRIT_REFSPEC": "${trigger['parameters']['GERRIT_REFSPEC']}",
+        "KUBECONFIG_FILE": "${trigger['parameters']['KUBECONFIG_FILE']}",
+        "NAMESPACE": "${trigger['parameters']['NAMESPACE']}",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}"
+      },
+      "refId": "Cluster Role Binding : App Mgr Specific",
+      "requisiteStageRefIds": [
+        "Create Namespaces"
+      ],
+      "stageEnabled": {
+        "expression": "'${#stage('Create Namespaces')['status']}' == 'SUCCEEDED' and '${trigger['parameters']['EXECUTE_AM_PREDEPLOYMENT_STEP']}' == 'yes'",
+        "type": "expression"
+      },
+      "type": "jenkins"
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "OSS Common Pre Deployment",
+      "pipeline": "OSS_COMMON_PRE_DEPLOYMENT_TEST_PIPELINE_ID",
+      "pipelineParameters": {
+        "CI_DOCKER_IMAGE": "${trigger['parameters']['CI_DOCKER_IMAGE']}",
+        "CLUSTER_ROLE_RELEASE_NAME": "${trigger['parameters']['CLUSTER_ROLE_BINDING_RELEASE_NAME']}",
+        "CRD_NAMESPACE": "${trigger['parameters']['CRD_NAMESPACE']}",
+        "CUSTOM_CLUSTER_ROLE": "${trigger['parameters']['CUSTOM_CLUSTER_ROLE']}",
+        "CUSTOM_PASSWORD": "${trigger['parameters']['CUSTOM_PASSWORD']}",
+        "CUSTOM_USER_ID": "${trigger['parameters']['CUSTOM_USER_ID']}",
+        "ENV_FILES_BUCKET_NAME": "${trigger['parameters']['ENV_FILES_BUCKET_NAME']}",
+        "FUNCTIONAL_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "GERRIT_REFSPEC": "${trigger['parameters']['GERRIT_REFSPEC']}",
+        "KC_ADMIN_ID": "${trigger['parameters']['KC_ADMIN_ID']}",
+        "KC_PASSWORD": "${trigger['parameters']['KC_PASSWORD']}",
+        "KUBECONFIG_FILE": "${trigger['parameters']['KUBECONFIG_FILE']}",
+        "METRICS_PASSWORD": "${trigger['parameters']['CUSTOM_PASSWORD']}",
+        "METRICS_USER_ID": "${trigger['parameters']['METRICS_USER_ID']}",
+        "NAMESPACE": "${trigger['parameters']['NAMESPACE']}",
+        "PG_PASSWORD": "${trigger['parameters']['PG_PASSWORD']}",
+        "PG_USER_ID": "${trigger['parameters']['PG_USER_ID']}",
+        "REPLICA_PASSWORD": "${trigger['parameters']['REPLICA_PASSWORD']}",
+        "REPLICA_USER_ID": "${trigger['parameters']['REPLICA_USER_ID']}",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}",
+        "SUPER_PASSWORD": "${trigger['parameters']['SUPER_PASSWORD']}",
+        "SUPER_USER_ID": "${trigger['parameters']['SUPER_USER_ID']}"
+      },
+      "refId": "OSS Common Pre Deployment",
+      "requisiteStageRefIds": [
+        "Create Namespaces"
+      ],
+      "stageEnabled": {
+        "expression": "'${#stage('Create Namespaces')['status']}' == 'SUCCEEDED'",
+        "type": "expression"
+      },
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Create Namespaces",
+      "pipeline": "CREATE_NAMESPACES_TEST_PIPELINE_ID",
+      "pipelineParameters": {
+        "CI_DOCKER_IMAGE": "${trigger['parameters']['CI_DOCKER_IMAGE']}",
+        "CRD_NAMESPACE": "${trigger['parameters']['CRD_NAMESPACE']}",
+        "ENV_FILES_BUCKET_NAME": "${trigger['parameters']['ENV_FILES_BUCKET_NAME']}",
+        "FUNCTIONAL_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "GERRIT_REFSPEC": "${trigger['parameters']['GERRIT_REFSPEC']}",
+        "KUBECONFIG_FILE": "${trigger['parameters']['KUBECONFIG_FILE']}",
+        "NAMESPACE": "${trigger['parameters']['NAMESPACE']}",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}"
+      },
+      "refId": "Create Namespaces",
+      "requisiteStageRefIds": [],
+      "type": "pipeline",
+      "waitForCompletion": true
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "CI-Test-predeploy-evnfm-Gerrit-Gamma",
+      "master": "CONTROLLER1",
+      "name": "EVNFM Pre Deployment",
+      "parameters": {
+        "ARMDOCKER_USER_SECRET": "${trigger['parameters']['ARMDOCKER_USER_SECRET']}",
+        "CI_DOCKER_IMAGE": "${trigger['parameters']['CI_DOCKER_IMAGE']}",
+        "ENV_FILES_BUCKET_NAME": "${trigger['parameters']['ENV_FILES_BUCKET_NAME']}",
+        "FUNCTIONAL_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "GERRIT_REFSPEC": "${trigger['parameters']['GERRIT_REFSPEC']}",
+        "KUBECONFIG_FILE": "${trigger['parameters']['KUBECONFIG_FILE']}",
+        "NAMESPACE": "${trigger['parameters']['NAMESPACE']}",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}"
+      },
+      "refId": "EVNFM Pre Deployment",
+      "requisiteStageRefIds": [
+        "Create Namespaces"
+      ],
+      "type": "jenkins"
+    },
+    {
+      "application": "SPINNAKER_APPLICATION_NAME",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "job": "CI-Test-predeploy-enm-vm-vnfm-connectivity-Gerrit-Gamma",
+      "master": "CONTROLLER1",
+      "name": "Secret: create-vm-vnfm-generic-secret",
+      "parameters": {
+        "CI_DOCKER_IMAGE": "${trigger['parameters']['CI_DOCKER_IMAGE']}",
+        "ENM_MASTER_SERVER_HOSTNAME": "${trigger['parameters']['ENM_MASTER_SERVER_HOSTNAME']}",
+        "ENM_MASTER_SERVICE_IP": "${trigger['parameters']['ENM_MASTER_SERVICE_IP']}",
+        "ENM_NOTIFICATION_SERVICE_HOSTNAME": "${trigger['parameters']['ENM_NOTIFICATION_SERVICE_HOSTNAME']}",
+        "ENM_NOTIFICATION_SERVICE_IP": "${trigger['parameters']['ENM_NOTIFICATION_SERVICE_IP']}",
+        "ENV_FILES_BUCKET_NAME": "${trigger['parameters']['ENV_FILES_BUCKET_NAME']}",
+        "FUNCTIONAL_USER_SECRET": "${trigger['parameters']['FUNCTIONAL_USER_SECRET']}",
+        "GERRIT_REFSPEC": "${trigger['parameters']['GERRIT_REFSPEC']}",
+        "KUBECONFIG_FILE": "${trigger['parameters']['KUBECONFIG_FILE']}",
+        "NAMESPACE": "${trigger['parameters']['NAMESPACE']}",
+        "SLAVE_LABEL": "${trigger['parameters']['SLAVE_LABEL']}"
+      },
+      "refId": "Secret: create-vm-vnfm-generic-secret",
+      "requisiteStageRefIds": [
+        "Create Namespaces"
+      ],
+      "type": "jenkins"
+    }
+  ],
+  "tags": [
+    {
+      "name": "GERRIT_GAMMA",
+      "value": "SPINNAKER_PIPELINE_NAME"
+    }
+  ],
+  "triggers": []
+}

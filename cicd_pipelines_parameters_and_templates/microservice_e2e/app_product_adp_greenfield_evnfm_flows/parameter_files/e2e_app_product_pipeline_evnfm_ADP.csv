@@ -1,0 +1,5 @@
+SPINNAKER_APPLICATION_NAME,APP_SHORT_NAME_UPPERCASE,SPINNAKER_PIPELINE_NAME,SUBMIT_TO_IDUN_STAGING_PARAMETER,SUBMIT_TO_EO_STAGING_PARAMETER,APPLICATION_STAGING_PIPELINE_ID,MICROSERVICE_TEAM_EMAILS,AAS_E2E_FLOW_PIPELINE_ID
+evnfm-e2e-cicd,EVNFM,eric-evnfm-data-document-database-pg-E2E-Flow,false,true,ab22a3f8-c857-4e38-8628-8d6eff8667a8,semen.chudakov@ericsson.com,d6c3e500-9135-4056-94e2-57221dfb7f56
+evnfm-e2e-cicd,EVNFM,eric-evnfm-lcm-container-registry-E2E-Flow,false,true,ab22a3f8-c857-4e38-8628-8d6eff8667a8,semen.chudakov@ericsson.com,e5729d8a-61da-46bb-86cd-f84ff54b94df
+evnfm-e2e-cicd,EVNFM,eric-evnfm-lcm-helm-chart-registry-E2E-Flow,false,true,ab22a3f8-c857-4e38-8628-8d6eff8667a8,semen.chudakov@ericsson.com,05452e79-b95c-4999-acbc-1c4303d87e73
+evnfm-e2e-cicd,EVNFM,eric-evnfm-log-shipper-E2E-Flow,false,true,ab22a3f8-c857-4e38-8628-8d6eff8667a8,semen.chudakov@ericsson.com,7ceaa6ae-b530-4c98-ba94-5c10679b4032

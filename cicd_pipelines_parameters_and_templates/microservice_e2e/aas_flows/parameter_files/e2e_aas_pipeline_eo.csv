@@ -1,0 +1,15 @@
+SPINNAKER_APPLICATION_NAME,SPINNAKER_PIPELINE_NAME,EXECUTION_TIME
+idun-aas-e2e-cicd,eric-oss-eo-evnfm-mb-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-oss-am-common-wfs-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-oss-am-common-wfs-ui-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-oss-am-onboarding-service-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-oss-vnfm-orchestrator-service-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-evnfm-data-document-database-pg-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-evnfm-lcm-container-registry-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-evnfm-lcm-helm-chart-registry-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-oss-eo-lm-consumer-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-evnfm-log-shipper-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-oss-functional-orchestration-common-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-eo-fh-event-to-alarm-adapter-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-ofoc-log-shipper-AAS-E2E-Flow,21:00:00
+idun-aas-e2e-cicd,eric-eo-batch-manager-AAS-E2E-Flow,21:00:00
